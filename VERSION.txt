@@ -1,0 +1,82 @@
+MEGA SENA ANALYZER
+==================
+Versão: 3.4.0
+Data: 02/03/2026
+Revisão: 01
+
+CHANGELOG v3.4.0
+----------------
+✅ Menu reorganizado: todas as estratégias visíveis no menu principal
+✅ Estratégia "Atraso Recente" adicionada ao menu (antes escondida)
+✅ Estratégias "Atrasados" e "Quentes" movidas para menu principal (antes em selectbox separado)
+✅ Relatório de estratégias redesenhado: foco em consistência, não percentuais
+✅ Ranking por consistência: concursos com 3+ acertos, streaks, duques e ternas
+✅ Evolução temporal por concurso com gráfico de linhas
+✅ Recomendação para bolão por quantidade de números
+✅ Duques (2 acertos) e Ternas (3 acertos) em todos os rankings e relatórios
+✅ Quantidade de números usados registrada no histórico
+✅ Relatório Geral atualizado com colunas de duques e ternas
+
+CHANGELOG v3.3.0
+----------------
+✅ Piloto Automático (dashboard + auto-refresh + auto-conferir + auto-gerar)
+✅ Configurações persistentes (piloto_config.json)
+✅ Limites unificados: até 20 cartões por estratégia
+✅ Análise de sequências expandida (6-20 números)
+✅ streamlit-autorefresh + seaborn nas dependências
+✅ Dados versionados no git para GitHub Actions
+✅ README.md atualizado
+
+CHANGELOG v3.2.0
+----------------
+✅ Cartões de 6 a 20 números (antes era 6-15)
+✅ Preços atualizados para R$ 6,00 (base oficial Mega Sena 2026)
+✅ Script de automação CLI (scripts/automacao_dia_jogo.py)
+✅ GitHub Actions para execução automática nos dias de sorteio
+✅ Deploy no Streamlit Cloud (https://megasena-analyzer.streamlit.app)
+✅ Pool de expansão dinâmico (adaptado à quantidade de números)
+✅ README.md reescrito com documentação completa
+
+CHANGELOG v3.1.0
+----------------
+✅ AutoML redesenhado: treina modelos para TODOS os 60 números
+✅ Geração de cartões otimizados para acertar QUADRA (4+ acertos)
+✅ Ranking de probabilidades por ML para todos os 60 números
+✅ Score combinado: ML + frequência recente + atraso
+✅ Diversificação automática de cartões para maximizar cobertura
+✅ Validação de equilíbrio par/ímpar e distribuição
+✅ Custo estimado das apostas exibido na interface
+✅ Suporte a cartões de 6 a 15 números
+✅ Cálculo de vantagem combinatória para quadra
+✅ Histórico agrupado por concurso alvo
+
+CHANGELOG v2.0.0
+----------------
+✅ Arquitetura modular completa
+✅ 8 Estratégias de análise (Escada, Atrasados, Quentes, Equilibrado, Misto, Consenso, Aleatório Smart, AutoML)
+✅ Interface visual com grid de 60 botões
+✅ AutoML com PyCaret - treinamento completo de modelos
+✅ Relatório visual consolidado com gráficos interativos
+✅ Exportação em JSON e PDF
+✅ Sistema robusto de conversão de dados
+✅ Geração automática de 10 cartões por estratégia
+✅ Análise comparativa de performance
+
+ARQUIVOS ESSENCIAIS
+-------------------
+- app_modular.py (orquestrador principal)
+- pagina_automl.py (AutoML com PyCaret)
+- pagina_relatorio_visual.py (relatório consolidado)
+- pagina_escada_temporal.py (estratégia Escada completa)
+- pagina_analise_estrategia.py (template genérico)
+- helpers.py (utilitários de conversão)
+- megasena_utils.py (utilitários gerais)
+- modules/ (lógica de negócio)
+- requirements.txt (dependências)
+
+DEPLOY
+------
+Plataforma: Streamlit Cloud
+Repositório: Leonardorochagit/megasena-analyzer
+Branch: main
+Python: 3.14.2
