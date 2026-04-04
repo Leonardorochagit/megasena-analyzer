@@ -1,18 +1,88 @@
-.venv/
-.venv311/
-__pycache__/
-*.pyc
-.env
-*.bak
-data/
-backup/
-old_files/
-.history/
-.streamlit/
-*.json.bak
-logs.log
+# ============================================================
+# MEGA SENA ANALYZER - .gitignore
+# ============================================================
 
-piloto_config.json
+# ── Python ───────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+*.egg
+.installed.cfg
+build/
+dist/
+eggs/
+*.pkl
+*.joblib
+
+# ── Ambientes virtuais ──────────────────────────────────────
+.venv/
+.venv_broken*/
+env/
+venv/
+.Python
+.python-version
+
+# ── IDE / Editor ────────────────────────────────────────────
+.vscode/
+.idea/
+.history/
+*.swp
+*.swo
+*~
+
+# ── OS ──────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Logs ────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Dados pessoais / locais (NÃO versionar) ────────────────
+# meus_cartoes.json       ← PRECISA estar no repo para GitHub Actions funcionar
+# historico_analises.json  ← PRECISA estar no repo para GitHub Actions funcionar
 usuarios.json
-meus_cartoes.json
-historico_analises.json
+cartoes_concurso_*.json*
+data/simulacao_*.json
+data/resultado_*.json
+data/cartoes_*.json
+data/historico_megasena.json
+data/cache/
+piloto_config.json
+
+# ── Pastas de backup / arquivos antigos ─────────────────────
+old_files/
+backup/
+
+# ── Saídas de análise (geradas pelo script) ─────────────────
+resultados_analise/
+
+# ── Jupyter / notebooks ─────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+
+# ── Streamlit secrets ───────────────────────────────────────
+.streamlit/secrets.toml
+
+# ── Git backup temporário ───────────────────────────────────
+.git_backup/
+
+# ── Testes / cobertura ──────────────────────────────────────
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+nosetests.xml
+coverage.xml
+
+# ── Artefatos de deploy ─────────────────────────────────────
+catboost_info/
+temp/
+*.csv
+*.xlsx
+*.pdf
