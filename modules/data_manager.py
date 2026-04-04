@@ -10,6 +10,7 @@ import os
 import streamlit as st
 import requests
 import pandas as pd
+import re
 from datetime import datetime
 
 ARQUIVO_CARTOES = "meus_cartoes.json"
@@ -200,6 +201,49 @@ def buscar_resultado_concurso(numero_concurso):
         return None
     except Exception as e:
         return None
+
+
+def buscar_detalhes_concurso(numero_concurso):
+    """
+    Busca metadados do concurso para notificações (acumulou e próximo prêmio).
+
+    Args:
+        numero_concurso (int): Número do concurso
+
+    Returns:
+        dict: {'acumulou': bool|None, 'valor_proximo_concurso': float|None}
+    """
+    detalhes = {
+        'acumulou': None,
+        'valor_proximo_concurso': None
+    }
+
+    try:
+        url = f"https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/{numero_concurso}"
+        response = requests.get(url, timeout=10)
+        if response.status_code != 200:
+            return detalhes
+
+        data = response.json()
+        detalhes['acumulou'] = data.get('acumulou')
+
+        valor_txt = data.get('valorEstimadoProximoConcurso')
+        if valor_txt is None:
+            valor_txt = data.get('valorAcumuladoProximoConcurso')
+
+        if isinstance(valor_txt, (int, float)):
+            detalhes['valor_proximo_concurso'] = float(valor_txt)
+        elif isinstance(valor_txt, str):
+            somente_numeros = re.sub(r"[^\d,.-]", "", valor_txt).replace(".", "").replace(",", ".")
+            try:
+                detalhes['valor_proximo_concurso'] = float(somente_numeros)
+            except ValueError:
+                pass
+
+    except Exception:
+        pass
+
+    return detalhes
 
 
 def verificar_resultados_automatico(cartoes, df):

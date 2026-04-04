@@ -32,12 +32,16 @@ from math import comb
 # Adicionar o diretório raiz ao path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from modules import notificacoes as notif
+from modules import data_manager as dm
+
 # =============================================================================
 # CONFIGURAÇÕES PADRÃO
 # =============================================================================
 
 ARQUIVO_CARTOES = "meus_cartoes.json"
 ARQUIVO_HISTORICO = "historico_analises.json"
+CONFIG_FILE = "piloto_config.json"
 
 TODAS_ESTRATEGIAS = [
     'escada', 'atrasados', 'quentes',
@@ -214,6 +218,52 @@ def salvar_historico(concurso, stats_concurso, dezenas_sorteadas):
         return True
     except:
         return False
+
+
+def carregar_config_notificacao():
+    """Carrega configuração de WhatsApp compartilhada com o Piloto Automático."""
+    defaults = {
+        'whatsapp_ativo': False,
+        'whatsapp_telefone': '',
+        'whatsapp_apikey': ''
+    }
+    try:
+        if os.path.exists(CONFIG_FILE):
+            with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
+                cfg = json.load(f)
+            for k, v in defaults.items():
+                if k not in cfg:
+                    cfg[k] = v
+            return cfg
+    except Exception:
+        pass
+    return defaults
+
+
+def enviar_notificacao_conferencias(conferidos):
+    """Envia notificação WhatsApp quando houver concursos conferidos."""
+    if not conferidos:
+        return
+
+    cfg = carregar_config_notificacao()
+    if not cfg.get('whatsapp_ativo'):
+        print("\n  ℹ️ WhatsApp desativado em piloto_config.json")
+        return
+
+    telefone = cfg.get('whatsapp_telefone')
+    apikey = cfg.get('whatsapp_apikey')
+    if not telefone or not apikey:
+        print("\n  ⚠️ WhatsApp configurado como ativo, mas telefone/API key estão ausentes")
+        return
+
+    dados_conferencia = {'status': 'conferido', 'conferidos': conferidos}
+    mensagem = notif.formatar_resultado_concurso(dados_conferencia)
+    resultado_envio = notif.enviar_whatsapp(telefone, apikey, mensagem)
+
+    if resultado_envio.get('sucesso'):
+        print("\n  📲 Notificação WhatsApp enviada com sucesso!")
+    else:
+        print(f"\n  ⚠️ Falha no envio WhatsApp: {resultado_envio.get('mensagem')}")
 
 
 # =============================================================================
@@ -423,6 +473,7 @@ def conferir_pendentes(df, cartoes):
     print(f"\n  📋 {len(concursos_pendentes)} concurso(s) pendente(s): {concursos_pendentes}")
 
     resultados_gerais = {}
+    conferidos = []
 
     for concurso in concursos_pendentes:
         jogos = [c for c in cartoes if c.get('concurso_alvo') == concurso and not c.get('verificado', False)]
@@ -450,6 +501,8 @@ def conferir_pendentes(df, cartoes):
         if not resultado:
             print(f"     ⏳ Resultado do concurso {concurso} ainda não disponível")
             continue
+
+        detalhes_concurso = dm.buscar_detalhes_concurso(concurso)
 
         print(f"     🎲 Resultado: {' - '.join(f'{n:02d}' for n in resultado)}")
 
@@ -512,7 +565,21 @@ def conferir_pendentes(df, cartoes):
             stats_para_salvar[est] = {k: v for k, v in dados.items() if k != 'acertos_list'}
         salvar_historico(concurso, stats_para_salvar, resultado)
 
-    return cartoes, resultados_gerais
+        melhor_concurso = max((j.get('acertos', 0) for j in jogos), default=0)
+        conferidos.append({
+            'concurso': concurso,
+            'resultado': resultado,
+            'total_jogos': len(jogos),
+            'melhor_acerto': melhor_concurso,
+            'stats': stats_para_salvar,
+            'acumulou': detalhes_concurso.get('acumulou'),
+            'valor_proximo_concurso': detalhes_concurso.get('valor_proximo_concurso')
+        })
+
+    return cartoes, {
+        'stats_por_concurso': resultados_gerais,
+        'conferidos': conferidos
+    }
 
 
 # =============================================================================
@@ -713,8 +780,9 @@ Exemplos:
 
     # 1. Conferir pendentes
     if not args.apenas_gerar:
-        cartoes, resultados = conferir_pendentes(df, cartoes)
+        cartoes, retorno_conferencia = conferir_pendentes(df, cartoes)
         salvar_cartoes(cartoes)
+        enviar_notificacao_conferencias(retorno_conferencia.get('conferidos', []))
 
     # 2. Gerar lote para próximo
     if not args.apenas_conferir:

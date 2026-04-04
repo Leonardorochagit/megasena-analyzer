@@ -11,6 +11,15 @@ import requests
 import urllib.parse
 
 
+def _formatar_moeda_br(valor):
+    """Formata valor numérico em padrão brasileiro (R$ 1.234,56)."""
+    try:
+        v = float(valor)
+        return f"R$ {v:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    except (TypeError, ValueError):
+        return None
+
+
 def enviar_whatsapp(telefone, apikey, mensagem):
     """
     Envia mensagem via CallMeBot WhatsApp API.
@@ -77,6 +86,18 @@ def formatar_resultado_concurso(dados_conferencia):
         linhas.append(f"📌 *Concurso {concurso}*")
         linhas.append(f"Resultado: {nums}")
         linhas.append(f"Jogos verificados: {total_jogos}")
+
+        acumulou = conf.get('acumulou')
+        if acumulou is True:
+            linhas.append("Acumulou: Sim")
+        elif acumulou is False:
+            linhas.append("Acumulou: Não")
+
+        valor_prox = conf.get('valor_proximo_concurso')
+        valor_prox_fmt = _formatar_moeda_br(valor_prox)
+        if valor_prox_fmt:
+            linhas.append(f"Próximo prêmio estimado: {valor_prox_fmt}")
+
         linhas.append("")
 
         # Destaque de acertos

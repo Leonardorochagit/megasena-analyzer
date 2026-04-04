@@ -27,6 +27,29 @@ try:
 except ImportError:
     HAS_AUTOREFRESH = False
 
+    def st_autorefresh(interval=0, limit=None, key="autorefresh"):
+        """Fallback simples para auto-refresh quando o pacote externo não está disponível."""
+        count_key = f"__fallback_autorefresh_count_{key}"
+        count = st.session_state.get(count_key, 0)
+
+        if limit is not None and count >= limit:
+            return count
+
+        st.components.v1.html(
+            f"""
+            <script>
+              setTimeout(function() {{
+                window.parent.location.reload();
+              }}, {int(interval)});
+            </script>
+            """,
+            height=0,
+        )
+
+        count += 1
+        st.session_state[count_key] = count
+        return count
+
 
 # =============================================================================
 # CONFIGURAÇÃO PERSISTENTE EM ARQUIVO
@@ -227,16 +250,15 @@ def pagina_piloto_automatico(df):
     })
 
     # ----- AUTO-REFRESH -----
-    if ativo and HAS_AUTOREFRESH:
+    if ativo:
         count = st_autorefresh(
             interval=intervalo * 60 * 1000,  # ms
             limit=None,
             key="piloto_auto_refresh"
         )
         st.session_state['piloto_ciclo'] = count
-    elif ativo and not HAS_AUTOREFRESH:
-        st.warning("⚠️ Pacote `streamlit-autorefresh` não instalado. O auto-refresh não funcionará. Instale com: `pip install streamlit-autorefresh`")
-        count = 0
+        if not HAS_AUTOREFRESH:
+            st.info("ℹ️ Auto-refresh em modo compatibilidade (fallback interno).")
     else:
         count = 0
 
@@ -344,7 +366,7 @@ def _exibir_status_sistema(df, ativo, intervalo, count):
     if concursos_pendentes:
         st.info(f"⏳ Concursos aguardando resultado: **{', '.join(map(str, concursos_pendentes))}**")
 
-    if ativo and HAS_AUTOREFRESH:
+    if ativo:
         agora = datetime.now().strftime("%H:%M:%S")
         proxima = (datetime.now() + timedelta(minutes=intervalo)).strftime("%H:%M:%S")
         st.caption(f"🕐 Última verificação: {agora} | Próxima: ~{proxima} | Ciclo #{count}")
@@ -381,6 +403,7 @@ def _auto_conferir(df, forcar=False):
         # Conferir cada cartão
         jogos_concurso = pendentes_por_concurso[concurso]
         stats_concurso = {}
+        detalhes_concurso = dm.buscar_detalhes_concurso(concurso)
 
         for jogo in jogos_concurso:
             acertos = len(set(jogo['dezenas']) & set(resultado))
@@ -427,7 +450,9 @@ def _auto_conferir(df, forcar=False):
             'resultado': resultado,
             'total_jogos': len(jogos_concurso),
             'melhor_acerto': melhor,
-            'stats': stats_concurso
+            'stats': stats_concurso,
+            'acumulou': detalhes_concurso.get('acumulou'),
+            'valor_proximo_concurso': detalhes_concurso.get('valor_proximo_concurso')
         })
         alterou = True
 
