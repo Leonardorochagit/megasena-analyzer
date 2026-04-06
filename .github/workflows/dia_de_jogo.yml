@@ -67,6 +67,28 @@ jobs:
         run: |
           pip install requests pandas numpy scikit-learn
 
+      - name: 📲 Configurar notificações WhatsApp
+        run: |
+          python - <<'EOF'
+          import json, os
+          cfg = {
+            "ativo": True,
+            "whatsapp_ativo": os.environ.get("WHATSAPP_ATIVO", "false").lower() == "true",
+            "whatsapp_telefone": os.environ.get("WHATSAPP_TELEFONE", ""),
+            "whatsapp_apikey": os.environ.get("WHATSAPP_APIKEY", "")
+          }
+          with open("piloto_config.json", "w") as f:
+              json.dump(cfg, f, indent=2)
+          if cfg["whatsapp_ativo"]:
+              print("✅ WhatsApp configurado via secrets")
+          else:
+              print("ℹ️  WhatsApp desativado (secret WHATSAPP_ATIVO não definido como 'true')")
+          EOF
+        env:
+          WHATSAPP_ATIVO: ${{ secrets.WHATSAPP_ATIVO }}
+          WHATSAPP_TELEFONE: ${{ secrets.WHATSAPP_TELEFONE }}
+          WHATSAPP_APIKEY: ${{ secrets.WHATSAPP_APIKEY }}
+
       - name: 🎰 Executar automação
         run: |
           # Definir parâmetros
