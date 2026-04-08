@@ -639,7 +639,7 @@ def _exibir_dashboard(df):
         if est not in ranking:
             ranking[est] = {
                 'jogos': 0, 'total_acertos': 0,
-                'senas': 0, 'quinas': 0, 'quadras': 0,
+                'senas': 0, 'quinas': 0, 'quadras': 0, 'ternos': 0,
                 'melhor_acerto': 0, 'concursos': set()
             }
         r = ranking[est]
@@ -653,24 +653,25 @@ def _exibir_dashboard(df):
             r['quinas'] += 1
         elif acertos == 4:
             r['quadras'] += 1
+        elif acertos == 3:
+            r['ternos'] += 1
         if c.get('concurso_alvo'):
             r['concursos'].add(c['concurso_alvo'])
 
     # Montar lista rankeada
     ranking_lista = []
     for est, dados in ranking.items():
-        media = dados['total_acertos'] / dados['jogos'] if dados['jogos'] > 0 else 0
-        score = dados['senas'] * 1000 + dados['quinas'] * 100 + dados['quadras'] * 10 + media
+        score = dados['senas'] * 10000 + dados['quinas'] * 1000 + dados['quadras'] * 100 + dados['ternos'] * 10 + dados['melhor_acerto']
         ranking_lista.append({
             'Estratégia': _nome_estrategia(est),
             'Jogos': dados['jogos'],
-            'Média Acertos': round(media, 2),
             'Senas': dados['senas'],
             'Quinas': dados['quinas'],
             'Quadras': dados['quadras'],
+            'Ternos': dados['ternos'],
             'Melhor': dados['melhor_acerto'],
             'Concursos': len(dados['concursos']),
-            'Score': round(score, 2)
+            'Score': score
         })
 
     ranking_lista.sort(key=lambda x: x['Score'], reverse=True)
@@ -678,11 +679,20 @@ def _exibir_dashboard(df):
     # Top 3
     for i, item in enumerate(ranking_lista[:3]):
         medalha = ["🥇", "🥈", "🥉"][i]
-        cols = st.columns([1, 4, 2, 2])
+        cols = st.columns([1, 3, 5])
         cols[0].markdown(f"### {medalha}")
         cols[1].markdown(f"**{item['Estratégia']}**\n\n{item['Jogos']} jogos em {item['Concursos']} concurso(s)")
-        cols[2].metric("Média", f"{item['Média Acertos']:.2f}")
-        cols[3].metric("Melhor", f"{item['Melhor']} acertos")
+        premios = []
+        if item['Senas']:
+            premios.append(f"🏆 {item['Senas']} Sena")
+        if item['Quinas']:
+            premios.append(f"⭐ {item['Quinas']} Quina")
+        if item['Quadras']:
+            premios.append(f"🎯 {item['Quadras']} Quadra")
+        if item['Ternos']:
+            premios.append(f"✅ {item['Ternos']} Terno")
+        resumo = " | ".join(premios) if premios else "Nenhum prêmio ainda"
+        cols[2].markdown(f"\n\n{resumo}")
         st.markdown("---")
 
     # Tabela completa
@@ -695,7 +705,10 @@ def _exibir_dashboard(df):
         st.markdown("### 📈 Comparativo Visual")
         df_grafico = pd.DataFrame({
             'Estratégia': [r['Estratégia'] for r in ranking_lista],
-            'Média de Acertos': [r['Média Acertos'] for r in ranking_lista]
+            'Ternos': [r['Ternos'] for r in ranking_lista],
+            'Quadras': [r['Quadras'] for r in ranking_lista],
+            'Quinas': [r['Quinas'] for r in ranking_lista],
+            'Senas': [r['Senas'] for r in ranking_lista],
         })
         st.bar_chart(df_grafico.set_index('Estratégia'))
 
@@ -709,15 +722,31 @@ def _exibir_dashboard(df):
         for concurso in concursos_verificados[:5]:
             jogos_c = [c for c in verificados if c.get('concurso_alvo') == concurso]
             melhor = max(c.get('acertos', 0) for c in jogos_c)
-            media = sum(c.get('acertos', 0) for c in jogos_c) / len(jogos_c)
             resultado = jogos_c[0].get('resultado_concurso', [])
+
+            # Contar prêmios do concurso
+            n_senas = sum(1 for c in jogos_c if c.get('acertos', 0) == 6)
+            n_quinas = sum(1 for c in jogos_c if c.get('acertos', 0) == 5)
+            n_quadras = sum(1 for c in jogos_c if c.get('acertos', 0) == 4)
+            n_ternos = sum(1 for c in jogos_c if c.get('acertos', 0) == 3)
 
             icone = "🎉" if melhor >= 4 else "✅"
             nums = " - ".join([f"{n:02d}" for n in sorted(resultado)]) if resultado else "?"
 
+            premios_resumo = []
+            if n_senas:
+                premios_resumo.append(f"{n_senas} Sena")
+            if n_quinas:
+                premios_resumo.append(f"{n_quinas} Quina")
+            if n_quadras:
+                premios_resumo.append(f"{n_quadras} Quadra")
+            if n_ternos:
+                premios_resumo.append(f"{n_ternos} Terno")
+            premios_txt = " | ".join(premios_resumo) if premios_resumo else "Sem prêmio"
+
             with st.expander(
                 f"{icone} Concurso {concurso} | {nums} | "
-                f"{len(jogos_c)} jogos | Melhor: {melhor} | Média: {media:.1f}"
+                f"{len(jogos_c)} jogos | {premios_txt}"
             ):
                 por_est = {}
                 for c in jogos_c:
@@ -725,11 +754,23 @@ def _exibir_dashboard(df):
                     por_est.setdefault(est, []).append(c.get('acertos', 0))
 
                 for est, acertos_list in sorted(por_est.items(), key=lambda x: max(x[1]), reverse=True):
-                    med = sum(acertos_list) / len(acertos_list)
                     mx = max(acertos_list)
+                    t = sum(1 for a in acertos_list if a == 3)
+                    q = sum(1 for a in acertos_list if a == 4)
+                    qi = sum(1 for a in acertos_list if a == 5)
+                    s = sum(1 for a in acertos_list if a == 6)
+                    partes = []
+                    if s:
+                        partes.append(f"{s} Sena")
+                    if qi:
+                        partes.append(f"{qi} Quina")
+                    if q:
+                        partes.append(f"{q} Quadra")
+                    if t:
+                        partes.append(f"{t} Terno")
+                    det = " | ".join(partes) if partes else f"Melhor: {mx}"
                     st.markdown(
-                        f"**{_nome_estrategia(est)}**: {len(acertos_list)} jogos | "
-                        f"Média: {med:.1f} | Melhor: {mx}"
+                        f"**{_nome_estrategia(est)}**: {len(acertos_list)} jogos | {det}"
                     )
 
 
