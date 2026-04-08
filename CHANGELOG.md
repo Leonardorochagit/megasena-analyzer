@@ -5,6 +5,41 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [3.5.0] - 2026-04-07
+
+### 🎉 Adicionado
+- **Notificações WhatsApp via CallMeBot** (`modules/notificacoes.py`):
+  - Envio automático de resultados por WhatsApp ao conferir concursos
+  - Mensagem formatada: resultado, acertos, premiações e ranking de estratégias
+  - Informação de acumulação e próximo prêmio estimado na mensagem
+  - Botão "Testar Notificação" para validar integração
+  - Toggle para ativar/desativar via interface
+- **Contagem de Ternos (3 acertos)** em todo o sistema:
+  - Dashboard do Piloto Automático
+  - Mensagens WhatsApp
+  - Top Estratégias e Últimos Concursos
+- **Fallback via `st.secrets`** para persistir configuração WhatsApp no Streamlit Cloud
+- **`.streamlit/config.toml`** e **`secrets.toml.example`** versionados no repositório
+- **`piloto_config.json`** versionado no repositório (antes era ignorado)
+
+### 🔧 Modificado
+- **Dashboard substituiu "Média" por contagem de prêmios**:
+  - Top 3 mostra: Senas / Quinas / Quadras / Ternos por estratégia
+  - Gráfico de barras empilhadas por tipo de prêmio (em vez de média)
+  - Últimos Concursos mostra resumo de prêmios na linha do expander
+  - Detalhes por estratégia com contagem de prêmios (em vez de média/melhor)
+- **Mensagem WhatsApp**: Top Estratégias mostra contagem de prêmios em vez de média
+- **Ranking ordena por melhor acerto** em vez de média de acertos
+- **`CONFIG_FILE`** usa caminho absoluto (`os.path.abspath(__file__)`) para funcionar de qualquer diretório de trabalho
+- **Widget keys** (`toggle_whatsapp`, `input_wa_telefone`, `input_wa_apikey`) inicializadas no session_state no carregamento
+
+### 🐛 Corrigido
+- WhatsApp ficava desativado após reiniciar o app (caminho relativo do config errava a pasta)
+- `.streamlit/` estava bloqueada no `.git/info/exclude` — arquivos nunca chegavam ao GitHub
+- `piloto_config.json` estava no `.gitignore` — config nunca era enviada ao repo
+
+---
+
 ## [3.4.0] - 2026-03-02
 
 ### 🎉 Adicionado

@@ -1,23 +1,18 @@
 MEGA SENA ANALYZER
 ==================
-Versão: 3.4.0
-Data: 02/03/2026
+Versão: 3.5.0
+Data: 07/04/2026
 Revisão: 01
 
-CHANGELOG v3.4.0
+CHANGELOG v3.5.0
 ----------------
-✅ Menu reorganizado: todas as estratégias visíveis no menu principal
-✅ Estratégia "Atraso Recente" adicionada ao menu (antes escondida)
-✅ Estratégias "Atrasados" e "Quentes" movidas para menu principal (antes em selectbox separado)
-✅ Relatório de estratégias redesenhado: foco em consistência, não percentuais
-✅ Ranking por consistência: concursos com 3+ acertos, streaks, duques e ternas
-✅ Evolução temporal por concurso com gráfico de linhas
-✅ Recomendação para bolão por quantidade de números
-✅ Duques (2 acertos) e Ternas (3 acertos) em todos os rankings e relatórios
-✅ Quantidade de números usados registrada no histórico
-✅ Relatório Geral atualizado com colunas de duques e ternas
-
-CHANGELOG v3.3.0
+✅ Notificações WhatsApp via CallMeBot (resultados, acertos, acumulação)
+✅ Contagem de Ternos (3 acertos) em todo o sistema
+✅ Dashboard sem "Média" — agora mostra Ternos / Quadras / Quinas / Senas
+✅ Gráfico de barras empilhadas por tipo de prêmio
+✅ Config WhatsApp persiste entre restarts (caminho absoluto + st.secrets)
+✅ piloto_config.json e .streamlit/ versionados no repositório
+✅ Widget keys inicializadas corretamente no session_state
 ----------------
 ✅ Piloto Automático (dashboard + auto-refresh + auto-conferir + auto-gerar)
 ✅ Configurações persistentes (piloto_config.json)

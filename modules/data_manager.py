@@ -7,11 +7,41 @@ Gerencia carregamento, salvamento e verificação de dados e cartões
 
 import json
 import os
-import streamlit as st
 import requests
 import pandas as pd
 import re
 from datetime import datetime
+
+try:
+    import streamlit as st
+except ModuleNotFoundError:
+    class _CacheDataFallback:
+        """Fallback simples para uso em scripts CLI sem Streamlit instalado."""
+
+        def __call__(self, *args, **kwargs):
+            def decorator(func):
+                return func
+            return decorator
+
+        def clear(self):
+            return None
+
+    class _StreamlitFallback:
+        cache_data = _CacheDataFallback()
+
+        @staticmethod
+        def success(message):
+            print(message)
+
+        @staticmethod
+        def warning(message):
+            print(message)
+
+        @staticmethod
+        def error(message):
+            print(message)
+
+    st = _StreamlitFallback()
 
 ARQUIVO_CARTOES = "meus_cartoes.json"
 ARQUIVO_HISTORICO = "historico_analises.json"
