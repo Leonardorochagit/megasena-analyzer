@@ -55,10 +55,10 @@ except ImportError:
 # CONFIGURAÇÃO PERSISTENTE EM ARQUIVO
 # =============================================================================
 
-CONFIG_FILE = "piloto_config.json"
+CONFIG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "piloto_config.json")
 
 def _carregar_config():
-    """Carrega configurações salvas do disco"""
+    """Carrega configurações salvas do disco. Fallback para st.secrets no Streamlit Cloud."""
     defaults = {
         'ativo': True,
         'intervalo': 60,
@@ -68,6 +68,15 @@ def _carregar_config():
         'whatsapp_telefone': '',
         'whatsapp_apikey': ''
     }
+    # Fallback: preencher defaults com st.secrets (Streamlit Cloud)
+    try:
+        wa_secrets = st.secrets.get('whatsapp', {})
+        if wa_secrets.get('telefone'):
+            defaults['whatsapp_ativo'] = True
+            defaults['whatsapp_telefone'] = wa_secrets.get('telefone', '')
+            defaults['whatsapp_apikey'] = wa_secrets.get('apikey', '')
+    except Exception:
+        pass
     try:
         if os.path.exists(CONFIG_FILE):
             with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
@@ -142,6 +151,10 @@ def pagina_piloto_automatico(df):
         st.session_state['piloto_whatsapp_ativo'] = config['whatsapp_ativo']
         st.session_state['piloto_whatsapp_telefone'] = config['whatsapp_telefone']
         st.session_state['piloto_whatsapp_apikey'] = config['whatsapp_apikey']
+        # Inicializar chaves dos widgets diretamente para garantir valor correto
+        st.session_state['toggle_whatsapp'] = config['whatsapp_ativo']
+        st.session_state['input_wa_telefone'] = config['whatsapp_telefone']
+        st.session_state['input_wa_apikey'] = config['whatsapp_apikey']
         st.session_state['piloto_ciclo'] = 0
         st.session_state['piloto_config_loaded'] = True
 
