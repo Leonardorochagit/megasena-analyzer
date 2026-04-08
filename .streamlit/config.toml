@@ -1,0 +1,8 @@
+[server]
+enableXsrfProtection = true
+
+[runner]
+fastReruns = true
+
+[client]
+showErrorDetails = true

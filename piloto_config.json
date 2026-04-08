@@ -1,0 +1,9 @@
+{
+  "ativo": true,
+  "intervalo": 60,
+  "qtd_numeros": 14,
+  "cartoes_por_est": 20,
+  "whatsapp_ativo": true,
+  "whatsapp_telefone": "556198770101",
+  "whatsapp_apikey": "4612328"
+}

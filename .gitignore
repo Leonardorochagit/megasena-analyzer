@@ -50,7 +50,6 @@ data/resultado_*.json
 data/cartoes_*.json
 data/historico_megasena.json
 data/cache/
-piloto_config.json
 
 # ── Pastas de backup / arquivos antigos ─────────────────────
 old_files/
@@ -63,7 +62,7 @@ resultados_analise/
 .ipynb_checkpoints/
 *.ipynb
 
-# ── Streamlit secrets ───────────────────────────────────────
+# ── Streamlit secrets (manter apenas secrets.toml ignorado) ─
 .streamlit/secrets.toml
 
 # ── Git backup temporário ───────────────────────────────────
