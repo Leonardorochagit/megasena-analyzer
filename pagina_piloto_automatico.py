@@ -429,7 +429,7 @@ def _auto_conferir(df, forcar=False):
             if est not in stats_concurso:
                 stats_concurso[est] = {
                     'total_jogos': 0, 'total_acertos': 0,
-                    'senas': 0, 'quinas': 0, 'quadras': 0,
+                    'senas': 0, 'quinas': 0, 'quadras': 0, 'ternos': 0,
                     'melhor_acerto': 0, 'media_acertos': 0
                 }
             s = stats_concurso[est]
@@ -442,6 +442,8 @@ def _auto_conferir(df, forcar=False):
                 s['quinas'] += 1
             elif acertos == 4:
                 s['quadras'] += 1
+            elif acertos == 3:
+                s['ternos'] += 1
 
         # Calcular médias
         for est in stats_concurso:

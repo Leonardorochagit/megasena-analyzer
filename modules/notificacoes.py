@@ -127,16 +127,24 @@ def formatar_resultado_concurso(dados_conferencia):
         if stats:
             ranking = sorted(
                 stats.items(),
-                key=lambda x: x[1].get('media_acertos', 0),
+                key=lambda x: x[1].get('melhor_acerto', 0),
                 reverse=True
             )
 
             linhas.append("📊 *Top Estratégias:*")
             for i, (est, dados) in enumerate(ranking[:3]):
                 medalha = ["🥇", "🥈", "🥉"][i]
-                media = dados.get('media_acertos', 0)
-                melhor_est = dados.get('melhor_acerto', 0)
-                linhas.append(f"  {medalha} {est}: média {media:.2f} | melhor {melhor_est}")
+                partes = []
+                if dados.get('senas'):
+                    partes.append(f"{dados['senas']} sena")
+                if dados.get('quinas'):
+                    partes.append(f"{dados['quinas']} quina")
+                if dados.get('quadras'):
+                    partes.append(f"{dados['quadras']} quadra")
+                if dados.get('ternos'):
+                    partes.append(f"{dados['ternos']} terno")
+                resumo = " / ".join(partes) if partes else "sem prêmio"
+                linhas.append(f"  {medalha} {est}: {resumo}")
 
         linhas.append("")
 
