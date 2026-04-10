@@ -445,5 +445,83 @@
       }
     },
     "data_registro": "2026-04-02 08:44:54"
+  },
+  {
+    "concurso": 2992,
+    "data_analise": "2026-04-10",
+    "dezenas_sorteadas": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "estatisticas": {
+      "escada": {
+        "total_jogos": 20,
+        "total_acertos": 0,
+        "senas": 0,
+        "quinas": 0,
+        "quadras": 0,
+        "melhor_acerto": 0,
+        "media_acertos": 0.0
+      },
+      "atrasados": {
+        "total_jogos": 20,
+        "total_acertos": 9,
+        "senas": 0,
+        "quinas": 0,
+        "quadras": 0,
+        "melhor_acerto": 2,
+        "media_acertos": 0.45
+      },
+      "quentes": {
+        "total_jogos": 20,
+        "total_acertos": 23,
+        "senas": 0,
+        "quinas": 0,
+        "quadras": 1,
+        "melhor_acerto": 4,
+        "media_acertos": 1.15
+      },
+      "equilibrado": {
+        "total_jogos": 20,
+        "total_acertos": 28,
+        "senas": 0,
+        "quinas": 0,
+        "quadras": 0,
+        "melhor_acerto": 3,
+        "media_acertos": 1.4
+      },
+      "misto": {
+        "total_jogos": 20,
+        "total_acertos": 23,
+        "senas": 0,
+        "quinas": 0,
+        "quadras": 0,
+        "melhor_acerto": 3,
+        "media_acertos": 1.15
+      },
+      "consenso": {
+        "total_jogos": 20,
+        "total_acertos": 19,
+        "senas": 0,
+        "quinas": 0,
+        "quadras": 0,
+        "melhor_acerto": 3,
+        "media_acertos": 0.95
+      },
+      "aleatorio_smart": {
+        "total_jogos": 20,
+        "total_acertos": 21,
+        "senas": 0,
+        "quinas": 0,
+        "quadras": 0,
+        "melhor_acerto": 3,
+        "media_acertos": 1.05
+      }
+    },
+    "data_registro": "2026-04-10 01:41:14"
   }
 ]

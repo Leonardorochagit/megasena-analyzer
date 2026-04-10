@@ -29187,12 +29187,22 @@
     ],
     "estrategia": "escada",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:54",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ESCADA-20260402084454-02",
@@ -29214,12 +29224,22 @@
     ],
     "estrategia": "escada",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:54",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ESCADA-20260402084454-03",
@@ -29241,12 +29261,22 @@
     ],
     "estrategia": "escada",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:54",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ESCADA-20260402084454-04",
@@ -29268,12 +29298,22 @@
     ],
     "estrategia": "escada",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:54",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ESCADA-20260402084454-05",
@@ -29295,12 +29335,22 @@
     ],
     "estrategia": "escada",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:54",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ESCADA-20260402084454-06",
@@ -29322,12 +29372,22 @@
     ],
     "estrategia": "escada",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:54",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ESCADA-20260402084454-07",
@@ -29349,12 +29409,22 @@
     ],
     "estrategia": "escada",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:54",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ESCADA-20260402084454-08",
@@ -29376,12 +29446,22 @@
     ],
     "estrategia": "escada",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:54",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ESCADA-20260402084454-09",
@@ -29403,12 +29483,22 @@
     ],
     "estrategia": "escada",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:54",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ESCADA-20260402084454-10",
@@ -29430,12 +29520,22 @@
     ],
     "estrategia": "escada",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:54",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ESCADA-20260402084454-11",
@@ -29457,12 +29557,22 @@
     ],
     "estrategia": "escada",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:54",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ESCADA-20260402084454-12",
@@ -29484,12 +29594,22 @@
     ],
     "estrategia": "escada",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:54",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ESCADA-20260402084454-13",
@@ -29511,12 +29631,22 @@
     ],
     "estrategia": "escada",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:54",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ESCADA-20260402084454-14",
@@ -29538,12 +29668,22 @@
     ],
     "estrategia": "escada",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:54",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ESCADA-20260402084454-15",
@@ -29565,12 +29705,22 @@
     ],
     "estrategia": "escada",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:54",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ESCADA-20260402084454-16",
@@ -29592,12 +29742,22 @@
     ],
     "estrategia": "escada",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:54",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ESCADA-20260402084455-17",
@@ -29619,12 +29779,22 @@
     ],
     "estrategia": "escada",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ESCADA-20260402084455-18",
@@ -29646,12 +29816,22 @@
     ],
     "estrategia": "escada",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ESCADA-20260402084455-19",
@@ -29673,12 +29853,22 @@
     ],
     "estrategia": "escada",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ESCADA-20260402084455-20",
@@ -29700,12 +29890,22 @@
     ],
     "estrategia": "escada",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ATRASADOS-20260402084455-01",
@@ -29727,12 +29927,22 @@
     ],
     "estrategia": "atrasados",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ATRASADOS-20260402084455-02",
@@ -29754,12 +29964,22 @@
     ],
     "estrategia": "atrasados",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ATRASADOS-20260402084455-03",
@@ -29781,12 +30001,22 @@
     ],
     "estrategia": "atrasados",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ATRASADOS-20260402084455-04",
@@ -29808,12 +30038,22 @@
     ],
     "estrategia": "atrasados",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ATRASADOS-20260402084455-05",
@@ -29835,12 +30075,22 @@
     ],
     "estrategia": "atrasados",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ATRASADOS-20260402084455-06",
@@ -29862,12 +30112,22 @@
     ],
     "estrategia": "atrasados",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ATRASADOS-20260402084455-07",
@@ -29889,12 +30149,22 @@
     ],
     "estrategia": "atrasados",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ATRASADOS-20260402084455-08",
@@ -29916,12 +30186,22 @@
     ],
     "estrategia": "atrasados",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ATRASADOS-20260402084455-09",
@@ -29943,12 +30223,22 @@
     ],
     "estrategia": "atrasados",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ATRASADOS-20260402084455-10",
@@ -29970,12 +30260,22 @@
     ],
     "estrategia": "atrasados",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ATRASADOS-20260402084455-11",
@@ -29997,12 +30297,22 @@
     ],
     "estrategia": "atrasados",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ATRASADOS-20260402084455-12",
@@ -30024,12 +30334,22 @@
     ],
     "estrategia": "atrasados",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ATRASADOS-20260402084455-13",
@@ -30051,12 +30371,22 @@
     ],
     "estrategia": "atrasados",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ATRASADOS-20260402084455-14",
@@ -30078,12 +30408,22 @@
     ],
     "estrategia": "atrasados",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ATRASADOS-20260402084455-15",
@@ -30105,12 +30445,22 @@
     ],
     "estrategia": "atrasados",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ATRASADOS-20260402084455-16",
@@ -30132,12 +30482,22 @@
     ],
     "estrategia": "atrasados",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 2,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ATRASADOS-20260402084455-17",
@@ -30159,12 +30519,22 @@
     ],
     "estrategia": "atrasados",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ATRASADOS-20260402084455-18",
@@ -30186,12 +30556,22 @@
     ],
     "estrategia": "atrasados",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ATRASADOS-20260402084455-19",
@@ -30213,12 +30593,22 @@
     ],
     "estrategia": "atrasados",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ATRASADOS-20260402084455-20",
@@ -30240,12 +30630,22 @@
     ],
     "estrategia": "atrasados",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-QUENTES-20260402084455-01",
@@ -30267,12 +30667,22 @@
     ],
     "estrategia": "quentes",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-QUENTES-20260402084455-02",
@@ -30294,12 +30704,22 @@
     ],
     "estrategia": "quentes",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-QUENTES-20260402084455-03",
@@ -30321,12 +30741,22 @@
     ],
     "estrategia": "quentes",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-QUENTES-20260402084455-04",
@@ -30348,12 +30778,22 @@
     ],
     "estrategia": "quentes",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-QUENTES-20260402084455-05",
@@ -30375,12 +30815,22 @@
     ],
     "estrategia": "quentes",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-QUENTES-20260402084455-06",
@@ -30402,12 +30852,22 @@
     ],
     "estrategia": "quentes",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 2,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-QUENTES-20260402084455-07",
@@ -30429,12 +30889,22 @@
     ],
     "estrategia": "quentes",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-QUENTES-20260402084455-08",
@@ -30456,12 +30926,22 @@
     ],
     "estrategia": "quentes",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-QUENTES-20260402084455-09",
@@ -30483,12 +30963,22 @@
     ],
     "estrategia": "quentes",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-QUENTES-20260402084455-10",
@@ -30510,12 +31000,22 @@
     ],
     "estrategia": "quentes",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-QUENTES-20260402084455-11",
@@ -30537,12 +31037,22 @@
     ],
     "estrategia": "quentes",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-QUENTES-20260402084455-12",
@@ -30564,12 +31074,22 @@
     ],
     "estrategia": "quentes",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-QUENTES-20260402084455-13",
@@ -30591,12 +31111,22 @@
     ],
     "estrategia": "quentes",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 2,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-QUENTES-20260402084455-14",
@@ -30618,12 +31148,22 @@
     ],
     "estrategia": "quentes",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-QUENTES-20260402084455-15",
@@ -30645,12 +31185,22 @@
     ],
     "estrategia": "quentes",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 2,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-QUENTES-20260402084455-16",
@@ -30672,12 +31222,22 @@
     ],
     "estrategia": "quentes",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-QUENTES-20260402084455-17",
@@ -30699,12 +31259,22 @@
     ],
     "estrategia": "quentes",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 4,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-QUENTES-20260402084455-18",
@@ -30726,12 +31296,22 @@
     ],
     "estrategia": "quentes",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 2,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-QUENTES-20260402084455-19",
@@ -30753,12 +31333,22 @@
     ],
     "estrategia": "quentes",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-QUENTES-20260402084455-20",
@@ -30780,12 +31370,22 @@
     ],
     "estrategia": "quentes",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 2,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-EQUILIBRADO-20260402084455-01",
@@ -30807,12 +31407,22 @@
     ],
     "estrategia": "equilibrado",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 2,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-EQUILIBRADO-20260402084455-02",
@@ -30834,12 +31444,22 @@
     ],
     "estrategia": "equilibrado",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 2,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-EQUILIBRADO-20260402084455-03",
@@ -30861,12 +31481,22 @@
     ],
     "estrategia": "equilibrado",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-EQUILIBRADO-20260402084455-04",
@@ -30888,12 +31518,22 @@
     ],
     "estrategia": "equilibrado",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 2,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-EQUILIBRADO-20260402084455-05",
@@ -30915,12 +31555,22 @@
     ],
     "estrategia": "equilibrado",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-EQUILIBRADO-20260402084455-06",
@@ -30942,12 +31592,22 @@
     ],
     "estrategia": "equilibrado",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 2,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-EQUILIBRADO-20260402084455-07",
@@ -30969,12 +31629,22 @@
     ],
     "estrategia": "equilibrado",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 2,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-EQUILIBRADO-20260402084455-08",
@@ -30996,12 +31666,22 @@
     ],
     "estrategia": "equilibrado",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-EQUILIBRADO-20260402084455-09",
@@ -31023,12 +31703,22 @@
     ],
     "estrategia": "equilibrado",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-EQUILIBRADO-20260402084455-10",
@@ -31050,12 +31740,22 @@
     ],
     "estrategia": "equilibrado",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-EQUILIBRADO-20260402084455-11",
@@ -31077,12 +31777,22 @@
     ],
     "estrategia": "equilibrado",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-EQUILIBRADO-20260402084455-12",
@@ -31104,12 +31814,22 @@
     ],
     "estrategia": "equilibrado",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 3,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-EQUILIBRADO-20260402084455-13",
@@ -31131,12 +31851,22 @@
     ],
     "estrategia": "equilibrado",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-EQUILIBRADO-20260402084455-14",
@@ -31158,12 +31888,22 @@
     ],
     "estrategia": "equilibrado",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-EQUILIBRADO-20260402084455-15",
@@ -31185,12 +31925,22 @@
     ],
     "estrategia": "equilibrado",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 2,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-EQUILIBRADO-20260402084455-16",
@@ -31212,12 +31962,22 @@
     ],
     "estrategia": "equilibrado",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 2,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-EQUILIBRADO-20260402084455-17",
@@ -31239,12 +31999,22 @@
     ],
     "estrategia": "equilibrado",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-EQUILIBRADO-20260402084455-18",
@@ -31266,12 +32036,22 @@
     ],
     "estrategia": "equilibrado",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-EQUILIBRADO-20260402084455-19",
@@ -31293,12 +32073,22 @@
     ],
     "estrategia": "equilibrado",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-EQUILIBRADO-20260402084455-20",
@@ -31320,12 +32110,22 @@
     ],
     "estrategia": "equilibrado",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 3,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-MISTO-20260402084455-01",
@@ -31347,12 +32147,22 @@
     ],
     "estrategia": "misto",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-MISTO-20260402084455-02",
@@ -31374,12 +32184,22 @@
     ],
     "estrategia": "misto",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 3,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-MISTO-20260402084455-03",
@@ -31401,12 +32221,22 @@
     ],
     "estrategia": "misto",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-MISTO-20260402084455-04",
@@ -31428,12 +32258,22 @@
     ],
     "estrategia": "misto",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-MISTO-20260402084455-05",
@@ -31455,12 +32295,22 @@
     ],
     "estrategia": "misto",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 2,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-MISTO-20260402084455-06",
@@ -31482,12 +32332,22 @@
     ],
     "estrategia": "misto",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-MISTO-20260402084455-07",
@@ -31509,12 +32369,22 @@
     ],
     "estrategia": "misto",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 2,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-MISTO-20260402084455-08",
@@ -31536,12 +32406,22 @@
     ],
     "estrategia": "misto",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-MISTO-20260402084455-09",
@@ -31563,12 +32443,22 @@
     ],
     "estrategia": "misto",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 2,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-MISTO-20260402084455-10",
@@ -31590,12 +32480,22 @@
     ],
     "estrategia": "misto",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-MISTO-20260402084455-11",
@@ -31617,12 +32517,22 @@
     ],
     "estrategia": "misto",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-MISTO-20260402084455-12",
@@ -31644,12 +32554,22 @@
     ],
     "estrategia": "misto",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-MISTO-20260402084455-13",
@@ -31671,12 +32591,22 @@
     ],
     "estrategia": "misto",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-MISTO-20260402084455-14",
@@ -31698,12 +32628,22 @@
     ],
     "estrategia": "misto",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 2,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-MISTO-20260402084455-15",
@@ -31725,12 +32665,22 @@
     ],
     "estrategia": "misto",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-MISTO-20260402084455-16",
@@ -31752,12 +32702,22 @@
     ],
     "estrategia": "misto",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-MISTO-20260402084455-17",
@@ -31779,12 +32739,22 @@
     ],
     "estrategia": "misto",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 2,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-MISTO-20260402084455-18",
@@ -31806,12 +32776,22 @@
     ],
     "estrategia": "misto",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 2,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-MISTO-20260402084455-19",
@@ -31833,12 +32813,22 @@
     ],
     "estrategia": "misto",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-MISTO-20260402084455-20",
@@ -31860,12 +32850,22 @@
     ],
     "estrategia": "misto",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-CONSENSO-20260402084455-01",
@@ -31887,12 +32887,22 @@
     ],
     "estrategia": "consenso",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-CONSENSO-20260402084455-02",
@@ -31914,12 +32924,22 @@
     ],
     "estrategia": "consenso",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-CONSENSO-20260402084455-03",
@@ -31941,12 +32961,22 @@
     ],
     "estrategia": "consenso",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-CONSENSO-20260402084455-04",
@@ -31968,12 +32998,22 @@
     ],
     "estrategia": "consenso",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-CONSENSO-20260402084455-05",
@@ -31995,12 +33035,22 @@
     ],
     "estrategia": "consenso",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-CONSENSO-20260402084455-06",
@@ -32022,12 +33072,22 @@
     ],
     "estrategia": "consenso",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-CONSENSO-20260402084455-07",
@@ -32049,12 +33109,22 @@
     ],
     "estrategia": "consenso",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 2,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-CONSENSO-20260402084455-08",
@@ -32076,12 +33146,22 @@
     ],
     "estrategia": "consenso",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-CONSENSO-20260402084455-09",
@@ -32103,12 +33183,22 @@
     ],
     "estrategia": "consenso",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 3,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-CONSENSO-20260402084455-10",
@@ -32130,12 +33220,22 @@
     ],
     "estrategia": "consenso",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-CONSENSO-20260402084455-11",
@@ -32157,12 +33257,22 @@
     ],
     "estrategia": "consenso",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 2,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-CONSENSO-20260402084455-12",
@@ -32184,12 +33294,22 @@
     ],
     "estrategia": "consenso",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-CONSENSO-20260402084455-13",
@@ -32211,12 +33331,22 @@
     ],
     "estrategia": "consenso",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-CONSENSO-20260402084455-14",
@@ -32238,12 +33368,22 @@
     ],
     "estrategia": "consenso",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-CONSENSO-20260402084455-15",
@@ -32265,12 +33405,22 @@
     ],
     "estrategia": "consenso",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 2,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-CONSENSO-20260402084455-16",
@@ -32292,12 +33442,22 @@
     ],
     "estrategia": "consenso",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-CONSENSO-20260402084455-17",
@@ -32319,12 +33479,22 @@
     ],
     "estrategia": "consenso",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-CONSENSO-20260402084455-18",
@@ -32346,12 +33516,22 @@
     ],
     "estrategia": "consenso",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 2,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-CONSENSO-20260402084455-19",
@@ -32373,12 +33553,22 @@
     ],
     "estrategia": "consenso",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-CONSENSO-20260402084455-20",
@@ -32400,12 +33590,22 @@
     ],
     "estrategia": "consenso",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ALEATORIO_SMART-20260402084455-01",
@@ -32427,12 +33627,22 @@
     ],
     "estrategia": "aleatorio_smart",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ALEATORIO_SMART-20260402084455-02",
@@ -32454,12 +33664,22 @@
     ],
     "estrategia": "aleatorio_smart",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ALEATORIO_SMART-20260402084455-03",
@@ -32481,12 +33701,22 @@
     ],
     "estrategia": "aleatorio_smart",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ALEATORIO_SMART-20260402084455-04",
@@ -32508,12 +33738,22 @@
     ],
     "estrategia": "aleatorio_smart",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ALEATORIO_SMART-20260402084455-05",
@@ -32535,12 +33775,22 @@
     ],
     "estrategia": "aleatorio_smart",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 2,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ALEATORIO_SMART-20260402084455-06",
@@ -32562,12 +33812,22 @@
     ],
     "estrategia": "aleatorio_smart",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ALEATORIO_SMART-20260402084455-07",
@@ -32589,12 +33849,22 @@
     ],
     "estrategia": "aleatorio_smart",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ALEATORIO_SMART-20260402084455-08",
@@ -32616,12 +33886,22 @@
     ],
     "estrategia": "aleatorio_smart",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 3,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ALEATORIO_SMART-20260402084455-09",
@@ -32643,12 +33923,22 @@
     ],
     "estrategia": "aleatorio_smart",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ALEATORIO_SMART-20260402084455-10",
@@ -32670,12 +33960,22 @@
     ],
     "estrategia": "aleatorio_smart",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ALEATORIO_SMART-20260402084455-11",
@@ -32697,12 +33997,22 @@
     ],
     "estrategia": "aleatorio_smart",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ALEATORIO_SMART-20260402084455-12",
@@ -32724,12 +34034,22 @@
     ],
     "estrategia": "aleatorio_smart",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ALEATORIO_SMART-20260402084455-13",
@@ -32751,12 +34071,22 @@
     ],
     "estrategia": "aleatorio_smart",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 2,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ALEATORIO_SMART-20260402084455-14",
@@ -32778,12 +34108,22 @@
     ],
     "estrategia": "aleatorio_smart",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ALEATORIO_SMART-20260402084455-15",
@@ -32805,12 +34145,22 @@
     ],
     "estrategia": "aleatorio_smart",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ALEATORIO_SMART-20260402084455-16",
@@ -32832,12 +34182,22 @@
     ],
     "estrategia": "aleatorio_smart",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 2,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ALEATORIO_SMART-20260402084455-17",
@@ -32859,12 +34219,22 @@
     ],
     "estrategia": "aleatorio_smart",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 0,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ALEATORIO_SMART-20260402084455-18",
@@ -32886,12 +34256,22 @@
     ],
     "estrategia": "aleatorio_smart",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 3,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ALEATORIO_SMART-20260402084455-19",
@@ -32913,12 +34293,22 @@
     ],
     "estrategia": "aleatorio_smart",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 1,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
   },
   {
     "id": "AUTO-ALEATORIO_SMART-20260402084455-20",
@@ -32940,11 +34330,483 @@
     ],
     "estrategia": "aleatorio_smart",
     "vai_jogar": true,
-    "verificado": false,
+    "verificado": true,
     "concurso_alvo": 2992,
     "status": "aguardando",
     "data_criacao": "2026-04-02 08:44:55",
     "qtd_numeros": 14,
-    "origem": "piloto_automatico"
+    "origem": "piloto_automatico",
+    "acertos": 2,
+    "resultado_concurso": [
+      4,
+      17,
+      23,
+      33,
+      36,
+      49
+    ],
+    "data_verificacao": "2026-04-10 01:41:14"
+  },
+  {
+    "id": "ESCADA-20260410014114-01",
+    "dezenas": [
+      1,
+      9,
+      14,
+      15,
+      18,
+      21,
+      31,
+      45,
+      47,
+      58
+    ],
+    "estrategia": "escada",
+    "vai_jogar": true,
+    "verificado": false,
+    "concurso_alvo": 2995,
+    "status": "aguardando",
+    "data_criacao": "2026-04-10 01:41:14",
+    "qtd_numeros": 10
+  },
+  {
+    "id": "ESCADA-20260410014114-02",
+    "dezenas": [
+      1,
+      3,
+      7,
+      9,
+      15,
+      20,
+      45,
+      47,
+      58,
+      60
+    ],
+    "estrategia": "escada",
+    "vai_jogar": true,
+    "verificado": false,
+    "concurso_alvo": 2995,
+    "status": "aguardando",
+    "data_criacao": "2026-04-10 01:41:14",
+    "qtd_numeros": 10
+  },
+  {
+    "id": "ESCADA-20260410014114-03",
+    "dezenas": [
+      1,
+      3,
+      9,
+      14,
+      18,
+      20,
+      45,
+      47,
+      58,
+      60
+    ],
+    "estrategia": "escada",
+    "vai_jogar": true,
+    "verificado": false,
+    "concurso_alvo": 2995,
+    "status": "aguardando",
+    "data_criacao": "2026-04-10 01:41:14",
+    "qtd_numeros": 10
+  },
+  {
+    "id": "ATRASADOS-20260410014114-01",
+    "dezenas": [
+      6,
+      7,
+      12,
+      20,
+      21,
+      26,
+      31,
+      39,
+      59,
+      60
+    ],
+    "estrategia": "atrasados",
+    "vai_jogar": true,
+    "verificado": false,
+    "concurso_alvo": 2995,
+    "status": "aguardando",
+    "data_criacao": "2026-04-10 01:41:14",
+    "qtd_numeros": 10
+  },
+  {
+    "id": "ATRASADOS-20260410014114-02",
+    "dezenas": [
+      7,
+      9,
+      16,
+      19,
+      39,
+      48,
+      51,
+      55,
+      57,
+      59
+    ],
+    "estrategia": "atrasados",
+    "vai_jogar": true,
+    "verificado": false,
+    "concurso_alvo": 2995,
+    "status": "aguardando",
+    "data_criacao": "2026-04-10 01:41:14",
+    "qtd_numeros": 10
+  },
+  {
+    "id": "ATRASADOS-20260410014114-03",
+    "dezenas": [
+      8,
+      9,
+      15,
+      16,
+      19,
+      22,
+      26,
+      47,
+      48,
+      51
+    ],
+    "estrategia": "atrasados",
+    "vai_jogar": true,
+    "verificado": false,
+    "concurso_alvo": 2995,
+    "status": "aguardando",
+    "data_criacao": "2026-04-10 01:41:14",
+    "qtd_numeros": 10
+  },
+  {
+    "id": "QUENTES-20260410014114-01",
+    "dezenas": [
+      7,
+      13,
+      22,
+      24,
+      27,
+      37,
+      43,
+      46,
+      49,
+      58
+    ],
+    "estrategia": "quentes",
+    "vai_jogar": true,
+    "verificado": false,
+    "concurso_alvo": 2995,
+    "status": "aguardando",
+    "data_criacao": "2026-04-10 01:41:14",
+    "qtd_numeros": 10
+  },
+  {
+    "id": "QUENTES-20260410014114-02",
+    "dezenas": [
+      5,
+      6,
+      9,
+      13,
+      21,
+      27,
+      28,
+      37,
+      47,
+      60
+    ],
+    "estrategia": "quentes",
+    "vai_jogar": true,
+    "verificado": false,
+    "concurso_alvo": 2995,
+    "status": "aguardando",
+    "data_criacao": "2026-04-10 01:41:14",
+    "qtd_numeros": 10
+  },
+  {
+    "id": "QUENTES-20260410014114-03",
+    "dezenas": [
+      13,
+      21,
+      27,
+      37,
+      42,
+      43,
+      44,
+      45,
+      53,
+      60
+    ],
+    "estrategia": "quentes",
+    "vai_jogar": true,
+    "verificado": false,
+    "concurso_alvo": 2995,
+    "status": "aguardando",
+    "data_criacao": "2026-04-10 01:41:14",
+    "qtd_numeros": 10
+  },
+  {
+    "id": "EQUILIBRADO-20260410014114-01",
+    "dezenas": [
+      7,
+      19,
+      22,
+      25,
+      39,
+      40,
+      48,
+      50,
+      55,
+      58
+    ],
+    "estrategia": "equilibrado",
+    "vai_jogar": true,
+    "verificado": false,
+    "concurso_alvo": 2995,
+    "status": "aguardando",
+    "data_criacao": "2026-04-10 01:41:14",
+    "qtd_numeros": 10
+  },
+  {
+    "id": "EQUILIBRADO-20260410014114-02",
+    "dezenas": [
+      2,
+      4,
+      6,
+      9,
+      12,
+      17,
+      39,
+      41,
+      46,
+      53
+    ],
+    "estrategia": "equilibrado",
+    "vai_jogar": true,
+    "verificado": false,
+    "concurso_alvo": 2995,
+    "status": "aguardando",
+    "data_criacao": "2026-04-10 01:41:14",
+    "qtd_numeros": 10
+  },
+  {
+    "id": "EQUILIBRADO-20260410014114-03",
+    "dezenas": [
+      1,
+      5,
+      8,
+      27,
+      31,
+      32,
+      38,
+      48,
+      50,
+      57
+    ],
+    "estrategia": "equilibrado",
+    "vai_jogar": true,
+    "verificado": false,
+    "concurso_alvo": 2995,
+    "status": "aguardando",
+    "data_criacao": "2026-04-10 01:41:14",
+    "qtd_numeros": 10
+  },
+  {
+    "id": "MISTO-20260410014114-01",
+    "dezenas": [
+      3,
+      9,
+      10,
+      11,
+      21,
+      29,
+      39,
+      48,
+      58,
+      60
+    ],
+    "estrategia": "misto",
+    "vai_jogar": true,
+    "verificado": false,
+    "concurso_alvo": 2995,
+    "status": "aguardando",
+    "data_criacao": "2026-04-10 01:41:14",
+    "qtd_numeros": 10
+  },
+  {
+    "id": "MISTO-20260410014114-02",
+    "dezenas": [
+      10,
+      15,
+      16,
+      24,
+      29,
+      32,
+      40,
+      50,
+      55,
+      60
+    ],
+    "estrategia": "misto",
+    "vai_jogar": true,
+    "verificado": false,
+    "concurso_alvo": 2995,
+    "status": "aguardando",
+    "data_criacao": "2026-04-10 01:41:14",
+    "qtd_numeros": 10
+  },
+  {
+    "id": "MISTO-20260410014114-03",
+    "dezenas": [
+      1,
+      3,
+      6,
+      15,
+      20,
+      24,
+      25,
+      26,
+      28,
+      57
+    ],
+    "estrategia": "misto",
+    "vai_jogar": true,
+    "verificado": false,
+    "concurso_alvo": 2995,
+    "status": "aguardando",
+    "data_criacao": "2026-04-10 01:41:14",
+    "qtd_numeros": 10
+  },
+  {
+    "id": "CONSENSO-20260410014114-01",
+    "dezenas": [
+      2,
+      3,
+      9,
+      10,
+      15,
+      21,
+      22,
+      30,
+      37,
+      49
+    ],
+    "estrategia": "consenso",
+    "vai_jogar": true,
+    "verificado": false,
+    "concurso_alvo": 2995,
+    "status": "aguardando",
+    "data_criacao": "2026-04-10 01:41:14",
+    "qtd_numeros": 10
+  },
+  {
+    "id": "CONSENSO-20260410014114-02",
+    "dezenas": [
+      3,
+      5,
+      6,
+      7,
+      12,
+      15,
+      37,
+      38,
+      39,
+      48
+    ],
+    "estrategia": "consenso",
+    "vai_jogar": true,
+    "verificado": false,
+    "concurso_alvo": 2995,
+    "status": "aguardando",
+    "data_criacao": "2026-04-10 01:41:14",
+    "qtd_numeros": 10
+  },
+  {
+    "id": "CONSENSO-20260410014114-03",
+    "dezenas": [
+      1,
+      6,
+      7,
+      9,
+      22,
+      27,
+      37,
+      42,
+      43,
+      48
+    ],
+    "estrategia": "consenso",
+    "vai_jogar": true,
+    "verificado": false,
+    "concurso_alvo": 2995,
+    "status": "aguardando",
+    "data_criacao": "2026-04-10 01:41:14",
+    "qtd_numeros": 10
+  },
+  {
+    "id": "ALEATORIO_SMART-20260410014114-01",
+    "dezenas": [
+      1,
+      8,
+      12,
+      17,
+      35,
+      36,
+      43,
+      44,
+      57,
+      59
+    ],
+    "estrategia": "aleatorio_smart",
+    "vai_jogar": true,
+    "verificado": false,
+    "concurso_alvo": 2995,
+    "status": "aguardando",
+    "data_criacao": "2026-04-10 01:41:14",
+    "qtd_numeros": 10
+  },
+  {
+    "id": "ALEATORIO_SMART-20260410014114-02",
+    "dezenas": [
+      2,
+      3,
+      7,
+      19,
+      29,
+      32,
+      33,
+      43,
+      50,
+      60
+    ],
+    "estrategia": "aleatorio_smart",
+    "vai_jogar": true,
+    "verificado": false,
+    "concurso_alvo": 2995,
+    "status": "aguardando",
+    "data_criacao": "2026-04-10 01:41:14",
+    "qtd_numeros": 10
+  },
+  {
+    "id": "ALEATORIO_SMART-20260410014114-03",
+    "dezenas": [
+      4,
+      20,
+      28,
+      30,
+      31,
+      36,
+      39,
+      43,
+      46,
+      52
+    ],
+    "estrategia": "aleatorio_smart",
+    "vai_jogar": true,
+    "verificado": false,
+    "concurso_alvo": 2995,
+    "status": "aguardando",
+    "data_criacao": "2026-04-10 01:41:14",
+    "qtd_numeros": 10
   }
 ]
