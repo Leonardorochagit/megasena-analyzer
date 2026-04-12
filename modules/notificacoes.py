@@ -123,7 +123,7 @@ def formatar_resultado_concurso(dados_conferencia):
                 linhas.append(f"  Quadras: {total_quadras}")
             linhas.append("")
 
-        # Ranking top 3 estratégias
+        # Ranking de todas as estratégias
         if stats:
             ranking = sorted(
                 stats.items(),
@@ -131,9 +131,10 @@ def formatar_resultado_concurso(dados_conferencia):
                 reverse=True
             )
 
-            linhas.append("📊 *Top Estratégias:*")
-            for i, (est, dados) in enumerate(ranking[:3]):
-                medalha = ["🥇", "🥈", "🥉"][i]
+            linhas.append("📊 *Estratégias:*")
+            medalhas = ["🥇", "🥈", "🥉"]
+            for i, (est, dados) in enumerate(ranking):
+                prefixo = medalhas[i] if i < 3 else "▪️"
                 partes = []
                 if dados.get('senas'):
                     partes.append(f"{dados['senas']} sena")
@@ -144,7 +145,7 @@ def formatar_resultado_concurso(dados_conferencia):
                 if dados.get('ternos'):
                     partes.append(f"{dados['ternos']} terno")
                 resumo = " / ".join(partes) if partes else "sem prêmio"
-                linhas.append(f"  {medalha} {est}: {resumo}")
+                linhas.append(f"  {prefixo} {est}: {resumo}")
 
         linhas.append("")
 

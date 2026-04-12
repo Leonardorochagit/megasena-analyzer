@@ -1,0 +1,46 @@
+name: Conferir MegaSena e Notificar
+
+on:
+  schedule:
+    # Sorteios: Terça, Quinta e Sábado
+    # Roda às 21:30, 22:30 e 23:30 horário de Brasília (UTC-3)
+    - cron: '30 0 * * 3,5,0'   # 21:30 BRT (Ter, Qui, Sáb → Wed, Fri, Sun UTC)
+    - cron: '30 1 * * 3,5,0'   # 22:30 BRT
+    - cron: '30 2 * * 3,5,0'   # 23:30 BRT
+
+  workflow_dispatch:  # Permite rodar manualmente pelo GitHub
+
+jobs:
+  conferir:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Instalar dependências
+        run: |
+          pip install requests pandas numpy scikit-learn
+
+      - name: Executar conferência e notificação
+        env:
+          WHATSAPP_TELEFONE: ${{ secrets.WHATSAPP_TELEFONE }}
+          WHATSAPP_APIKEY: ${{ secrets.WHATSAPP_APIKEY }}
+        run: |
+          python scripts/conferir_e_notificar.py
+
+      - name: Commit dos dados atualizados
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add meus_cartoes.json historico_analises.json
+          git diff --cached --quiet || git commit -m "🤖 Auto: conferência concurso $(date -u -d '-3 hours' +'%Y-%m-%d %H:%M') BRT"
+          git push
