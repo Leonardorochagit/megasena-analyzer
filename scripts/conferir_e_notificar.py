@@ -31,7 +31,7 @@ from modules import data_manager as dm
 from modules import statistics as stats
 from modules import game_generator as gen
 from modules import notificacoes as notif
-from helpers import converter_dezenas_para_int
+from helpers import converter_dezenas_para_int, versao_estrategia
 
 # ── Configuração ──────────────────────────────────────────────
 
@@ -325,6 +325,7 @@ def gerar_cartoes_proximo_concurso(todos_cartoes):
                     'id': f'AUTO-{estrategia.upper()}-{ts}-{i+1:02d}',
                     'dezenas': sorted(dezenas),
                     'estrategia': estrategia,
+                    'estrategia_versao': versao_estrategia(estrategia),
                     'vai_jogar': True,
                     'verificado': False,
                     'concurso_alvo': proximo,

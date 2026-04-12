@@ -12,7 +12,7 @@ from datetime import datetime
 from scipy import stats as sp_stats
 from modules import data_manager as dm
 from modules import visualizations as viz
-from helpers import converter_dezenas_para_int
+from helpers import converter_dezenas_para_int, VERSOES_ESTRATEGIAS, versao_estrategia
 
 
 def _mostrar_cartao_detalhado(numero, cartao, dezenas_sorteadas):
@@ -545,6 +545,7 @@ def _aba_historico_consolidado():
 
         ranking_lista.append({
             'Estratégia': est,
+            'Versão': versao_estrategia(est),
             'Jogos': jogos,
             'Nº Números': '/'.join(str(q) for q in qtds) if qtds else '-',
             'Média Ac.': round(media, 3),
@@ -568,7 +569,7 @@ def _aba_historico_consolidado():
     if ranking_lista:
         top = ranking_lista[0]
         st.success(
-            f"🥇 **{top['Estratégia']}** — "
+            f"🥇 **{top['Estratégia']} v{top['Versão']}** — "
             f"ternas: {top['Ternas (3ac)']}, quadras: {top['Quadras (4ac)']}, "
             f"melhor acerto: {top['Melhor Acerto']}, jogos: {top['Jogos']} "
             f"({top['Nº Números']} nums)"

@@ -17,7 +17,7 @@ from datetime import datetime
 from modules import data_manager as dm
 from modules import statistics as stats
 from modules import game_generator as gen
-from helpers import CUSTOS_CARTAO
+from helpers import CUSTOS_CARTAO, versao_estrategia
 
 
 # =============================================================================
@@ -237,6 +237,7 @@ def _simular_automatico(df, concurso_alvo, qtd_numeros):
                         'id': f'{estrategia.upper()}-{timestamp}-{i+1:02d}',
                         'dezenas': sorted(dezenas),
                         'estrategia': estrategia,
+                        'estrategia_versao': versao_estrategia(estrategia),
                         'vai_jogar': marcar_jogar,
                         'verificado': False,
                         'concurso_alvo': int(concurso_alvo),
@@ -352,6 +353,7 @@ def _simular_manual(df, concurso_alvo, qtd_numeros):
             'id': f'MANUAL-{timestamp}',
             'dezenas': sorted(numeros_selecionados),
             'estrategia': 'Manual',
+            'estrategia_versao': '-',
             'vai_jogar': True,
             'verificado': False,
             'concurso_alvo': int(concurso_alvo),
@@ -509,9 +511,10 @@ def _executar_conferencia(df, todos_cartoes, concurso):
         total_est = len(jogos_est)
         melhor_est = max(j['acertos'] for j in jogos_est)
         media_est = sum(j['acertos'] for j in jogos_est) / total_est
+        ver = jogos_est[0]['cartao'].get('estrategia_versao', versao_estrategia(estrategia))
 
         with st.expander(
-            f"{_nome_estrategia(estrategia)} — {total_est} jogos | Melhor: {melhor_est} | Média: {media_est:.1f}",
+            f"{_nome_estrategia(estrategia)} v{ver} — {total_est} jogos | Melhor: {melhor_est} | Média: {media_est:.1f}",
             expanded=(melhor_est >= 4)
         ):
             for i, r in enumerate(sorted(jogos_est, key=lambda x: x['acertos'], reverse=True), 1):

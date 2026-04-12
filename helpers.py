@@ -11,6 +11,30 @@ CUSTOS_CARTAO = {
     19: 135660.00, 20: 193800.00
 }
 
+# ── Versionamento de estratégias ──────────────────────────────
+# Bumpar a versão sempre que alterar a lógica de geração/filtros.
+# Formato: "major.minor"  (major = redesign, minor = ajuste/tuning)
+VERSOES_ESTRATEGIAS = {
+    'escada':          {'versao': '1.0', 'nota': 'Inversões da escada temporal, pool top-20'},
+    'atrasados':       {'versao': '1.0', 'nota': 'Top-20 menos frequentes'},
+    'quentes':         {'versao': '1.0', 'nota': 'Top-20 mais frequentes recentes'},
+    'equilibrado':     {'versao': '1.0', 'nota': '3 pares + 3 ímpares'},
+    'misto':           {'versao': '1.0', 'nota': '2 atrasados + 2 quentes + 2 atraso_rec'},
+    'consenso':        {'versao': '1.0', 'nota': 'Interseção de 3 análises (≥2 votos)'},
+    'aleatorio_smart': {'versao': '1.0', 'nota': 'Aleatório com filtro soma/paridade'},
+    'ensemble':        {'versao': '1.0', 'nota': 'Votação de 7 estratégias base'},
+    'sequencias':      {'versao': '1.0', 'nota': 'KMeans 4 clusters + vizinhança N±1 + filtros'},
+    'wheel':           {'versao': '1.0', 'nota': 'Greedy covering design K=3, pool 18 consenso'},
+    'automl':          {'versao': '1.1', 'nota': 'RF + features geométricas (paridade, amplitude, seq, quadrante)'},
+    'Manual':          {'versao': '-',   'nota': 'Cartão manual do usuário'},
+}
+
+
+def versao_estrategia(estrategia):
+    """Retorna a versão atual de uma estratégia."""
+    info = VERSOES_ESTRATEGIAS.get(estrategia, {})
+    return info.get('versao', '?')
+
 
 def converter_dezenas_para_int(dezenas):
     """

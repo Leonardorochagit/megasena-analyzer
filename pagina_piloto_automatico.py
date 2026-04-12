@@ -20,6 +20,7 @@ from modules import data_manager as dm
 from modules import statistics as stats
 from modules import game_generator as gen
 from modules import notificacoes as notif
+from helpers import versao_estrategia
 
 try:
     from streamlit_autorefresh import st_autorefresh
@@ -532,6 +533,7 @@ def _auto_gerar(df, qtd_numeros, cartoes_por_estrategia, forcar=False):
                     'id': f'AUTO-{estrategia.upper()}-{timestamp}-{i+1:02d}',
                     'dezenas': sorted(dezenas),
                     'estrategia': estrategia,
+                    'estrategia_versao': versao_estrategia(estrategia),
                     'vai_jogar': True,
                     'verificado': False,
                     'concurso_alvo': proximo,

@@ -14,6 +14,7 @@ from datetime import datetime
 from collections import Counter
 from modules import data_manager as dm
 from modules import statistics as stats
+from helpers import versao_estrategia
 
 # PyCaret será importado sob demanda (lazy) para não travar o carregamento
 PYCARET_DISPONIVEL = None  # None = ainda não verificado
@@ -246,6 +247,7 @@ def gerar_cartoes_otimizados(probabilidades, contagem_total, contagem_recente,
             'id': f'AUTOML-{timestamp}-{i+1:02d}',
             'dezenas': melhor_jogo,
             'estrategia': 'automl',
+            'estrategia_versao': versao_estrategia('automl'),
             'vai_jogar': False,
             'verificado': False,
             'concurso_alvo': concurso_alvo,
