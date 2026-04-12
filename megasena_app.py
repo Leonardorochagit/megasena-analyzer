@@ -26,6 +26,8 @@ from pagina_automl import pagina_automl
 from pagina_simulacao import pagina_simulacao
 from pagina_analise_sequencias import pagina_analise_sequencias
 from pagina_piloto_automatico import pagina_piloto_automatico
+from pagina_backtesting import pagina_backtesting
+from pagina_admin_banco import pagina_admin_banco
 
 warnings.filterwarnings('ignore')
 
@@ -109,6 +111,8 @@ def exibir_interface_principal():
             "🎯 Simulação & Conferência",
             "🔄 Análise Escada",
             "🧬 Análise de Sequências",
+            "📊 Backtesting Estatístico",
+            "🗄️ Admin Banco de Dados",
             "⏰ Números Atrasados",
             "🔥 Números Quentes",
             "⏳ Atraso Recente",
@@ -189,6 +193,12 @@ def exibir_interface_principal():
 
     elif menu == "🧬 Análise de Sequências":
         pagina_analise_sequencias(df)
+
+    elif menu == "📊 Backtesting Estatístico":
+        pagina_backtesting(df)
+
+    elif menu == "🗄️ Admin Banco de Dados":
+        pagina_admin_banco()
 
     elif menu == "⏰ Números Atrasados":
         pagina_analise_estrategia(df, "Números Atrasados", "atrasados")

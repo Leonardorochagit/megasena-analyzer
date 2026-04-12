@@ -5,7 +5,96 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
-## [3.5.0] - 2026-04-07
+## [3.7.0] - 2026-04-12
+
+### 🎉 Adicionado
+- **`modules/db.py`** — camada de banco de dados SQLite:
+  - Schema com 4 tabelas: `cartoes`, `historico_analises`, `backtesting`, `config`
+  - Índices em campos de filtro frequente (`concurso_alvo`, `estrategia`, `verificado`, `vai_jogar`)
+  - `PRAGMA journal_mode=WAL` — acesso concorrente seguro
+  - `PRAGMA foreign_keys=ON`
+  - API completa: `salvar_cartoes_db`, `carregar_cartoes_db`, `deletar_cartao_db`, `stats_cartoes_db`, `salvar_historico_db`, `carregar_historico_db`, `salvar_backtesting_db`, `carregar_backtesting_db`, `salvar_config_db`, `carregar_config_db`, `carregar_todas_configs_db`
+- **`scripts/migrar_json_para_sqlite.py`** — migração one-shot:
+  - Lê `meus_cartoes.json`, `historico_analises.json`, `data/cartoes_arquivo_*.json`, `data/backtesting_resultado.json`
+  - Upsert seguro (sem duplicatas por ID)
+  - JSONs originais mantidos como backup
+- **`pagina_admin_banco.py`** — interface de administração (menu "🗄️ Admin Banco de Dados"):
+  - Métricas do banco: total, pendentes, verificados, vai jogar, tamanho em disco
+  - Tabelas com filtros: cartões, histórico, backtesting, configurações
+  - Exportação CSV de cada tabela
+  - VACUUM (compactação), download de backup `.db`
+  - Console SQL somente-leitura
+  - Exclusão de cartões verificados
+  - Instrução de migração para novos usuários
+
+### 🔧 Modificado
+- **`modules/data_manager.py`** → v4.0:
+  - Backend migrado de JSON para SQLite mantendo **todas as assinaturas públicas** inalteradas
+  - `salvar_cartoes()` → `salvar_cartoes_db()` (upsert atômico)
+  - `carregar_cartoes_salvos()` → `carregar_cartoes_db()` (com filtros opcionais)
+  - `salvar_historico_analise()` → `salvar_historico_db()` (upsert por concurso+estratégia)
+  - `carregar_historico_analises()` → `carregar_historico_db()` (retorna formato legado)
+  - `arquivar_cartoes_verificados()` → retorna contagens do banco (no-op real)
+  - Remoção de `json`, `shutil` como dependências
+- **`megasena_app.py`**: menu "🗄️ Admin Banco de Dados" adicionado
+
+---
+
+## [3.6.0] - 2026-04-12
+
+### 🎉 Adicionado
+- **Teste Binomial por Par** (`pagina_analise_sequencias.py`, nova aba "🔬 Pares Binomial"):
+  - Analisa os 1770 pares possíveis de dezenas com teste binomial exato (`scipy.stats.binom_test`)
+  - Frequência esperada sob independência: `C(6,2)/C(60,2) × N ≈ 0.848%` por sorteio
+  - Exibe pares sobre-representados (ACIMA) e sub-representados (ABAIXO) com p-valor
+  - Métricas: total analisado, total significativos, breakdown acima/abaixo
+  - Gráfico de barras dos top-20 sobre-representados
+  - Download CSV dos pares significativos
+  - Slider de nível de significância (α) configurável pelo usuário
+- **Backtesting Estatístico** (nova página `pagina_backtesting.py`, menu "📊 Backtesting Estatístico"):
+  - Roda cada estratégia nos últimos N concursos históricos sem data leakage
+  - Intervalo de confiança 95% na média de acertos por estratégia
+  - Teste de Mann-Whitney para comparação entre duas estratégias (p-valor)
+  - Gráfico de barras horizontais com barras de erro por IC
+  - Tabela de taxa de quadras (4+), quinas (5+) e senas (6) por estratégia
+  - Download CSV dos dados brutos do backtesting
+- **Calibração isotônica do Random Forest** (`pagina_automl.py`):
+  - `CalibratedClassifierCV(method='isotonic', cv=TimeSeriesSplit(3))` substitui PyCaret como motor principal
+  - `class_weight='balanced'` para corrigir desbalanceamento (~10% positivos por número)
+  - `TimeSeriesSplit` respeita a ordem temporal dos sorteios (sem data leakage na calibração)
+  - PyCaret passa a ser opcional — sistema funciona sem ele
+- **Persistência de modelos AutoML** (`pagina_automl.py`):
+  - Modelos salvos em `data/modelos_automl/` via `joblib`
+  - Cache invalidado automaticamente por hash do dataset (`último_concurso + n_concursos + len(df)`)
+  - Primeiro treino: ~2–4 min | Reruns com mesmo dataset: **segundos**
+  - Indicador de cache hits no status de treinamento
+- **`docs/MELHORIAS.md`**: documento técnico de referência com:
+  - Avaliação de todas as técnicas implementadas com base matemática e limitações
+  - Tabela de hierarquia de valor por técnica
+  - Histórico de versões por estratégia
+  - Backlog priorizado de melhorias futuras
+- **`scipy>=1.11.0`** e **`joblib>=1.3.0`** adicionados ao `requirements.txt`
+
+### 🔧 Modificado
+- **`helpers.py → VERSOES_ESTRATEGIAS`**: versões atualizadas com notas técnicas detalhadas:
+  - `escada` → `1.1` (agora usa inversões reais, não mais fallback para atrasados)
+  - `sequencias` → `1.1` (filtros geométricos: soma + amplitude + consecutivos + paridade)
+  - `automl` → `2.0` (RF calibrado + cache + 13 features + class_weight=balanced)
+- **`pagina_automl.py`**: corrigidos `width="stretch"` inválidos em `st.button`, `st.dataframe` e `st.plotly_chart` → `use_container_width=True`
+- **`pagina_analise_sequencias.py`**: `from itertools import combinations` renomeado para `itertools_combinations` para evitar conflito com `scipy`
+- **`megasena_app.py`**: nova entrada "📊 Backtesting Estatístico" no menu lateral
+
+### 📊 Versões das Estratégias
+| Estratégia | Versão anterior | Versão atual |
+|---|---|---|
+| `escada` | 1.0 | **1.1** |
+| `sequencias` | 1.0 | **1.1** |
+| `automl` | 1.1 | **2.0** |
+| demais | 1.0 | 1.0 (sem mudança) |
+
+---
+
+
 
 ### 🎉 Adicionado
 - **Notificações WhatsApp via CallMeBot** (`modules/notificacoes.py`):

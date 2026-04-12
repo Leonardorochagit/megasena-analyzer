@@ -10,6 +10,9 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import random
+import os
+import hashlib
+import joblib
 from datetime import datetime
 from collections import Counter
 from modules import data_manager as dm
@@ -23,6 +26,41 @@ compare_models = None
 pull = None
 create_model = None
 predict_model = None
+
+# Diretório de cache de modelos
+_MODELS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "modelos_automl")
+
+
+def _hash_df(df: pd.DataFrame, n_concursos: int) -> str:
+    """Gera hash identificador do dataset para invalidar cache quando novos sorteios chegam."""
+    ultimo_concurso = str(df['concurso'].max()) if 'concurso' in df.columns else str(len(df))
+    chave = f"{ultimo_concurso}_{n_concursos}_{len(df)}"
+    return hashlib.md5(chave.encode()).hexdigest()[:12]
+
+
+def _caminho_modelo(numero: int, hash_ds: str) -> str:
+    os.makedirs(_MODELS_DIR, exist_ok=True)
+    return os.path.join(_MODELS_DIR, f"rf_num{numero:02d}_{hash_ds}.pkl")
+
+
+def _carregar_modelo_cache(numero: int, hash_ds: str):
+    """Carrega modelo calibrado do disco se existir para este dataset."""
+    path = _caminho_modelo(numero, hash_ds)
+    if os.path.exists(path):
+        try:
+            return joblib.load(path)
+        except Exception:
+            return None
+    return None
+
+
+def _salvar_modelo_cache(numero: int, hash_ds: str, modelo_calibrado):
+    """Persiste modelo calibrado no disco."""
+    path = _caminho_modelo(numero, hash_ds)
+    try:
+        joblib.dump(modelo_calibrado, path)
+    except Exception:
+        pass
 
 def _carregar_pycaret():
     """Carrega PyCaret sob demanda"""
@@ -47,23 +85,47 @@ def _carregar_pycaret():
 
 def calcular_probabilidades_todos_numeros(df, n_concursos=300, progress_callback=None):
     """
-    Treina modelos para TODOS os 60 números e retorna probabilidades.
-    Usa Random Forest para cada número.
+    Treina modelos para TODOS os 60 números e retorna probabilidades calibradas.
+
+    Melhorias aplicadas:
+    - Persistência em disco: modelos já treinados para este dataset são reutilizados
+    - Calibração isotônica: corrige a tendência do RF de comprimir probabilidades
+    - class_weight='balanced': trata o desbalanceamento de classes (~10% positivo)
     """
     import io
     import sys
     import logging
+    from sklearn.ensemble import RandomForestClassifier
+    from sklearn.calibration import CalibratedClassifierCV
+    from sklearn.model_selection import TimeSeriesSplit
 
     logging.getLogger('pycaret').setLevel(logging.ERROR)
     logging.getLogger('lightgbm').setLevel(logging.ERROR)
     logging.getLogger('sklearn').setLevel(logging.ERROR)
 
+    hash_ds = _hash_df(df, n_concursos)
     probabilidades = {}
     modelos_info = {}
+    cache_hits = 0
 
     for numero in range(1, 61):
         if progress_callback:
             progress_callback(numero)
+
+        # Tentar carregar do cache
+        modelo_cache = _carregar_modelo_cache(numero, hash_ds)
+        if modelo_cache is not None:
+            dados = stats.preparar_dados_pycaret(df, numero, n_concursos)
+            if dados is not None and len(dados) > 50:
+                try:
+                    X_last = dados.drop('saiu', axis=1).tail(1)
+                    prob = float(modelo_cache.predict_proba(X_last)[0][1])
+                    probabilidades[numero] = round(prob, 4)
+                    modelos_info[numero] = {'prob': prob, 'dados_treino': len(dados), 'cache': True}
+                    cache_hits += 1
+                    continue
+                except Exception:
+                    pass
 
         dados = stats.preparar_dados_pycaret(df, numero, n_concursos)
 
@@ -73,60 +135,48 @@ def calcular_probabilidades_todos_numeros(df, n_concursos=300, progress_callback
             sys.stderr = io.StringIO()
 
             try:
-                clf_setup = setup_clf(
-                    data=dados,
-                    target='saiu',
-                    session_id=42 + numero,
-                    verbose=False,
-                    html=False,
-                    log_experiment=False,
-                    system_log=False,
+                X = dados.drop('saiu', axis=1).values
+                y = dados['saiu'].values
+
+                # Random Forest com class_weight balanceado
+                rf = RandomForestClassifier(
+                    n_estimators=100,
+                    class_weight='balanced',
+                    random_state=42 + numero,
                     n_jobs=1
                 )
 
-                # Criar modelo rápido
-                modelo = create_model('rf', verbose=False, fold=3)
+                # Calibração isotônica com TimeSeriesSplit (respeita ordem temporal)
+                tscv = TimeSeriesSplit(n_splits=3)
+                modelo_calibrado = CalibratedClassifierCV(
+                    rf, method='isotonic', cv=tscv
+                )
+                modelo_calibrado.fit(X, y)
 
-                # Prever probabilidade para próximo sorteio
-                ultimo_dado = dados.tail(1).drop('saiu', axis=1)
-                previsao = predict_model(modelo, data=ultimo_dado, verbose=False)
-
-                # Extrair probabilidade
-                if 'prediction_score' in previsao.columns:
-                    prob = float(previsao['prediction_score'].values[0])
-                elif 'Score' in previsao.columns:
-                    prob = float(previsao['Score'].values[0])
-                elif 'prediction_score_1' in previsao.columns:
-                    prob = float(previsao['prediction_score_1'].values[0])
-                else:
-                    prob = 0.5
-
-                # Se previu que NÃO sai (label=0), a prob de sair é 1-prob
-                pred_label = None
-                if 'prediction_label' in previsao.columns:
-                    pred_label = int(previsao['prediction_label'].values[0])
-                elif 'Label' in previsao.columns:
-                    pred_label = int(previsao['Label'].values[0])
-
-                if pred_label == 0:
-                    prob = 1 - prob
+                X_last = dados.drop('saiu', axis=1).tail(1).values
+                prob = float(modelo_calibrado.predict_proba(X_last)[0][1])
 
                 probabilidades[numero] = round(prob, 4)
                 modelos_info[numero] = {
                     'prob': prob,
                     'dados_treino': len(dados),
+                    'cache': False
                 }
+
+                # Persistir no disco
+                _salvar_modelo_cache(numero, hash_ds, modelo_calibrado)
 
             except Exception:
                 probabilidades[numero] = 0.1
-                modelos_info[numero] = {'prob': 0.1, 'dados_treino': 0}
+                modelos_info[numero] = {'prob': 0.1, 'dados_treino': 0, 'cache': False}
             finally:
                 sys.stdout = old_stdout
                 sys.stderr = old_stderr
         else:
             probabilidades[numero] = 0.1
-            modelos_info[numero] = {'prob': 0.1, 'dados_treino': 0}
+            modelos_info[numero] = {'prob': 0.1, 'dados_treino': 0, 'cache': False}
 
+    modelos_info['_cache_hits'] = cache_hits
     return probabilidades, modelos_info
 
 
@@ -272,18 +322,10 @@ def pagina_automl(df):
     st.markdown("### Machine Learning para Gerar Cartões Otimizados")
 
     if not _carregar_pycaret():
-        st.error("❌ **PyCaret não está instalado!**")
-        st.code("pip install pycaret", language="bash")
-        st.info("""
-        📌 **O que é PyCaret?**
-
-        PyCaret é uma biblioteca de AutoML que automaticamente:
-        - Testa múltiplos algoritmos de ML
-        - Compara performance de cada modelo
-        - Seleciona o melhor automaticamente
-        - Gera previsões otimizadas
-        """)
-        return
+        st.info(
+            "ℹ️ PyCaret não está instalado — o AutoML usará diretamente "
+            "**scikit-learn** (Random Forest calibrado). A funcionalidade é equivalente."
+        )
 
     # Abas principais
     tab_gerar, tab_ranking, tab_historico = st.tabs([
@@ -300,12 +342,13 @@ def pagina_automl(df):
 
         st.info("""
         🎯 **Como funciona:**
-        1. O sistema treina um modelo de ML para **cada um dos 60 números**
-        2. Calcula a **probabilidade** de cada número sair no próximo sorteio
-        3. Gera cartões **otimizados** combinando os números mais prováveis
-        4. Diversifica os cartões para **maximizar cobertura** e chance de acertar a **quadra** (4+ acertos)
+        1. O sistema treina um **Random Forest calibrado** para **cada um dos 60 números**
+        2. Usa `class_weight='balanced'` para corrigir o desbalanceamento (~10% positivos)
+        3. **Calibração isotônica** com TimeSeriesSplit — probabilidades têm sentido real
+        4. **Cache em disco**: modelos já treinados são reutilizados automaticamente
+        5. Gera cartões **otimizados** combinando os números mais prováveis
 
-        ⏱️ O treinamento leva ~3-5 minutos (60 modelos são criados).
+        ⏱️ Primeiro treino: ~2-4 min | Reruns com cache: **segundos**.
         """)
 
         st.markdown("---")
@@ -372,7 +415,7 @@ def pagina_automl(df):
         st.markdown("---")
 
         # Botão principal
-        if st.button("🚀 TREINAR ML E GERAR CARTÕES", type="primary", width="stretch"):
+        if st.button("🚀 TREINAR ML E GERAR CARTÕES", type="primary", use_container_width=True):
             with st.spinner("🔄 Treinando modelos para todos os 60 números..."):
                 try:
                     progress_bar = st.progress(0)
@@ -382,13 +425,17 @@ def pagina_automl(df):
                         progress_bar.progress(numero / 60)
                         status_text.text(f"⚙️ Treinando modelo para número {numero}/60...")
 
-                    # ETAPA 1: Treinar modelos para todos os números
+                    # ETAPA 1: Treinar modelos calibrados para todos os números
                     probabilidades, modelos_info = calcular_probabilidades_todos_numeros(
                         df, n_concursos, progress_callback=atualizar_progresso
                     )
 
+                    cache_hits = modelos_info.pop('_cache_hits', 0)
                     progress_bar.progress(100)
-                    status_text.text("✅ Modelos treinados! Gerando cartões otimizados...")
+                    if cache_hits > 0:
+                        status_text.text(f"✅ {cache_hits}/60 modelos carregados do cache. Gerando cartões…")
+                    else:
+                        status_text.text("✅ Modelos treinados e calibrados! Gerando cartões otimizados…")
 
                     # Salvar probabilidades no session_state
                     st.session_state['automl_probabilidades'] = probabilidades
@@ -540,7 +587,7 @@ def pagina_automl(df):
 
         # Tabela
         st.dataframe(df_ranking[['Número', 'Prob %', 'Classificação']],
-                     width="stretch", height=500)
+                     use_container_width=True, height=500)
 
         # Gráfico
         import plotly.express as px
@@ -558,7 +605,7 @@ def pagina_automl(df):
             labels={'Probabilidade_pct': 'Probabilidade (%)', 'Número': 'Número'}
         )
         fig.update_layout(height=400)
-        st.plotly_chart(fig, width="stretch")
+        st.plotly_chart(fig, use_container_width=True)
 
     # ==========================================================================
     # TAB 3: HISTÓRICO

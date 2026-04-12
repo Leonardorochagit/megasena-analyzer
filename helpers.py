@@ -14,19 +14,60 @@ CUSTOS_CARTAO = {
 # ── Versionamento de estratégias ──────────────────────────────
 # Bumpar a versão sempre que alterar a lógica de geração/filtros.
 # Formato: "major.minor"  (major = redesign, minor = ajuste/tuning)
+# Ver docs/MELHORIAS.md para histórico completo e avaliação técnica.
 VERSOES_ESTRATEGIAS = {
-    'escada':          {'versao': '1.0', 'nota': 'Inversões da escada temporal, pool top-20'},
-    'atrasados':       {'versao': '1.0', 'nota': 'Top-20 menos frequentes'},
-    'quentes':         {'versao': '1.0', 'nota': 'Top-20 mais frequentes recentes'},
-    'equilibrado':     {'versao': '1.0', 'nota': '3 pares + 3 ímpares'},
-    'misto':           {'versao': '1.0', 'nota': '2 atrasados + 2 quentes + 2 atraso_rec'},
-    'consenso':        {'versao': '1.0', 'nota': 'Interseção de 3 análises (≥2 votos)'},
-    'aleatorio_smart': {'versao': '1.0', 'nota': 'Aleatório com filtro soma/paridade'},
-    'ensemble':        {'versao': '1.0', 'nota': 'Votação de 7 estratégias base'},
-    'sequencias':      {'versao': '1.0', 'nota': 'KMeans 4 clusters + vizinhança N±1 + filtros'},
-    'wheel':           {'versao': '1.0', 'nota': 'Greedy covering design K=3, pool 18 consenso'},
-    'automl':          {'versao': '1.1', 'nota': 'RF + features geométricas (paridade, amplitude, seq, quadrante)'},
-    'Manual':          {'versao': '-',   'nota': 'Cartão manual do usuário'},
+    'escada': {
+        'versao': '1.1',
+        'nota': 'Inversões reais da escada temporal (v1.0 fazia fallback para atrasados quando inversoes<6)',
+    },
+    'atrasados': {
+        'versao': '1.0',
+        'nota': 'Top-20 menos frequentes historicamente + filtros básicos (soma/paridade/amplitude)',
+    },
+    'quentes': {
+        'versao': '1.0',
+        'nota': 'Top-20 mais frequentes nos últimos 50 sorteios + filtros básicos',
+    },
+    'equilibrado': {
+        'versao': '1.0',
+        'nota': '3 pares exatos + 3 ímpares exatos',
+    },
+    'misto': {
+        'versao': '1.0',
+        'nota': '2 atrasados + 2 quentes + 2 atraso_recente + filtros básicos',
+    },
+    'consenso': {
+        'versao': '1.0',
+        'nota': 'Interseção de 3 pools (atrasados/quentes/atraso_rec) com >= 2 votos + filtros básicos',
+    },
+    'aleatorio_smart': {
+        'versao': '1.0',
+        'nota': 'Aleatório puro com rejeição: soma 140-210 e paridade 2-4 (max 100 tentativas)',
+    },
+    'ensemble': {
+        'versao': '1.0',
+        'nota': 'Votação de 7 estratégias base; top-20 votados com filtro soma/paridade',
+    },
+    'sequencias': {
+        'versao': '1.1',
+        'nota': 'KMeans 4 clusters (co-ocorrência + StandardScaler) + vizinhança N±1 + filtros geométricos',
+    },
+    'wheel': {
+        'versao': '1.0',
+        'nota': 'Greedy covering design K=3, pool 18 por consenso; garante cobertura de todas as ternas do pool',
+    },
+    'automl': {
+        'versao': '2.0',
+        'nota': (
+            'RF calibrado (CalibratedClassifierCV isotônico + TimeSeriesSplit) + '
+            'class_weight=balanced + cache joblib por hash do dataset + '
+            '13 features incluindo combinação (soma, amplitude, paridade, consecutivos, quadrante)'
+        ),
+    },
+    'Manual': {
+        'versao': '-',
+        'nota': 'Cartão inserido manualmente pelo usuário',
+    },
 }
 
 

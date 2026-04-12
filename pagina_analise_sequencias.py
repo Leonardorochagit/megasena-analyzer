@@ -7,6 +7,7 @@ Análise estatística avançada dos sorteios da Mega-Sena:
   - Clusters de Co-ocorrência (K-Means)
   - Vizinhança de Saída (N±1)
   - Matriz de Transição (Cadeia de Markov + Qui-Quadrado)
+  - Pares Sobre/Sub-representados (Teste Binomial)
 ================================================================================
 """
 
@@ -20,6 +21,8 @@ import seaborn as sns
 import random
 import warnings
 from datetime import datetime
+from itertools import combinations as itertools_combinations
+from scipy.stats import binom_test
 from modules import data_manager as dm
 
 warnings.filterwarnings("ignore")
@@ -191,6 +194,47 @@ def _gerar_cartoes(cluster_dict, ultimo_sorteio, qtd_dezenas, qtd_cartoes):
 # PÁGINA PRINCIPAL
 # ──────────────────────────────────────────────────────────────────────────────
 
+def _analise_pares_binomial(sorteios: list, n_concursos: int, alpha: float = 0.05) -> pd.DataFrame:
+    """
+    Teste binomial por par: para cada par (i,j), verifica se a frequência observada
+    desvia significativamente da frequência esperada sob independência.
+
+    Frequência esperada de um par: C(6,2) / C(60,2) * N = 15/1770 * N ≈ 0.00848 * N
+    """
+    p_esperada = 15 / 1770  # prob de um par específico aparecer num sorteio
+
+    contagem_pares = {}
+    for sorteio in sorteios:
+        lst = sorted(sorteio)
+        for par in itertools_combinations(lst, 2):
+            contagem_pares[par] = contagem_pares.get(par, 0) + 1
+
+    registros = []
+    for par, obs in contagem_pares.items():
+        esperado = p_esperada * n_concursos
+        try:
+            p_valor = float(binom_test(obs, n_concursos, p_esperada, alternative='two-sided'))
+        except Exception:
+            p_valor = 1.0
+
+        desvio_pct = (obs - esperado) / esperado * 100 if esperado > 0 else 0.0
+        registros.append({
+            'Par': f"{par[0]:02d}-{par[1]:02d}",
+            'Num1': par[0],
+            'Num2': par[1],
+            'Observado': obs,
+            'Esperado': round(esperado, 1),
+            'Desvio%': round(desvio_pct, 1),
+            'p-valor': round(p_valor, 6),
+            'Significativo': p_valor < alpha,
+            'Direção': 'ACIMA' if obs > esperado else 'ABAIXO',
+        })
+
+    df_pares = pd.DataFrame(registros)
+    df_pares = df_pares.sort_values('p-valor').reset_index(drop=True)
+    return df_pares
+
+
 def pagina_analise_sequencias(df: pd.DataFrame):
     """Renderiza a página 🧬 Análise de Sequências no Streamlit."""
 
@@ -211,11 +255,12 @@ def pagina_analise_sequencias(df: pd.DataFrame):
     ultimo = df_calc.iloc[-1]
     ultimo_sorteio = [int(ultimo[f"dez{i}"]) for i in range(1, 7)]
 
-    tab1, tab2, tab3, tab4 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
         "🎯 Gerador Inteligente",
         "🧩 Clusters",
         "🔗 Vizinhança (N±1)",
         "🎲 Matriz de Transição",
+        "🔬 Pares Binomial",
     ])
 
     # ─────────────────────────────────────────────────────────────────────
@@ -427,3 +472,107 @@ def pagina_analise_sequencias(df: pd.DataFrame):
         plt.tight_layout()
         st.pyplot(fig2)
         plt.close(fig2)
+
+    # ─────────────────────────────────────────────────────────────────────
+    # TAB 5 — PARES BINOMIAL
+    # ─────────────────────────────────────────────────────────────────────
+    with tab5:
+        st.header("Pares Sobre/Sub-representados (Teste Binomial)")
+        st.markdown(
+            "Para cada par de dezenas **(i, j)**, calcula a frequência observada de "
+            "co-ocorrência nos sorteios e testa se ela desvia significativamente da "
+            "**frequência esperada sob independência** usando o teste binomial exato.\n\n"
+            "- **Frequência esperada** de um par: `C(6,2) / C(60,2) × N ≈ 0.848%` por sorteio.\n"
+            "- **p-valor < 0.05** indica que o desvio provavelmente não é aleatório.\n"
+            "- Pares com desvio **+alto e significativo** podem indicar viés mecânico real."
+        )
+
+        alpha = st.slider("Nível de significância (α)", 0.01, 0.10, 0.05, 0.01,
+                          help="Probabilidade máxima de falso positivo aceita")
+
+        with st.spinner("Calculando pares binomiais… (pode levar alguns segundos)"):
+            df_pares = _analise_pares_binomial(sorteios, len(sorteios), alpha=alpha)
+
+        sig = df_pares[df_pares['Significativo']]
+        nao_sig = df_pares[~df_pares['Significativo']]
+
+        col_m1, col_m2, col_m3 = st.columns(3)
+        with col_m1:
+            st.metric("Pares Analisados", f"{len(df_pares):,}")
+        with col_m2:
+            st.metric(f"Significativos (p<{alpha})", len(sig),
+                      delta=f"{len(sig)/len(df_pares)*100:.1f}% do total")
+        with col_m3:
+            acima = sig[sig['Direção'] == 'ACIMA']
+            abaixo = sig[sig['Direção'] == 'ABAIXO']
+            st.metric("Acima / Abaixo", f"{len(acima)} / {len(abaixo)}")
+
+        if len(sig) == 0:
+            st.success(
+                f"✅ **Nenhum par com desvio significativo (α={alpha}).** "
+                "Os pares de dezenas se comportam conforme o esperado — sem evidência de viés."
+            )
+        else:
+            st.warning(
+                f"⚠️ **{len(sig)} pares com desvio estatisticamente significativo.** "
+                "Isso pode indicar viés mecânico ou é simplesmente ruído estatístico — "
+                "interprete com cautela (múltiplos testes aumentam falsos positivos)."
+            )
+
+        tab_acima, tab_abaixo, tab_todos = st.tabs([
+            f"📈 Sobre-representados ({len(sig[sig['Direção']=='ACIMA'])})",
+            f"📉 Sub-representados ({len(sig[sig['Direção']=='ABAIXO'])})",
+            "📋 Todos os pares significativos",
+        ])
+
+        with tab_acima:
+            df_acima = sig[sig['Direção'] == 'ACIMA'].head(50)
+            if df_acima.empty:
+                st.info("Nenhum par sobre-representado com significância estatística.")
+            else:
+                st.caption("Pares que apareceram juntos **mais** do que o esperado.")
+                st.dataframe(
+                    df_acima[['Par', 'Observado', 'Esperado', 'Desvio%', 'p-valor']],
+                    hide_index=True, use_container_width=True
+                )
+                # Gráfico de barras dos top 20
+                top20 = df_acima.head(20)
+                fig_a, ax_a = plt.subplots(figsize=(14, 4))
+                cores = ['#d62728' if d > 0 else '#1f77b4' for d in top20['Desvio%']]
+                ax_a.bar(top20['Par'], top20['Desvio%'], color=cores)
+                ax_a.axhline(0, color='black', linewidth=0.8)
+                ax_a.set_xlabel("Par de dezenas")
+                ax_a.set_ylabel("Desvio (%)")
+                ax_a.set_title("Top 20 pares sobre-representados (desvio vs esperado)")
+                plt.xticks(rotation=45, ha='right', fontsize=7)
+                plt.tight_layout()
+                st.pyplot(fig_a)
+                plt.close(fig_a)
+
+        with tab_abaixo:
+            df_abaixo = sig[sig['Direção'] == 'ABAIXO'].head(50)
+            if df_abaixo.empty:
+                st.info("Nenhum par sub-representado com significância estatística.")
+            else:
+                st.caption("Pares que apareceram juntos **menos** do que o esperado.")
+                st.dataframe(
+                    df_abaixo[['Par', 'Observado', 'Esperado', 'Desvio%', 'p-valor']],
+                    hide_index=True, use_container_width=True
+                )
+
+        with tab_todos:
+            if sig.empty:
+                st.info("Nenhum par significativo encontrado.")
+            else:
+                st.dataframe(
+                    sig[['Par', 'Num1', 'Num2', 'Observado', 'Esperado', 'Desvio%', 'p-valor', 'Direção']],
+                    hide_index=True, use_container_width=True
+                )
+                csv = sig.to_csv(index=False).encode('utf-8')
+                st.download_button(
+                    "⬇️ Baixar CSV dos pares significativos",
+                    data=csv,
+                    file_name=f"pares_significativos_alpha{alpha}.csv",
+                    mime="text/csv"
+                )
+

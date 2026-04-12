@@ -79,9 +79,9 @@ htmlcov/
 nosetests.xml
 coverage.xml
 
-# ── Artefatos de deploy ─────────────────────────────────────
-catboost_info/
-temp/
-*.csv
-*.xlsx
-*.pdf
+# ── Banco de dados SQLite (dados pessoais — não versionar) ──
+*.db
+*.db-shm
+*.db-wal
+data/modelos_automl/
+

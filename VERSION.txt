@@ -1,19 +1,30 @@
 MEGA SENA ANALYZER
 ==================
-Versão: 3.5.0
-Data: 07/04/2026
+Versão: 3.7.0
+Data: 12/04/2026
 Revisão: 01
 
-CHANGELOG v3.5.0
+CHANGELOG v3.7.0
 ----------------
-✅ Notificações WhatsApp via CallMeBot (resultados, acertos, acumulação)
-✅ Contagem de Ternos (3 acertos) em todo o sistema
-✅ Dashboard sem "Média" — agora mostra Ternos / Quadras / Quinas / Senas
-✅ Gráfico de barras empilhadas por tipo de prêmio
-✅ Config WhatsApp persiste entre restarts (caminho absoluto + st.secrets)
-✅ piloto_config.json e .streamlit/ versionados no repositório
-✅ Widget keys inicializadas corretamente no session_state
+✅ Migração completa de JSON para SQLite (modules/db.py)
+✅ Schema: tabelas cartoes, historico_analises, backtesting, config com índices
+✅ data_manager.py v4.0 — mesmas assinaturas, backend SQLite (WAL mode)
+✅ scripts/migrar_json_para_sqlite.py — migração one-shot dos JSONs legados
+✅ pagina_admin_banco.py — CRUD, filtros, exportação CSV, VACUUM, backup .db, console SQL
+✅ Menu principal atualizado: "🗄️ Admin Banco de Dados"
 ----------------
+
+CHANGELOG v3.6.0
+----------------
+✅ Teste Binomial por Par (1770 pares com p-valor, sobre/sub-representados)
+✅ Backtesting Estatístico com IC 95% e teste Mann-Whitney (nova página)
+✅ AutoML v2.0: RF calibrado (isotônico) + class_weight=balanced + TimeSeriesSplit
+✅ Persistência de modelos AutoML com joblib
+✅ docs/MELHORIAS.md criado
+✅ helpers.py: versões das estratégias atualizadas
+✅ scipy e joblib adicionados ao requirements.txt
+----------------
+
 ✅ Piloto Automático (dashboard + auto-refresh + auto-conferir + auto-gerar)
 ✅ Configurações persistentes (piloto_config.json)
 ✅ Limites unificados: até 20 cartões por estratégia
