@@ -378,11 +378,30 @@ def preparar_dados_pycaret(df, numero_alvo, n_concursos=300):
             for j in range(1, 7):
                 contagem_geral[int(row[f'dez{j}'])] += 1
 
-        # Soma média
+        # Soma média e features geométricas dos últimos 10
         somas = []
+        pares_list = []
+        amplitudes = []
+        max_seq_list = []
         for _, row in ultimos_10.iterrows():
-            soma = sum(int(row[f'dez{j}']) for j in range(1, 7))
+            nums = sorted(int(row[f'dez{j}']) for j in range(1, 7))
+            soma = sum(nums)
             somas.append(soma)
+            pares_list.append(sum(1 for n in nums if n % 2 == 0))
+            amplitudes.append(nums[-1] - nums[0])
+            # Sequências consecutivas
+            max_seq = 1
+            seq = 1
+            for k in range(1, len(nums)):
+                if nums[k] == nums[k-1] + 1:
+                    seq += 1
+                    max_seq = max(max_seq, seq)
+                else:
+                    seq = 1
+            max_seq_list.append(max_seq)
+
+        # Quadrante do número alvo (1-15, 16-30, 31-45, 46-60)
+        quadrante_alvo = (numero_alvo - 1) // 15
 
         # Features
         features = {
@@ -394,6 +413,12 @@ def preparar_dados_pycaret(df, numero_alvo, n_concursos=300):
             'numero_par': 1 if numero_alvo % 2 == 0 else 0,
             'numero_baixo': 1 if numero_alvo <= 30 else 0,
             'dezena': numero_alvo // 10,
+            # Features geométricas
+            'pares_media': np.mean(pares_list),
+            'amplitude_media': np.mean(amplitudes),
+            'amplitude_std': np.std(amplitudes),
+            'max_seq_media': np.mean(max_seq_list),
+            'quadrante': quadrante_alvo,
         }
 
         # Target: se o número saiu no concurso atual

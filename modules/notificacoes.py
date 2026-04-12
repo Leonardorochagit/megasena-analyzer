@@ -9,6 +9,7 @@ Registro: envie "I allow callmebot to send me messages" para +34 644 59 71 67
 
 import requests
 import urllib.parse
+import time
 from datetime import datetime
 
 
@@ -21,14 +22,16 @@ def _formatar_moeda_br(valor):
         return None
 
 
-def enviar_whatsapp(telefone, apikey, mensagem):
+def enviar_whatsapp(telefone, apikey, mensagem, max_tentativas=3, delay_base=5):
     """
-    Envia mensagem via CallMeBot WhatsApp API.
+    Envia mensagem via CallMeBot WhatsApp API com retry e backoff exponencial.
     
     Args:
         telefone: Número com código do país (ex: 5511999999999)
         apikey: Chave da API obtida no registro do CallMeBot
         mensagem: Texto da mensagem
+        max_tentativas: Número máximo de tentativas (padrão: 3)
+        delay_base: Delay em segundos entre tentativas (padrão: 5)
     
     Returns:
         dict: {'sucesso': bool, 'mensagem': str}
@@ -46,18 +49,24 @@ def enviar_whatsapp(telefone, apikey, mensagem):
         f"&apikey={apikey}"
     )
 
-    try:
-        response = requests.get(url, timeout=30)
-        if response.status_code == 200:
-            return {'sucesso': True, 'mensagem': 'Mensagem enviada com sucesso!'}
-        else:
-            return {'sucesso': False, 'mensagem': f'Erro HTTP {response.status_code}: {response.text[:200]}'}
-    except requests.exceptions.Timeout:
-        return {'sucesso': False, 'mensagem': 'Timeout — CallMeBot não respondeu em 30s'}
-    except requests.exceptions.ConnectionError:
-        return {'sucesso': False, 'mensagem': 'Erro de conexão — verifique sua internet'}
-    except Exception as e:
-        return {'sucesso': False, 'mensagem': f'Erro inesperado: {str(e)[:200]}'}
+    ultimo_erro = ''
+    for tentativa in range(1, max_tentativas + 1):
+        try:
+            response = requests.get(url, timeout=30)
+            if response.status_code == 200:
+                return {'sucesso': True, 'mensagem': 'Mensagem enviada com sucesso!'}
+            ultimo_erro = f'Erro HTTP {response.status_code}: {response.text[:200]}'
+        except requests.exceptions.Timeout:
+            ultimo_erro = 'Timeout — CallMeBot não respondeu em 30s'
+        except requests.exceptions.ConnectionError:
+            ultimo_erro = 'Erro de conexão — verifique sua internet'
+        except Exception as e:
+            ultimo_erro = f'Erro inesperado: {str(e)[:200]}'
+
+        if tentativa < max_tentativas:
+            time.sleep(delay_base * tentativa)
+
+    return {'sucesso': False, 'mensagem': f'{ultimo_erro} (após {max_tentativas} tentativas)'}
 
 
 def formatar_resultado_concurso(dados_conferencia):
@@ -167,14 +176,8 @@ def formatar_resultado_concurso(dados_conferencia):
     return "\n".join(linhas)
 
 
-# ── Tabela de custos por quantidade de números ────────────────
-
-CUSTOS_CARTAO = {
-    6: 5.00, 7: 35.00, 8: 140.00, 9: 420.00, 10: 1050.00,
-    11: 2310.00, 12: 4620.00, 13: 8580.00, 14: 15015.00,
-    15: 25025.00, 16: 40040.00, 17: 61880.00, 18: 92820.00,
-    19: 135660.00, 20: 193800.00
-}
+# ── Custos importados de helpers (fonte única) ────────────────
+from helpers import CUSTOS_CARTAO
 
 
 def formatar_alerta_bolao(proximo_concurso, valor_premio, config=None):

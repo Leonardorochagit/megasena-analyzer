@@ -7,9 +7,12 @@ Relatório consolidado com todos os cartões e histórico de análises
 
 import streamlit as st
 import pandas as pd
+import numpy as np
 from datetime import datetime
+from scipy import stats as sp_stats
 from modules import data_manager as dm
 from modules import visualizations as viz
+from helpers import converter_dezenas_para_int
 
 
 def _mostrar_cartao_detalhado(numero, cartao, dezenas_sorteadas):
@@ -254,12 +257,7 @@ def _aba_verificacao_rapida(df):
                             except:
                                 pass
                     else:
-                        dezenas_raw = row['dezenas']
-                        if isinstance(dezenas_raw, list):
-                            dezenas_int = [int(n) for n in dezenas_raw]
-                        elif isinstance(dezenas_raw, str):
-                            limpo = dezenas_raw.replace('[', '').replace(']', '').replace("'", "").replace('"', '')
-                            dezenas_int = [int(n.strip()) for n in limpo.split(',') if n.strip().isdigit()]
+                        dezenas_int = converter_dezenas_para_int(row['dezenas'])
                     
                     dezenas_int.sort()
                     data_val = row.get('data', 'N/A')
@@ -455,6 +453,7 @@ def _aba_historico_consolidado():
         for est, dados in stats.items():
             agg = ranking_global.setdefault(est, {
                 'jogos': 0,
+                'total_acertos': 0,
                 'duques': 0,
                 'ternas': 0,
                 'quadras': 0,
@@ -464,6 +463,7 @@ def _aba_historico_consolidado():
                 'qtd_nums': set()
             })
             agg['jogos'] += dados.get('total_jogos', 0)
+            agg['total_acertos'] += dados.get('total_acertos', 0)
             agg['duques'] += dados.get('duques', 0)
             agg['ternas'] += dados.get('ternas', 0)
             agg['quadras'] += dados.get('quadras', 0)
@@ -476,10 +476,80 @@ def _aba_historico_consolidado():
     ranking_lista = []
     for est, agg in ranking_global.items():
         qtds = sorted(agg['qtd_nums']) if agg['qtd_nums'] else []
+        jogos = agg['jogos']
+
+        # Média de acertos e IC95%
+        total_acertos = agg.get('total_acertos', 0)
+        media = total_acertos / jogos if jogos > 0 else 0
+
+        # IC95% via bootstrap/normal: média ± 1.96 * SE
+        # SE estimado via distribuição dos acertos (0-6)
+        # Reconstruir variância a partir dos contadores
+        soma_quadrados = (
+            agg['duques'] * 4 +  # 2^2
+            agg['ternas'] * 9 +  # 3^2
+            agg['quadras'] * 16 +  # 4^2
+            agg['quinas'] * 25 +  # 5^2
+            agg['senas'] * 36  # 6^2
+        )
+        # Jogos com 0 ou 1 acerto: total - (duque+terna+quadra+quina+sena)
+        jogos_premios = agg['duques'] + agg['ternas'] + agg['quadras'] + agg['quinas'] + agg['senas']
+        jogos_01 = jogos - jogos_premios
+        # Média dos sem-acerto ≈ (total_acertos - 2*duque - 3*terna - ...) / jogos_01
+        acertos_premios = (agg['duques'] * 2 + agg['ternas'] * 3 +
+                           agg['quadras'] * 4 + agg['quinas'] * 5 + agg['senas'] * 6)
+        acertos_01_total = total_acertos - acertos_premios
+        # Estimar: metade tem 0, metade tem 1
+        soma_quadrados += acertos_01_total  # cada acerto de 0/1 contribui 0 ou 1 ao ^2
+
+        variancia = (soma_quadrados / jogos - media ** 2) if jogos > 1 else 0
+        variancia = max(variancia, 0)
+        se = (variancia ** 0.5) / (jogos ** 0.5) if jogos > 1 else 0
+        ic_lower = round(media - 1.96 * se, 3)
+        ic_upper = round(media + 1.96 * se, 3)
+
+        # P-value: chi-quadrado comparando distribuição de acertos com esperado por sorte
+        # Prob. de acertar k em 6 de 60: hipergeométrica(N=60, K=6, n=qtd_nums, k)
+        # Simplificação: usar qtd_nums=6 (caso base)
+        from scipy.stats import hypergeom
+        qtd_num_medio = min(sorted(agg['qtd_nums']))[0] if agg['qtd_nums'] and isinstance(next(iter(agg['qtd_nums'])), (list, tuple)) else (sorted(agg['qtd_nums'])[0] if agg['qtd_nums'] else 6)
+        if not isinstance(qtd_num_medio, int):
+            qtd_num_medio = 6
+
+        observado = np.array([
+            jogos_01,
+            agg['duques'],
+            agg['ternas'],
+            agg['quadras'],
+            agg['quinas'],
+            agg['senas']
+        ], dtype=float)
+
+        # Esperado pela hipergeométrica(N=60, K=6, n=qtd_num_medio)
+        esperado = np.array([
+            hypergeom.pmf(0, 60, 6, qtd_num_medio) + hypergeom.pmf(1, 60, 6, qtd_num_medio),
+            hypergeom.pmf(2, 60, 6, qtd_num_medio),
+            hypergeom.pmf(3, 60, 6, qtd_num_medio),
+            hypergeom.pmf(4, 60, 6, qtd_num_medio),
+            hypergeom.pmf(5, 60, 6, qtd_num_medio),
+            hypergeom.pmf(6, 60, 6, qtd_num_medio),
+        ]) * jogos
+
+        # Evitar esperado=0 para chi2
+        esperado = np.maximum(esperado, 0.001)
+
+        try:
+            chi2, p_value = sp_stats.chisquare(observado, esperado)
+        except Exception:
+            p_value = 1.0
+
         ranking_lista.append({
             'Estratégia': est,
-            'Jogos': agg['jogos'],
+            'Jogos': jogos,
             'Nº Números': '/'.join(str(q) for q in qtds) if qtds else '-',
+            'Média Ac.': round(media, 3),
+            'IC95%': f"[{ic_lower:.3f}, {ic_upper:.3f}]",
+            'p-value': round(p_value, 4),
             'Duques (2ac)': agg['duques'],
             'Ternas (3ac)': agg['ternas'],
             'Quadras (4ac)': agg['quadras'],

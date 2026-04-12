@@ -591,7 +591,8 @@ def pagina_escada_temporal(df):
                             estrategia=estrategia,
                             contagem_total=contagem_total,
                             contagem_recente=contagem_recente,
-                            df_atrasos=df_atrasos
+                            df_atrasos=df_atrasos,
+                            df=df
                         )
 
                         # Se precisar de mais números, adicionar baseado na estratégia

@@ -17,6 +17,7 @@ from datetime import datetime
 from modules import data_manager as dm
 from modules import statistics as stats
 from modules import game_generator as gen
+from helpers import CUSTOS_CARTAO
 
 
 # =============================================================================
@@ -25,7 +26,7 @@ from modules import game_generator as gen
 
 TODAS_ESTRATEGIAS = [
     'escada', 'atrasados', 'quentes',
-    'equilibrado', 'misto', 'consenso', 'aleatorio_smart'
+    'equilibrado', 'misto', 'consenso', 'aleatorio_smart', 'sequencias', 'wheel'
 ]
 
 NOMES_ESTRATEGIAS = {
@@ -36,14 +37,10 @@ NOMES_ESTRATEGIAS = {
     'misto': '🎨 Misto',
     'consenso': '🤝 Consenso',
     'aleatorio_smart': '🎲 Aleatório Inteligente',
+    'sequencias': '🧬 Sequências (Clusters+Vizinhança)',
+    'wheel': '🎯 Wheel (Cobertura)',
     'automl': '🤖 AutoML',
     'Manual': '✍️ Manual'
-}
-
-CUSTOS_CARTAO = {
-    6: 6.00, 7: 42.00, 8: 168.00, 9: 504.00, 10: 1260.00,
-    11: 2772.00, 12: 5544.00, 13: 10296.00, 14: 18018.00, 15: 30030.00,
-    16: 48048.00, 17: 74256.00, 18: 111384.00, 19: 162792.00, 20: 232560.00
 }
 
 
@@ -222,14 +219,15 @@ def _simular_automatico(df, concurso_alvo, qtd_numeros):
                         estrategia=estrategia,
                         contagem_total=contagem_total,
                         contagem_recente=contagem_recente,
-                        df_atrasos=df_atrasos
+                        df_atrasos=df_atrasos,
+                        df=df
                     )
 
                     # Expandir se necessário
                     if qtd_numeros > 6:
-                        dezenas = _expandir_jogo(
+                        dezenas = gen.expandir_jogo(
                             dezenas_base, qtd_numeros, estrategia,
-                            contagem_total, contagem_recente, df_atrasos, df
+                            contagem_total, contagem_recente, df_atrasos, df=df
                         )
                     else:
                         dezenas = dezenas_base
@@ -744,22 +742,11 @@ def _aba_ranking(df):
 
 def _expandir_jogo(dezenas_base, qtd_numeros, estrategia,
                    contagem_total, contagem_recente, df_atrasos, df):
-    """Expande um jogo de 6 para N números baseado na estratégia"""
-    pool_size = max(40, qtd_numeros + 10)  # Pool suficiente para até 20 números
-    if estrategia == 'atrasados':
-        candidatos = contagem_total.sort_values().head(pool_size).index.tolist()
-    elif estrategia == 'quentes':
-        candidatos = contagem_recente.nlargest(pool_size).index.tolist()
-    elif estrategia == 'escada':
-        _, _, _, _, _, inversoes = stats.calcular_escada_temporal(df)
-        candidatos = [inv['numero'] for inv in inversoes[:pool_size]] if inversoes else list(range(1, 61))
-    else:
-        candidatos = list(range(1, 61))
-
-    candidatos = [n for n in candidatos if n not in dezenas_base]
-    random.shuffle(candidatos)
-    extras = candidatos[:qtd_numeros - 6]
-    return sorted(dezenas_base + extras)
+    """Wrapper legado — delega para gen.expandir_jogo centralizado."""
+    return gen.expandir_jogo(
+        dezenas_base, qtd_numeros, estrategia,
+        contagem_total, contagem_recente, df_atrasos, df=df
+    )
 
 
 def _buscar_resultado(df, concurso):

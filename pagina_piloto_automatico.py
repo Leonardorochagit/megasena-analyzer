@@ -105,7 +105,8 @@ def _salvar_config(config):
 
 TODAS_ESTRATEGIAS = [
     'escada', 'atrasados', 'quentes',
-    'equilibrado', 'misto', 'consenso', 'aleatorio_smart', 'ensemble'
+    'equilibrado', 'misto', 'consenso', 'aleatorio_smart', 'ensemble',
+    'sequencias', 'wheel'
 ]
 
 NOMES_ESTRATEGIAS = {
@@ -117,16 +118,11 @@ NOMES_ESTRATEGIAS = {
     'consenso': '🤝 Consenso',
     'aleatorio_smart': '🎲 Aleatório Inteligente',
     'ensemble': '🧠 Ensemble (Votação)',
+    'sequencias': '🧬 Sequências (Clusters+Vizinhança)',
+    'wheel': '🎯 Wheel (Cobertura)',
     'automl': '🤖 AutoML',
     'Manual': '✍️ Manual'
 }
-
-CUSTOS_CARTAO = {
-    6: 6.00, 7: 42.00, 8: 168.00, 9: 504.00, 10: 1260.00,
-    11: 2772.00, 12: 5544.00, 13: 10296.00, 14: 18018.00, 15: 30030.00,
-    16: 48048.00, 17: 74256.00, 18: 111384.00, 19: 162792.00, 20: 232560.00
-}
-
 
 def _nome_estrategia(key):
     return NOMES_ESTRATEGIAS.get(key, str(key))
@@ -518,14 +514,15 @@ def _auto_gerar(df, qtd_numeros, cartoes_por_estrategia, forcar=False):
                     estrategia=estrategia,
                     contagem_total=contagem_total,
                     contagem_recente=contagem_recente,
-                    df_atrasos=df_atrasos
+                    df_atrasos=df_atrasos,
+                    df=df
                 )
 
                 # Expandir se necessário
                 if qtd_numeros > 6:
-                    dezenas = _expandir_jogo(
+                    dezenas = gen.expandir_jogo(
                         dezenas_base, qtd_numeros, estrategia,
-                        contagem_total, contagem_recente, df_atrasos, df
+                        contagem_total, contagem_recente, df_atrasos, df=df
                     )
                 else:
                     dezenas = dezenas_base

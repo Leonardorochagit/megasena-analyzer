@@ -1,0 +1,117 @@
+{
+  "data": "2026-04-11 22:52:46",
+  "parametros": {
+    "n_concursos": 50,
+    "qtd_numeros": 14
+  },
+  "ranking": [
+    {
+      "estrategia": "sequencias",
+      "jogos": 250,
+      "media": 1.464,
+      "desvio": 1.0531574251976747,
+      "ic95_inf": 1.333449253024952,
+      "ic95_sup": 1.594550746975048,
+      "ternos": 31,
+      "quadras": 10,
+      "quinas": 0,
+      "senas": 0
+    },
+    {
+      "estrategia": "equilibrado",
+      "jogos": 250,
+      "media": 1.428,
+      "desvio": 0.992348235288561,
+      "ic95_inf": 1.3049872383020271,
+      "ic95_sup": 1.5510127616979728,
+      "ternos": 30,
+      "quadras": 2,
+      "quinas": 2,
+      "senas": 0
+    },
+    {
+      "estrategia": "consenso",
+      "jogos": 250,
+      "media": 1.356,
+      "desvio": 0.8991651638980858,
+      "ic95_inf": 1.244538331504615,
+      "ic95_sup": 1.4674616684953852,
+      "ternos": 19,
+      "quadras": 1,
+      "quinas": 2,
+      "senas": 0
+    },
+    {
+      "estrategia": "atrasados",
+      "jogos": 250,
+      "media": 1.344,
+      "desvio": 0.9866905456786981,
+      "ic95_inf": 1.2216885727721156,
+      "ic95_sup": 1.4663114272278845,
+      "ternos": 26,
+      "quadras": 4,
+      "quinas": 0,
+      "senas": 0
+    },
+    {
+      "estrategia": "quentes",
+      "jogos": 250,
+      "media": 1.34,
+      "desvio": 0.9654680285002838,
+      "ic95_inf": 1.2203193432571764,
+      "ic95_sup": 1.4596806567428238,
+      "ternos": 24,
+      "quadras": 5,
+      "quinas": 1,
+      "senas": 0
+    },
+    {
+      "estrategia": "misto",
+      "jogos": 250,
+      "media": 1.328,
+      "desvio": 0.9675539481446402,
+      "ic95_inf": 1.2080607699791601,
+      "ic95_sup": 1.44793923002084,
+      "ternos": 19,
+      "quadras": 7,
+      "quinas": 0,
+      "senas": 0
+    },
+    {
+      "estrategia": "aleatorio_smart",
+      "jogos": 250,
+      "media": 1.32,
+      "desvio": 0.9987944540523757,
+      "ic95_inf": 1.196188156745324,
+      "ic95_sup": 1.443811843254676,
+      "ternos": 25,
+      "quadras": 5,
+      "quinas": 0,
+      "senas": 0
+    },
+    {
+      "estrategia": "ensemble",
+      "jogos": 250,
+      "media": 1.232,
+      "desvio": 0.9238995407758265,
+      "ic95_inf": 1.1174722263810193,
+      "ic95_sup": 1.3465277736189807,
+      "ternos": 17,
+      "quadras": 2,
+      "quinas": 1,
+      "senas": 0
+    },
+    {
+      "estrategia": "escada",
+      "jogos": 250,
+      "media": 1.196,
+      "desvio": 0.8993438036193021,
+      "ic95_inf": 1.0845161870953497,
+      "ic95_sup": 1.3074838129046502,
+      "ternos": 16,
+      "quadras": 3,
+      "quinas": 0,
+      "senas": 0
+    }
+  ]
+}

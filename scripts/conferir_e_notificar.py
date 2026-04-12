@@ -18,6 +18,7 @@ import os
 import sys
 import random
 import requests
+import pandas as pd
 from datetime import datetime
 from collections import Counter
 
@@ -30,12 +31,14 @@ from modules import data_manager as dm
 from modules import statistics as stats
 from modules import game_generator as gen
 from modules import notificacoes as notif
+from helpers import converter_dezenas_para_int
 
 # ── Configuração ──────────────────────────────────────────────
 
 TODAS_ESTRATEGIAS = [
     'escada', 'atrasados', 'quentes',
-    'equilibrado', 'misto', 'consenso', 'aleatorio_smart', 'ensemble'
+    'equilibrado', 'misto', 'consenso', 'aleatorio_smart', 'ensemble',
+    'sequencias', 'wheel'
 ]
 
 CONFIG_FILE = os.path.join(ROOT, "piloto_config.json")
@@ -89,14 +92,7 @@ def buscar_ultimo_resultado():
 
             numero = data.get('numero') or data.get('concurso')
             dezenas_raw = data.get('listaDezenas') or data.get('dezenas')
-
-            if isinstance(dezenas_raw, str):
-                dezenas = [int(x.strip().replace("'", "").replace("[", "").replace("]", ""))
-                           for x in dezenas_raw.split(',')]
-            elif isinstance(dezenas_raw, list):
-                dezenas = [int(x) for x in dezenas_raw]
-            else:
-                continue
+            dezenas = converter_dezenas_para_int(dezenas_raw)
 
             if numero and len(dezenas) == 6:
                 return {
@@ -127,14 +123,7 @@ def buscar_resultado_concurso(numero):
                 continue
             data = r.json()
             dezenas_raw = data.get('listaDezenas') or data.get('dezenas')
-
-            if isinstance(dezenas_raw, str):
-                dezenas = [int(x.strip().replace("'", "").replace("[", "").replace("]", ""))
-                           for x in dezenas_raw.split(',')]
-            elif isinstance(dezenas_raw, list):
-                dezenas = [int(x) for x in dezenas_raw]
-            else:
-                continue
+            dezenas = converter_dezenas_para_int(dezenas_raw)
 
             if len(dezenas) == 6:
                 return {
@@ -271,24 +260,44 @@ def gerar_cartoes_proximo_concurso(todos_cartoes):
 
     log(f"Gerando cartões para o concurso {proximo}...")
 
-    # Carregar dados para estatísticas
-    try:
-        url = "https://loteriascaixa-api.herokuapp.com/api/megasena"
-        r = requests.get(url, timeout=30)
-        data = r.json()
-        if isinstance(data, dict):
-            data = [data]
-        import pandas as pd
-        df = pd.DataFrame(data)
-        df['dezenas'] = df['dezenas'].apply(lambda x: str(x))
-        div = df['dezenas'].str.split(',')
-        for i in range(6):
-            df[f'dez{i+1}'] = div.str.get(i).apply(
-                lambda x: x.replace("['", '').replace("'", '').replace("]", '').strip() if x else x
-            )
-    except Exception as e:
-        log(f"Erro ao carregar dados para geração: {e}")
-        return 0
+    # Carregar dados — tentar local primeiro (historico_analises.json + data/),
+    # fallback para API
+    df = None
+    local_csv = os.path.join(ROOT, "data", "megasena_historico.csv")
+    if os.path.exists(local_csv):
+        try:
+            df = pd.read_csv(local_csv)
+            if 'concurso' in df.columns and len(df) > 100:
+                log(f"  Dados locais carregados: {len(df)} concursos de {local_csv}")
+            else:
+                df = None
+        except Exception:
+            df = None
+
+    if df is None:
+        try:
+            url = "https://loteriascaixa-api.herokuapp.com/api/megasena"
+            r = requests.get(url, timeout=30)
+            data = r.json()
+            if isinstance(data, dict):
+                data = [data]
+            df = pd.DataFrame(data)
+            df['dezenas'] = df['dezenas'].apply(lambda x: str(x))
+            div = df['dezenas'].str.split(',')
+            for i in range(6):
+                df[f'dez{i+1}'] = div.str.get(i).apply(
+                    lambda x: x.replace("['", '').replace("'", '').replace("]", '').strip() if x else x
+                )
+            # Salvar localmente para próxima vez
+            try:
+                os.makedirs("data", exist_ok=True)
+                df.to_csv(local_csv, index=False)
+                log(f"  Dados salvos localmente em {local_csv}")
+            except Exception:
+                pass
+        except Exception as e:
+            log(f"Erro ao carregar dados para geração: {e}")
+            return 0
 
     contagem_total, contagem_recente, df_atrasos = stats.calcular_estatisticas(df)
     novos = []
@@ -300,7 +309,8 @@ def gerar_cartoes_proximo_concurso(todos_cartoes):
                     estrategia=estrategia,
                     contagem_total=contagem_total,
                     contagem_recente=contagem_recente,
-                    df_atrasos=df_atrasos
+                    df_atrasos=df_atrasos,
+                    df=df
                 )
                 if QTD_NUMEROS > 6:
                     dezenas = _expandir_jogo(
@@ -336,8 +346,11 @@ def gerar_cartoes_proximo_concurso(todos_cartoes):
 
 def _expandir_jogo(dezenas_base, qtd_numeros, estrategia,
                    contagem_total, contagem_recente, df_atrasos, df):
-    """Expande um jogo de 6 para N números."""
+    """Expande um jogo de 6 para N números mantendo coerência da estratégia."""
     pool_size = max(40, qtd_numeros + 10)
+    extras_necessarios = qtd_numeros - len(dezenas_base)
+
+    # Pool de candidatos coerente com a estratégia
     if estrategia == 'atrasados':
         candidatos = contagem_total.sort_values().head(pool_size).index.tolist()
     elif estrategia == 'quentes':
@@ -348,13 +361,57 @@ def _expandir_jogo(dezenas_base, qtd_numeros, estrategia,
             candidatos = [inv['numero'] for inv in inversoes[:pool_size]] if inversoes else list(range(1, 61))
         except Exception:
             candidatos = list(range(1, 61))
+    elif estrategia == 'equilibrado':
+        # Manter proporção par/ímpar equilibrada
+        candidatos = list(range(1, 61))
+    elif estrategia == 'consenso':
+        # Pool dos que aparecem em múltiplas análises
+        atrasados = set(contagem_total.sort_values().head(20).index.tolist())
+        quentes = set(contagem_recente.nlargest(20).index.tolist())
+        atraso_rec = set(df_atrasos.head(20)['numero'].tolist())
+        todos = list(atrasados) + list(quentes) + list(atraso_rec)
+        contagem = Counter(todos)
+        candidatos = [num for num, _ in contagem.most_common(pool_size)]
+    elif estrategia == 'misto':
+        # Mix: 1/3 atrasados, 1/3 quentes, 1/3 restante
+        atrasados = contagem_total.sort_values().head(20).index.tolist()
+        quentes = contagem_recente.nlargest(20).index.tolist()
+        candidatos = list(set(atrasados + quentes))
+        if len(candidatos) < pool_size:
+            candidatos.extend([n for n in range(1, 61) if n not in candidatos])
     else:
         candidatos = list(range(1, 61))
 
     candidatos = [n for n in candidatos if n not in dezenas_base]
-    random.shuffle(candidatos)
-    extras = candidatos[:qtd_numeros - 6]
-    return sorted(dezenas_base + extras)
+
+    # Tentar gerar expansão com filtros de qualidade
+    melhor_jogo = None
+    melhor_score = -1
+
+    for _ in range(50):
+        random.shuffle(candidatos)
+        extras = candidatos[:extras_necessarios]
+        jogo = sorted(dezenas_base + extras)
+
+        # Filtros de qualidade
+        soma = sum(jogo)
+        pares = sum(1 for n in jogo if n % 2 == 0)
+        amplitude = jogo[-1] - jogo[0]
+
+        # Faixas proporcionais ao qtd_numeros
+        fator = qtd_numeros / 6.0
+        soma_ok = (140 * fator * 0.8) <= soma <= (210 * fator * 1.1)
+        pares_ok = (qtd_numeros * 0.3) <= pares <= (qtd_numeros * 0.7)
+        amp_ok = amplitude >= 30
+
+        score = int(soma_ok) + int(pares_ok) + int(amp_ok)
+        if score > melhor_score:
+            melhor_score = score
+            melhor_jogo = jogo
+        if score == 3:
+            break
+
+    return melhor_jogo or sorted(dezenas_base + candidatos[:extras_necessarios])
 
 
 # ── Enviar WhatsApp ──────────────────────────────────────────
@@ -485,6 +542,11 @@ def main():
     if resultado_conferencia and resultado_conferencia.get('status') == 'conferido':
         log("\n📲 Etapa 2: Enviando notificação WhatsApp...")
         enviar_whatsapp(resultado_conferencia)
+
+        # Arquivar cartões já conferidos para manter meus_cartoes.json enxuto
+        log("\n🗄️  Etapa 2b: Arquivando cartões verificados...")
+        arquivados, mantidos = dm.arquivar_cartoes_verificados()
+        log(f"  {arquivados} arquivados, {mantidos} pendentes mantidos")
     else:
         log("\n📲 Etapa 2: Nada a notificar (sem conferências novas).")
 
