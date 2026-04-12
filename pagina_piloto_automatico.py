@@ -105,7 +105,7 @@ def _salvar_config(config):
 
 TODAS_ESTRATEGIAS = [
     'escada', 'atrasados', 'quentes',
-    'equilibrado', 'misto', 'consenso', 'aleatorio_smart'
+    'equilibrado', 'misto', 'consenso', 'aleatorio_smart', 'ensemble'
 ]
 
 NOMES_ESTRATEGIAS = {
@@ -116,6 +116,7 @@ NOMES_ESTRATEGIAS = {
     'misto': '🎨 Misto',
     'consenso': '🤝 Consenso',
     'aleatorio_smart': '🎲 Aleatório Inteligente',
+    'ensemble': '🧠 Ensemble (Votação)',
     'automl': '🤖 AutoML',
     'Manual': '✍️ Manual'
 }

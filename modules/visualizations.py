@@ -276,3 +276,90 @@ def criar_tabela_estrategias(analise_estrategias):
         df['Média Descartados'] = df['Média Descartados'].round(2)
 
     return df
+
+
+def criar_grafico_tendencia_estrategias(historico):
+    """
+    Cria gráfico de linha mostrando a evolução da média de acertos
+    por estratégia ao longo dos concursos.
+
+    Args:
+        historico (list): Lista de registros do historico_analises.json
+
+    Returns:
+        plotly.graph_objects.Figure: Gráfico plotly
+    """
+    if not historico:
+        return None
+
+    # Montar dados: concurso × estratégia → média de acertos
+    dados = []
+    for reg in sorted(historico, key=lambda r: r.get('concurso', 0)):
+        concurso = reg.get('concurso')
+        for est, info in reg.get('estatisticas', {}).items():
+            dados.append({
+                'concurso': concurso,
+                'estrategia': est,
+                'media_acertos': info.get('media_acertos', 0),
+                'melhor_acerto': info.get('melhor_acerto', 0),
+            })
+
+    if not dados:
+        return None
+
+    df = pd.DataFrame(dados)
+
+    fig = px.line(
+        df, x='concurso', y='media_acertos', color='estrategia',
+        title='Tendência: Média de Acertos por Estratégia',
+        labels={'concurso': 'Concurso', 'media_acertos': 'Média de Acertos', 'estrategia': 'Estratégia'},
+        markers=True
+    )
+    fig.update_layout(height=500, legend=dict(orientation="h", yanchor="bottom", y=-0.3))
+    return fig
+
+
+def criar_grafico_ranking_global(ranking):
+    """
+    Cria gráfico de barras horizontais com o ranking global de estratégias.
+
+    Args:
+        ranking (dict): {estrategia: {quadras, ternos, media_acertos, ...}}
+
+    Returns:
+        plotly.graph_objects.Figure: Gráfico plotly
+    """
+    if not ranking:
+        return None
+
+    # Score para ordenação
+    def score(d):
+        return d['senas'] * 10000 + d['quinas'] * 1000 + d['quadras'] * 100 + d['ternos'] * 10 + d['media_acertos']
+
+    ordenado = sorted(ranking.items(), key=lambda x: score(x[1]), reverse=True)
+    nomes = [e for e, _ in ordenado]
+    quadras = [d['quadras'] for _, d in ordenado]
+    ternos = [d['ternos'] for _, d in ordenado]
+    medias = [d['media_acertos'] for _, d in ordenado]
+
+    fig = make_subplots(
+        rows=1, cols=2,
+        subplot_titles=('Prêmios Acumulados', 'Média de Acertos'),
+        horizontal_spacing=0.15
+    )
+
+    fig.add_trace(
+        go.Bar(y=nomes, x=quadras, name='Quadras', orientation='h', marker_color='gold'),
+        row=1, col=1
+    )
+    fig.add_trace(
+        go.Bar(y=nomes, x=ternos, name='Ternos', orientation='h', marker_color='silver'),
+        row=1, col=1
+    )
+    fig.add_trace(
+        go.Bar(y=nomes, x=medias, name='Média', orientation='h', marker_color='steelblue', showlegend=False),
+        row=1, col=2
+    )
+
+    fig.update_layout(height=400, barmode='stack', legend=dict(orientation="h"))
+    return fig

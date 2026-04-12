@@ -100,6 +100,9 @@ def gerar_jogo(estrategia, contagem_total, contagem_recente, df_atrasos):
                 break
             tentativas += 1
 
+    elif estrategia == 'ensemble':
+        jogo = gerar_jogo_ensemble(contagem_total, contagem_recente, df_atrasos)
+
     else:  # misto
         atrasados = contagem_total.sort_values().head(15).index.tolist()
         quentes = contagem_recente.head(15).index.tolist()
@@ -118,6 +121,46 @@ def gerar_jogo(estrategia, contagem_total, contagem_recente, df_atrasos):
         jogo = sorted(jogo)
 
     return jogo
+
+
+def gerar_jogo_ensemble(contagem_total, contagem_recente, df_atrasos):
+    """
+    Estratégia ensemble: gera um jogo de cada estratégia base,
+    conta a frequência de cada número nas 7 saídas e seleciona
+    os 6 mais votados. Validação por soma gaussiana e paridade.
+    """
+    estrategias = [
+        'escada', 'atrasados', 'quentes',
+        'equilibrado', 'misto', 'consenso', 'aleatorio_smart'
+    ]
+
+    votos = Counter()
+    for est in estrategias:
+        try:
+            jogo = gerar_jogo(est, contagem_total, contagem_recente, df_atrasos)
+            for n in jogo:
+                votos[n] += 1
+        except Exception:
+            pass
+
+    # Selecionar por votação; desempate por frequência recente
+    candidatos = sorted(
+        votos.keys(),
+        key=lambda n: (votos[n], contagem_recente.get(n, 0)),
+        reverse=True
+    )
+
+    # Tentar montar jogo válido (soma 140-210, 2-4 pares)
+    for _ in range(100):
+        pool = candidatos[:20]
+        jogo = sorted(random.sample(pool, 6))
+        pares = sum(1 for n in jogo if n % 2 == 0)
+        soma = sum(jogo)
+        if 2 <= pares <= 4 and 140 <= soma <= 210:
+            return jogo
+
+    # Fallback: top 6 mais votados
+    return sorted(candidatos[:6])
 
 
 def gerar_jogo_avancado(contagem_total, contagem_recente, df_atrasos, df,

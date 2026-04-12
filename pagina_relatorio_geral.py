@@ -9,6 +9,7 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 from modules import data_manager as dm
+from modules import visualizations as viz
 
 
 def _mostrar_cartao_detalhado(numero, cartao, dezenas_sorteadas):
@@ -503,6 +504,26 @@ def _aba_historico_consolidado():
             f"({top['Nº Números']} nums)"
         )
     st.dataframe(pd.DataFrame(ranking_lista), hide_index=True, use_container_width=True)
+
+    # Gráficos de tendência e ranking
+    ranking_chart_data = {}
+    for est, agg in ranking_global.items():
+        ranking_chart_data[est] = {
+            'quadras': agg['quadras'],
+            'ternos': agg['ternas'],
+            'senas': agg['senas'],
+            'quinas': agg['quinas'],
+            'media_acertos': round(agg.get('duques', 0) + agg.get('ternas', 0) * 2 + agg.get('quadras', 0) * 3 + agg.get('quinas', 0) * 5 + agg.get('senas', 0) * 10, 2) / max(agg['jogos'], 1)
+        }
+
+    fig_ranking = viz.criar_grafico_ranking_global(ranking_chart_data)
+    if fig_ranking:
+        st.plotly_chart(fig_ranking, use_container_width=True)
+
+    fig_tendencia = viz.criar_grafico_tendencia_estrategias(historico)
+    if fig_tendencia:
+        st.markdown("#### 📈 Evolução da Média de Acertos por Estratégia")
+        st.plotly_chart(fig_tendencia, use_container_width=True)
 
     # Botão para exportar HTML
     if st.button("📥 Exportar Histórico Completo em HTML"):

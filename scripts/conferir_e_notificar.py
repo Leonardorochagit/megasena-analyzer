@@ -3,7 +3,8 @@
 🤖 SCRIPT STANDALONE: CONFERIR E NOTIFICAR (GitHub Actions)
 ================================================================================
 Roda fora do Streamlit — confere cartões pendentes, envia WhatsApp,
-gera cartões para o próximo concurso e salva tudo de volta nos JSONs.
+gera cartões para o próximo concurso, alerta bolão quando ≥R$100M,
+e salva tudo de volta nos JSONs.
 
 Uso: python scripts/conferir_e_notificar.py
 Variáveis de ambiente necessárias:
@@ -34,11 +35,37 @@ from modules import notificacoes as notif
 
 TODAS_ESTRATEGIAS = [
     'escada', 'atrasados', 'quentes',
-    'equilibrado', 'misto', 'consenso', 'aleatorio_smart'
+    'equilibrado', 'misto', 'consenso', 'aleatorio_smart', 'ensemble'
 ]
 
-QTD_NUMEROS = 14
-CARTOES_POR_ESTRATEGIA = 20
+CONFIG_FILE = os.path.join(ROOT, "piloto_config.json")
+
+
+def _carregar_config():
+    """Carrega configurações do piloto_config.json."""
+    defaults = {
+        'qtd_numeros': 14,
+        'cartoes_por_est': 20,
+        'bolao_threshold': 100_000_000,
+        'bolao_qtd_numeros': 13,
+        'bolao_estrategias': ['misto', 'consenso'],
+    }
+    try:
+        if os.path.exists(CONFIG_FILE):
+            with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
+                config = json.load(f)
+            for k, v in defaults.items():
+                if k not in config:
+                    config[k] = v
+            return config
+    except Exception:
+        pass
+    return defaults
+
+
+CONFIG = _carregar_config()
+QTD_NUMEROS = CONFIG['qtd_numeros']
+CARTOES_POR_ESTRATEGIA = CONFIG['cartoes_por_est']
 
 
 def log(msg):
@@ -193,6 +220,11 @@ def conferir_cartoes():
         )
 
         melhor = max(j.get('acertos', 0) for j in jogos)
+        # Guardar cartões com 3+ acertos para dezenas faltantes no WhatsApp
+        quase_acertos = [
+            {'dezenas': j['dezenas'], 'acertos': j['acertos'], 'estrategia': j.get('estrategia', 'N/A')}
+            for j in jogos if j.get('acertos', 0) >= 3
+        ]
         conferidos.append({
             'concurso': concurso,
             'resultado': resultado,
@@ -201,6 +233,7 @@ def conferir_cartoes():
             'stats': stats_concurso,
             'acumulou': res.get('acumulou'),
             'valor_proximo_concurso': res.get('valor_proximo'),
+            'cartoes_raw': quase_acertos,
         })
         alterou = True
         log(f"  ✅ Concurso {concurso} conferido — melhor acerto: {melhor}")
@@ -346,6 +379,97 @@ def enviar_whatsapp(resultado_conferencia):
         return False
 
 
+def _enviar_whatsapp_raw(mensagem):
+    """Envia mensagem de texto direta por WhatsApp."""
+    telefone = os.environ.get('WHATSAPP_TELEFONE', '')
+    apikey = os.environ.get('WHATSAPP_APIKEY', '')
+    if not telefone or not apikey:
+        return False
+    res = notif.enviar_whatsapp(telefone, apikey, mensagem)
+    return res['sucesso']
+
+
+# ── Verificar valor do prêmio / Alerta Bolão ─────────────────
+
+def verificar_alerta_bolao(resultado_conferencia):
+    """Se prêmio acumulado ≥ threshold, envia alerta especial de bolão."""
+    threshold = CONFIG.get('bolao_threshold', 100_000_000)
+
+    if not resultado_conferencia or not resultado_conferencia.get('conferidos'):
+        return
+
+    for conf in resultado_conferencia['conferidos']:
+        valor_proximo = conf.get('valor_proximo_concurso')
+        if not valor_proximo:
+            continue
+
+        try:
+            valor = float(valor_proximo)
+        except (TypeError, ValueError):
+            continue
+
+        if valor < threshold:
+            log(f"  Próximo prêmio: {notif._formatar_moeda_br(valor)} (abaixo do threshold {notif._formatar_moeda_br(threshold)})")
+            continue
+
+        log(f"  🚨 PRÊMIO ACIMA DO THRESHOLD: {notif._formatar_moeda_br(valor)}")
+        proximo_concurso = conf['concurso'] + 1
+        mensagem = notif.formatar_alerta_bolao(proximo_concurso, valor, CONFIG)
+        if _enviar_whatsapp_raw(mensagem):
+            log("  📲 Alerta de bolão enviado!")
+        else:
+            log("  ❌ Falha ao enviar alerta de bolão")
+
+
+# ── Ranking global de estratégias ─────────────────────────────
+
+def calcular_ranking_global():
+    """Consolida historico_analises.json em ranking acumulado por estratégia."""
+    historico = dm.carregar_historico_analises()
+    if not historico:
+        return {}
+
+    acumulado = {}
+    for registro in historico:
+        for est, dados in registro.get('estatisticas', {}).items():
+            if est not in acumulado:
+                acumulado[est] = {
+                    'total_jogos': 0, 'total_acertos': 0,
+                    'senas': 0, 'quinas': 0, 'quadras': 0, 'ternos': 0,
+                    'concursos': 0, 'melhor_acerto_global': 0
+                }
+            a = acumulado[est]
+            a['total_jogos'] += dados.get('total_jogos', 0)
+            a['total_acertos'] += dados.get('total_acertos', 0)
+            a['senas'] += dados.get('senas', 0)
+            a['quinas'] += dados.get('quinas', 0)
+            a['quadras'] += dados.get('quadras', 0)
+            a['ternos'] += dados.get('ternos', 0)
+            a['concursos'] += 1
+            a['melhor_acerto_global'] = max(a['melhor_acerto_global'], dados.get('melhor_acerto', 0))
+
+    for est, a in acumulado.items():
+        a['media_acertos'] = round(a['total_acertos'] / a['total_jogos'], 2) if a['total_jogos'] > 0 else 0
+        a['taxa_quadra'] = round(a['quadras'] / a['total_jogos'] * 100, 1) if a['total_jogos'] > 0 else 0
+        a['taxa_terno'] = round(a['ternos'] / a['total_jogos'] * 100, 1) if a['total_jogos'] > 0 else 0
+
+    return acumulado
+
+
+def enviar_ranking_global():
+    """Envia ranking acumulado de estratégias por WhatsApp."""
+    ranking = calcular_ranking_global()
+    if not ranking:
+        log("  Nenhum histórico para ranking global.")
+        return
+
+    mensagem = notif.formatar_ranking_global(ranking)
+    if _enviar_whatsapp_raw(mensagem):
+        log("📲 Ranking global enviado!")
+    else:
+        log("❌ Falha ao enviar ranking global")
+
+
 # ── Main ─────────────────────────────────────────────────────
 
 def main():
@@ -357,16 +481,28 @@ def main():
     log("\n📋 Etapa 1: Conferindo cartões pendentes...")
     resultado_conferencia, todos_cartoes = conferir_cartoes()
 
-    # 2. Enviar WhatsApp se houve conferência
+    # 2. Enviar WhatsApp com resultado (inclui dezenas faltantes)
     if resultado_conferencia and resultado_conferencia.get('status') == 'conferido':
         log("\n📲 Etapa 2: Enviando notificação WhatsApp...")
         enviar_whatsapp(resultado_conferencia)
     else:
         log("\n📲 Etapa 2: Nada a notificar (sem conferências novas).")
 
-    # 3. Gerar cartões para o próximo concurso
-    log("\n🎲 Etapa 3: Gerando cartões para o próximo concurso...")
+    # 3. Verificar alerta de bolão (≥R$100M)
+    log("\n💰 Etapa 3: Verificando valor do prêmio para alerta de bolão...")
+    verificar_alerta_bolao(resultado_conferencia)
+
+    # 4. Gerar cartões para o próximo concurso
+    log("\n🎲 Etapa 4: Gerando cartões para o próximo concurso...")
     gerados = gerar_cartoes_proximo_concurso(todos_cartoes)
+
+    # 5. Enviar ranking global (1x por semana — no sábado)
+    hoje = datetime.now()
+    if hoje.weekday() == 5:  # Sábado
+        log("\n📊 Etapa 5: Enviando ranking global semanal...")
+        enviar_ranking_global()
+    else:
+        log(f"\n📊 Etapa 5: Ranking global só no sábado (hoje: {hoje.strftime('%A')}).")
 
     # Resumo
     log("\n" + "=" * 60)
