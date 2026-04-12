@@ -76,15 +76,11 @@ def carregar_dados():
             data = [data]
         df = pd.DataFrame(data)
 
-        df['dezenas'] = df['dezenas'].apply(lambda x: str(x))
-        div = df['dezenas'].str.split(',')
-
-        for i in range(6):
-            col_name = f'dez{i+1}'
-            df[col_name] = div.str.get(i).apply(
-                lambda x: x.replace("['", '').replace(
-                    "'", '').replace("]", '').strip() if x else x
-            )
+        from helpers import converter_dezenas_para_int
+        for idx, row in df.iterrows():
+            dezenas = converter_dezenas_para_int(row.get('dezenas', []))
+            for i, d in enumerate(dezenas[:6], 1):
+                df.at[idx, f'dez{i}'] = str(d)
 
         try:
             url_oficial = "https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena"
@@ -266,14 +262,60 @@ def salvar_historico_analise(concurso: int, data_analise: str,
 
 def arquivar_cartoes_verificados() -> tuple:
     """
-    No SQLite os cartões verificados já estão no banco com status='verificado'.
-    Função mantida para compatibilidade — retorna contagens do banco.
+    Arquiva cartões verificados:
+    1. No SQLite: já ficam com status='verificado' no banco
+    2. No JSON (meus_cartoes.json): move verificados para data/cartoes_arquivo_YYYY.json
+       e mantém apenas pendentes no arquivo principal
+    Retorna (arquivados, pendentes).
     """
+    import json as _json
+
+    json_file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                             "meus_cartoes.json")
+    if not os.path.exists(json_file):
+        try:
+            s = stats_cartoes_db()
+            return s.get('verificados', 0), s.get('pendentes', 0)
+        except Exception:
+            return 0, 0
+
     try:
-        s = stats_cartoes_db()
-        return s.get('verificados', 0), s.get('pendentes', 0)
+        with open(json_file, 'r', encoding='utf-8') as f:
+            todos = _json.load(f)
+
+        verificados = [c for c in todos if c.get('verificado', False)]
+        pendentes = [c for c in todos if not c.get('verificado', False)]
+
+        if not verificados:
+            return 0, len(pendentes)
+
+        # Salvar verificados em arquivo de arquivo por ano
+        ano = datetime.now().strftime('%Y')
+        data_dir = os.path.join(os.path.dirname(json_file), "data")
+        os.makedirs(data_dir, exist_ok=True)
+        arquivo_destino = os.path.join(data_dir, f"cartoes_arquivo_{ano}.json")
+
+        existentes = []
+        if os.path.exists(arquivo_destino):
+            with open(arquivo_destino, 'r', encoding='utf-8') as f:
+                existentes = _json.load(f)
+
+        existentes.extend(verificados)
+        with open(arquivo_destino, 'w', encoding='utf-8') as f:
+            _json.dump(existentes, f, indent=2, ensure_ascii=False)
+
+        # Manter apenas pendentes no arquivo principal
+        with open(json_file, 'w', encoding='utf-8') as f:
+            _json.dump(pendentes, f, indent=2, ensure_ascii=False)
+
+        return len(verificados), len(pendentes)
+
     except Exception:
-        return 0, 0
+        try:
+            s = stats_cartoes_db()
+            return s.get('verificados', 0), s.get('pendentes', 0)
+        except Exception:
+            return 0, 0
 
 
 # ─────────────────────────────────────────────────────────────────────────────

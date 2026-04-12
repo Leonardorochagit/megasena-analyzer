@@ -354,31 +354,10 @@ def preparar_dados_pycaret(df, numero_alvo, n_concursos=300):
     n_concursos = min(n_concursos, len(df) - 15)
 
     for i in range(n_concursos - 10):
-        # Features: estatísticas dos últimos 10 concursos
+        # Features geométricas dos últimos 10 concursos
         ultimos_10 = df.iloc[i+1:i+11]
 
-        # Contagem do número alvo nos últimos 10
-        contagem_alvo = 0
-        for _, row in ultimos_10.iterrows():
-            nums = [int(row[f'dez{j}']) for j in range(1, 7)]
-            if numero_alvo in nums:
-                contagem_alvo += 1
-
-        # Atraso do número (quantos jogos desde última vez)
-        atraso = 0
-        for idx in range(i+1, min(i+51, len(df))):
-            nums = [int(df.iloc[idx][f'dez{j}']) for j in range(1, 7)]
-            if numero_alvo in nums:
-                break
-            atraso += 1
-
-        # Contagem geral nos últimos 10
-        contagem_geral = Counter()
-        for _, row in ultimos_10.iterrows():
-            for j in range(1, 7):
-                contagem_geral[int(row[f'dez{j}'])] += 1
-
-        # Soma média e features geométricas dos últimos 10
+        # Propriedades geométricas de cada sorteio
         somas = []
         pares_list = []
         amplitudes = []
@@ -403,21 +382,17 @@ def preparar_dados_pycaret(df, numero_alvo, n_concursos=300):
         # Quadrante do número alvo (1-15, 16-30, 31-45, 46-60)
         quadrante_alvo = (numero_alvo - 1) // 15
 
-        # Features
+        # Features geométricas (base matemática sólida)
         features = {
-            'contagem_numero_10': contagem_alvo,
-            'atraso': atraso,
             'soma_media': np.mean(somas),
             'soma_std': np.std(somas),
-            'media_frequencia': np.mean(list(contagem_geral.values())),
-            'numero_par': 1 if numero_alvo % 2 == 0 else 0,
-            'numero_baixo': 1 if numero_alvo <= 30 else 0,
-            'dezena': numero_alvo // 10,
-            # Features geométricas
             'pares_media': np.mean(pares_list),
             'amplitude_media': np.mean(amplitudes),
             'amplitude_std': np.std(amplitudes),
             'max_seq_media': np.mean(max_seq_list),
+            'numero_par': 1 if numero_alvo % 2 == 0 else 0,
+            'numero_baixo': 1 if numero_alvo <= 30 else 0,
+            'dezena': numero_alvo // 10,
             'quadrante': quadrante_alvo,
         }
 

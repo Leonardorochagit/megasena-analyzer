@@ -282,12 +282,11 @@ def gerar_cartoes_proximo_concurso(todos_cartoes):
             if isinstance(data, dict):
                 data = [data]
             df = pd.DataFrame(data)
-            df['dezenas'] = df['dezenas'].apply(lambda x: str(x))
-            div = df['dezenas'].str.split(',')
-            for i in range(6):
-                df[f'dez{i+1}'] = div.str.get(i).apply(
-                    lambda x: x.replace("['", '').replace("'", '').replace("]", '').strip() if x else x
-                )
+            from helpers import converter_dezenas_para_int
+            for idx, row in df.iterrows():
+                dezenas = converter_dezenas_para_int(row.get('dezenas', []))
+                for j, d in enumerate(dezenas[:6], 1):
+                    df.at[idx, f'dez{j}'] = str(d)
             # Salvar localmente para próxima vez
             try:
                 os.makedirs("data", exist_ok=True)

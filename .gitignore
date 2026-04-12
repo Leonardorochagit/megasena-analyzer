@@ -43,6 +43,7 @@ logs/
 # ── Dados pessoais / locais (NÃO versionar) ────────────────
 # meus_cartoes.json       ← PRECISA estar no repo para GitHub Actions funcionar
 # historico_analises.json  ← PRECISA estar no repo para GitHub Actions funcionar
+piloto_config.json
 usuarios.json
 cartoes_concurso_*.json*
 data/simulacao_*.json

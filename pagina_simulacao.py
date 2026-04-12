@@ -599,7 +599,10 @@ def _aba_ranking(df):
     if cartoes_verificados:
         st.markdown("### 📊 Ranking dos Cartões Verificados")
 
+        import statistics as st_mod
+
         ranking = {}
+        acertos_por_est = {}
         for c in cartoes_verificados:
             est = c.get('estrategia', 'N/A')
             if est not in ranking:
@@ -608,10 +611,12 @@ def _aba_ranking(df):
                     'senas': 0, 'quinas': 0, 'quadras': 0,
                     'melhor_acerto': 0, 'concursos': set()
                 }
+                acertos_por_est[est] = []
             r = ranking[est]
             r['jogos'] += 1
             acertos = c.get('acertos', 0)
             r['total_acertos'] += acertos
+            acertos_por_est[est].append(acertos)
             r['melhor_acerto'] = max(r['melhor_acerto'], acertos)
             if acertos == 6:
                 r['senas'] += 1
@@ -622,16 +627,22 @@ def _aba_ranking(df):
             if c.get('concurso_alvo'):
                 r['concursos'].add(c['concurso_alvo'])
 
-        # Calcular score e média
+        # Calcular score, média e IC95%
         ranking_lista = []
         for est, dados in ranking.items():
-            media = dados['total_acertos'] / dados['jogos'] if dados['jogos'] > 0 else 0
-            # Score ponderado: sena=1000, quina=100, quadra=10, + média
+            n = dados['jogos']
+            media = dados['total_acertos'] / n if n > 0 else 0
+            desvio = st_mod.stdev(acertos_por_est[est]) if n > 1 else 0
+            ic95 = 1.96 * desvio / (n ** 0.5) if n > 1 else 0
             score = dados['senas'] * 1000 + dados['quinas'] * 100 + dados['quadras'] * 10 + media
             ranking_lista.append({
                 'Estratégia': _nome_estrategia(est),
-                'Jogos': dados['jogos'],
+                'est_key': est,
+                'Jogos': n,
                 'Média Acertos': round(media, 2),
+                'IC95% Inf': round(media - ic95, 3),
+                'IC95% Sup': round(media + ic95, 3),
+                'Desvio': round(desvio, 3),
                 'Senas': dados['senas'],
                 'Quinas': dados['quinas'],
                 'Quadras': dados['quadras'],
@@ -640,25 +651,50 @@ def _aba_ranking(df):
                 'Score': round(score, 2)
             })
 
-        ranking_lista.sort(key=lambda x: x['Score'], reverse=True)
+        ranking_lista.sort(key=lambda x: x['Média Acertos'], reverse=True)
 
-        # Destaque top 3
+        # Destaque top 3 com IC95%
         for i, item in enumerate(ranking_lista[:3]):
             medalha = ["🥇", "🥈", "🥉"][i]
-            cols = st.columns([1, 4, 2, 2, 2])
+            cols = st.columns([1, 3, 2, 2, 2])
             cols[0].markdown(f"### {medalha}")
             cols[1].markdown(f"**{item['Estratégia']}**\n\n{item['Jogos']} jogos em {item['Concursos']} concurso(s)")
             cols[2].metric("Média", f"{item['Média Acertos']:.2f}")
-            cols[3].metric("Melhor", f"{item['Melhor']} acertos")
+            cols[3].metric("IC 95%", f"[{item['IC95% Inf']:.2f}, {item['IC95% Sup']:.2f}]")
             cols[4].markdown(f"🏆 {item['Senas']}S | 🥈 {item['Quinas']}Q | 🥉 {item['Quadras']}Q")
             st.markdown("---")
 
-        # Tabela completa
-        df_ranking = pd.DataFrame(ranking_lista)
+        # Tabela completa com IC95%
+        df_ranking = pd.DataFrame([
+            {k: v for k, v in r.items() if k != 'est_key'}
+            for r in ranking_lista
+        ])
         st.dataframe(df_ranking, width="stretch", hide_index=True)
 
-        # Gráfico
-        st.markdown("### 📈 Comparativo Visual")
+        # Análise de significância
+        if len(ranking_lista) >= 2:
+            st.markdown("### 📐 Análise de Significância Estatística")
+            melhor = ranking_lista[0]
+            significancia = []
+            for r in ranking_lista[1:]:
+                sobrepoe = melhor['IC95% Inf'] < r['IC95% Sup'] and r['IC95% Inf'] < melhor['IC95% Sup']
+                significancia.append({
+                    'Comparação': f"{melhor['Estratégia']} vs {r['Estratégia']}",
+                    'Diferença': round(melhor['Média Acertos'] - r['Média Acertos'], 3),
+                    'Resultado': "Indistinguível" if sobrepoe else "Significativamente melhor",
+                })
+            df_sig = pd.DataFrame(significancia)
+            st.dataframe(df_sig, width="stretch", hide_index=True)
+
+            n_indist = sum(1 for s in significancia if s['Resultado'] == "Indistinguível")
+            if n_indist == len(significancia):
+                st.warning("Todas as estratégias estão dentro da margem de erro. Mais concursos necessários para conclusão.")
+            else:
+                n_melhores = len(significancia) - n_indist
+                st.success(f"A estratégia **{melhor['Estratégia']}** é significativamente melhor que {n_melhores} outra(s).")
+
+        # Gráfico com barras de erro
+        st.markdown("### 📈 Comparativo Visual (com intervalo de confiança)")
         df_grafico = pd.DataFrame({
             'Estratégia': [r['Estratégia'] for r in ranking_lista],
             'Média de Acertos': [r['Média Acertos'] for r in ranking_lista]

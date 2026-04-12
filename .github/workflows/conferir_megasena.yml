@@ -34,6 +34,30 @@ jobs:
         run: |
           git pull --rebase origin main || true
 
+      - name: Gerar piloto_config.json a partir de secrets
+        run: |
+          python -c "
+          import json, os
+          cfg = {
+            'ativo': True,
+            'intervalo': 60,
+            'qtd_numeros': 14,
+            'cartoes_por_est': 20,
+            'whatsapp_ativo': bool(os.environ.get('WHATSAPP_TELEFONE')),
+            'whatsapp_telefone': os.environ.get('WHATSAPP_TELEFONE', ''),
+            'whatsapp_apikey': os.environ.get('WHATSAPP_APIKEY', ''),
+            'bolao_threshold': 100000000,
+            'bolao_qtd_numeros': 13,
+            'bolao_estrategias': ['misto', 'consenso']
+          }
+          with open('piloto_config.json', 'w') as f:
+              json.dump(cfg, f, indent=2)
+          print('piloto_config.json gerado com sucesso')
+          "
+        env:
+          WHATSAPP_TELEFONE: ${{ secrets.WHATSAPP_TELEFONE }}
+          WHATSAPP_APIKEY: ${{ secrets.WHATSAPP_APIKEY }}
+
       - name: Executar conferência e notificação
         env:
           WHATSAPP_TELEFONE: ${{ secrets.WHATSAPP_TELEFONE }}
@@ -45,7 +69,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add meus_cartoes.json historico_analises.json piloto_config.json
+          git add meus_cartoes.json historico_analises.json
           git diff --cached --quiet || git commit -m "🤖 Auto: conferência $(date -u -d '-3 hours' +'%Y-%m-%d %H:%M') BRT"
           git pull --rebase origin main || true
           git push
