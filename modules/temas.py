@@ -230,21 +230,30 @@ def aplicar_tema():
         color: var(--text) !important;
     }}
 
-    /* Espacamento entre grupos do menu — nth-child dos separadores */
-    section[data-testid="stSidebar"] div[data-baseweb="radio"] div[role="radiogroup"] > label:nth-child(4),
-    section[data-testid="stSidebar"] div[data-baseweb="radio"] div[role="radiogroup"] > label:nth-child(10),
-    section[data-testid="stSidebar"] div[data-baseweb="radio"] div[role="radiogroup"] > label:nth-child(28) {{
-        margin-top: 14px !important;
-        opacity: 0.5 !important;
-        font-size: 0.72rem !important;
-        letter-spacing: 0.08em !important;
+    /* Espacamento entre grupos do menu — separadores nas posicoes 1, 5, 11, 29 */
+    section[data-testid="stSidebar"] div[data-baseweb="radio"] div[role="radiogroup"] > label:nth-child(1),
+    section[data-testid="stSidebar"] div[data-baseweb="radio"] div[role="radiogroup"] > label:nth-child(5),
+    section[data-testid="stSidebar"] div[data-baseweb="radio"] div[role="radiogroup"] > label:nth-child(11),
+    section[data-testid="stSidebar"] div[data-baseweb="radio"] div[role="radiogroup"] > label:nth-child(29) {{
+        margin-top: 6px !important;
+        margin-bottom: 2px !important;
+        opacity: 0.6 !important;
+        font-size: 0.75rem !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.06em !important;
         pointer-events: none !important;
         cursor: default !important;
+        background: none !important;
     }}
-    section[data-testid="stSidebar"] div[data-baseweb="radio"] div[role="radiogroup"] > label:nth-child(4) input,
-    section[data-testid="stSidebar"] div[data-baseweb="radio"] div[role="radiogroup"] > label:nth-child(10) input,
-    section[data-testid="stSidebar"] div[data-baseweb="radio"] div[role="radiogroup"] > label:nth-child(28) input {{
+    section[data-testid="stSidebar"] div[data-baseweb="radio"] div[role="radiogroup"] > label:nth-child(1) input,
+    section[data-testid="stSidebar"] div[data-baseweb="radio"] div[role="radiogroup"] > label:nth-child(5) input,
+    section[data-testid="stSidebar"] div[data-baseweb="radio"] div[role="radiogroup"] > label:nth-child(11) input,
+    section[data-testid="stSidebar"] div[data-baseweb="radio"] div[role="radiogroup"] > label:nth-child(29) input {{
         display: none !important;
+    }}
+    /* primeiro separador sem margem extra no topo */
+    section[data-testid="stSidebar"] div[data-baseweb="radio"] div[role="radiogroup"] > label:nth-child(1) {{
+        margin-top: 0 !important;
     }}
 </style>
 """
