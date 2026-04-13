@@ -27,7 +27,7 @@ from helpers import CUSTOS_CARTAO, versao_estrategia
 TODAS_ESTRATEGIAS = [
     'escada', 'atrasados', 'quentes',
     'equilibrado', 'misto', 'consenso', 'aleatorio_smart', 'sequencias', 'wheel',
-    'candidatos_ouro', 'momentum', 'vizinhanca', 'frequencia_desvio',
+    'ensemble', 'candidatos_ouro', 'momentum', 'vizinhanca', 'frequencia_desvio',
     'pares_frequentes', 'ciclos', 'ensemble_v2'
 ]
 
@@ -41,6 +41,7 @@ NOMES_ESTRATEGIAS = {
     'aleatorio_smart': '🎲 Aleatório Inteligente',
     'sequencias': '🧬 Sequências (Clusters+Vizinhança)',
     'wheel': '🎯 Wheel (Cobertura)',
+    'ensemble': '🧠 Ensemble',
     'candidatos_ouro': '🥇 Candidatos Ouro',
     'momentum': '🚀 Momentum',
     'vizinhanca': '📍 Vizinhança',
