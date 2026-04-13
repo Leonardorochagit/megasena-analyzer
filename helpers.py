@@ -64,6 +64,34 @@ VERSOES_ESTRATEGIAS = {
             '13 features incluindo combinação (soma, amplitude, paridade, consecutivos, quadrante)'
         ),
     },
+    'candidatos_ouro': {
+        'versao': '1.0',
+        'nota': 'Números frios + muito atrasados (score = deficit_freq + atraso/10)',
+    },
+    'momentum': {
+        'versao': '1.0',
+        'nota': 'Razão freq(20 últimos) / freq(100 últimos); ratio > 1.2 = acelerando',
+    },
+    'vizinhanca': {
+        'versao': '1.0',
+        'nota': 'Números ±2 do último sorteio como pool de candidatos',
+    },
+    'frequencia_desvio': {
+        'versao': '1.0',
+        'nota': 'Números com frequência > 1 desvio padrão acima da média',
+    },
+    'pares_frequentes': {
+        'versao': '1.0',
+        'nota': 'Top 30 pares co-ocorrentes nos últimos 200 sorteios → números únicos',
+    },
+    'ciclos': {
+        'versao': '1.0',
+        'nota': 'Números cujo gap atual está próximo do ciclo médio de aparição',
+    },
+    'ensemble_v2': {
+        'versao': '1.0',
+        'nota': 'Votação de 7 estratégias fortes (sem escada/atrasados); top votados com filtros',
+    },
     'Manual': {
         'versao': '-',
         'nota': 'Cartão inserido manualmente pelo usuário',

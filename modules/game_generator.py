@@ -7,7 +7,7 @@ Geração de jogos com diferentes estratégias
 
 import random
 import numpy as np
-from collections import Counter
+from collections import Counter, defaultdict
 from modules.statistics import (
     calcular_escada_temporal,
     calcular_candidatos_ouro,
@@ -126,6 +126,116 @@ def gerar_jogo(estrategia, contagem_total, contagem_recente, df_atrasos, df=None
         # Cobertura combinatória: retorna um jogo do wheel gerado internamente
         jogo = _gerar_jogo_wheel(contagem_total, contagem_recente, df_atrasos, df)
 
+    elif estrategia == 'candidatos_ouro':
+        cands = calcular_candidatos_ouro(contagem_total, df_atrasos)
+        if len(cands) >= 6:
+            candidatos = [c['numero'] for c in cands[:20]]
+            jogo = sorted(random.sample(candidatos, 6))
+        else:
+            candidatos = contagem_total.sort_values().head(20).index.tolist()
+            jogo = sorted(random.sample(candidatos, 6))
+
+    elif estrategia == 'momentum':
+        # Razão freq_recente(20) / freq_recente(100); ratio > 1.2 = acelerando
+        if df is not None and len(df) >= 100:
+            freq20 = Counter()
+            for i in range(1, 7):
+                freq20.update(df.head(20)[f'dez{i}'].astype(int).tolist())
+            freq100 = Counter()
+            for i in range(1, 7):
+                freq100.update(df.head(100)[f'dez{i}'].astype(int).tolist())
+            ratios = {}
+            for num in range(1, 61):
+                f20 = freq20.get(num, 0) / (20 * 6 / 60)
+                f100 = freq100.get(num, 0) / (100 * 6 / 60)
+                ratios[num] = f20 / f100 if f100 > 0 else f20
+            candidatos = sorted(ratios, key=ratios.get, reverse=True)[:20]
+            jogo = sorted(random.sample(candidatos, 6))
+        else:
+            candidatos = contagem_recente.head(20).index.tolist()
+            jogo = sorted(random.sample(candidatos, 6))
+
+    elif estrategia == 'vizinhanca':
+        # Números ±2 do último sorteio como candidatos
+        if df is not None and len(df) >= 1:
+            ultimo = [int(df.iloc[0][f'dez{i}']) for i in range(1, 7)]
+            viz = set()
+            for n in ultimo:
+                for delta in [-2, -1, 1, 2]:
+                    v = n + delta
+                    if 1 <= v <= 60 and v not in ultimo:
+                        viz.add(v)
+            candidatos = list(viz)
+            if len(candidatos) >= 6:
+                jogo = sorted(random.sample(candidatos, 6))
+            else:
+                extras = [n for n in range(1, 61) if n not in candidatos and n not in ultimo]
+                candidatos.extend(random.sample(extras, 6 - len(candidatos)))
+                jogo = sorted(random.sample(candidatos, 6))
+        else:
+            jogo = sorted(random.sample(range(1, 61), 6))
+
+    elif estrategia == 'frequencia_desvio':
+        # Números com freq real > 1 desvio padrão acima da esperada
+        freqs = np.array([contagem_total.get(n, 0) for n in range(1, 61)])
+        media = freqs.mean()
+        desvio = freqs.std()
+        candidatos = [n for n in range(1, 61) if contagem_total.get(n, 0) > media + desvio]
+        if len(candidatos) < 6:
+            candidatos = [n for n in range(1, 61) if contagem_total.get(n, 0) > media]
+        if len(candidatos) >= 6:
+            jogo = sorted(random.sample(candidatos[:20], min(6, len(candidatos[:20]))))
+        else:
+            jogo = sorted(random.sample(range(1, 61), 6))
+
+    elif estrategia == 'pares_frequentes':
+        # Pares (i,j) mais co-ocorrentes; top pares → números únicos (vetorizado)
+        if df is not None and len(df) >= 50:
+            cols = [f'dez{i}' for i in range(1, 7)]
+            mat = df.head(200)[cols].values.astype(int)
+            co_pairs = Counter()
+            for row in mat:
+                sr = sorted(row)
+                for i in range(6):
+                    for j in range(i + 1, 6):
+                        co_pairs[(sr[i], sr[j])] += 1
+            top_pairs = co_pairs.most_common(30)
+            candidatos_set = set()
+            for (a, b), _ in top_pairs:
+                candidatos_set.add(a)
+                candidatos_set.add(b)
+            candidatos = list(candidatos_set)
+            if len(candidatos) >= 6:
+                jogo = sorted(random.sample(candidatos[:20], 6))
+            else:
+                jogo = sorted(random.sample(range(1, 61), 6))
+        else:
+            jogo = sorted(random.sample(range(1, 61), 6))
+
+    elif estrategia == 'ciclos':
+        # Números cujo gap atual está próximo do ciclo médio (vetorizado)
+        if df is not None and len(df) >= 100:
+            cols = [f'dez{i}' for i in range(1, 7)]
+            mat = df[cols].values.astype(int)
+            scores = {}
+            for num in range(1, 61):
+                aparicoes = np.where(np.any(mat == num, axis=1))[0]
+                if len(aparicoes) >= 3:
+                    gaps = np.diff(aparicoes)
+                    ciclo_medio = gaps.mean()
+                    proximidade = aparicoes[0] / ciclo_medio if ciclo_medio > 0 else 0
+                    scores[num] = proximidade
+            candidatos = sorted(scores, key=scores.get, reverse=True)[:20]
+            if len(candidatos) >= 6:
+                jogo = sorted(random.sample(candidatos, 6))
+            else:
+                jogo = sorted(random.sample(range(1, 61), 6))
+        else:
+            jogo = sorted(random.sample(range(1, 61), 6))
+
+    elif estrategia == 'ensemble_v2':
+        jogo = gerar_jogo_ensemble_v2(contagem_total, contagem_recente, df_atrasos, df=df)
+
     else:  # misto
         atrasados = contagem_total.sort_values().head(15).index.tolist()
         quentes = contagem_recente.head(15).index.tolist()
@@ -220,6 +330,89 @@ def _gerar_jogo_sem_filtro(estrategia, contagem_total, contagem_recente, df_atra
         if len(consenso_nums) >= 6:
             return sorted(random.sample(consenso_nums, 6))
         return sorted(random.sample(contagem_total.sort_values().head(20).index.tolist(), 6))
+    elif estrategia == 'candidatos_ouro':
+        cands = calcular_candidatos_ouro(contagem_total, df_atrasos)
+        if len(cands) >= 6:
+            candidatos = [c['numero'] for c in cands[:20]]
+            return sorted(random.sample(candidatos, 6))
+        return sorted(random.sample(contagem_total.sort_values().head(20).index.tolist(), 6))
+    elif estrategia == 'momentum':
+        if df is not None and len(df) >= 100:
+            freq20 = Counter()
+            for i in range(1, 7):
+                freq20.update(df.head(20)[f'dez{i}'].astype(int).tolist())
+            freq100 = Counter()
+            for i in range(1, 7):
+                freq100.update(df.head(100)[f'dez{i}'].astype(int).tolist())
+            ratios = {}
+            for num in range(1, 61):
+                f20 = freq20.get(num, 0) / (20 * 6 / 60)
+                f100 = freq100.get(num, 0) / (100 * 6 / 60)
+                ratios[num] = f20 / f100 if f100 > 0 else f20
+            candidatos = sorted(ratios, key=ratios.get, reverse=True)[:20]
+            return sorted(random.sample(candidatos, 6))
+        return sorted(random.sample(contagem_recente.head(20).index.tolist(), 6))
+    elif estrategia == 'vizinhanca':
+        if df is not None and len(df) >= 1:
+            ultimo = [int(df.iloc[0][f'dez{i}']) for i in range(1, 7)]
+            viz = set()
+            for n in ultimo:
+                for delta in [-2, -1, 1, 2]:
+                    v = n + delta
+                    if 1 <= v <= 60 and v not in ultimo:
+                        viz.add(v)
+            candidatos = list(viz)
+            if len(candidatos) >= 6:
+                return sorted(random.sample(candidatos, 6))
+            extras = [n for n in range(1, 61) if n not in candidatos and n not in ultimo]
+            candidatos.extend(random.sample(extras, 6 - len(candidatos)))
+            return sorted(random.sample(candidatos, 6))
+        return sorted(random.sample(range(1, 61), 6))
+    elif estrategia == 'frequencia_desvio':
+        freqs = np.array([contagem_total.get(n, 0) for n in range(1, 61)])
+        media = freqs.mean()
+        desvio = freqs.std()
+        candidatos = [n for n in range(1, 61) if contagem_total.get(n, 0) > media + desvio]
+        if len(candidatos) < 6:
+            candidatos = [n for n in range(1, 61) if contagem_total.get(n, 0) > media]
+        if len(candidatos) >= 6:
+            return sorted(random.sample(candidatos[:20], min(6, len(candidatos[:20]))))
+        return sorted(random.sample(range(1, 61), 6))
+    elif estrategia == 'pares_frequentes':
+        if df is not None and len(df) >= 50:
+            cols = [f'dez{i}' for i in range(1, 7)]
+            mat = df.head(200)[cols].values.astype(int)
+            co_pairs = Counter()
+            for row in mat:
+                sr = sorted(row)
+                for i_idx in range(6):
+                    for j_idx in range(i_idx + 1, 6):
+                        co_pairs[(sr[i_idx], sr[j_idx])] += 1
+            top_pairs = co_pairs.most_common(30)
+            cands_set = set()
+            for (a, b), _ in top_pairs:
+                cands_set.add(a)
+                cands_set.add(b)
+            candidatos = list(cands_set)
+            if len(candidatos) >= 6:
+                return sorted(random.sample(candidatos[:20], 6))
+        return sorted(random.sample(range(1, 61), 6))
+    elif estrategia == 'ciclos':
+        if df is not None and len(df) >= 100:
+            cols = [f'dez{i}' for i in range(1, 7)]
+            mat = df[cols].values.astype(int)
+            scores = {}
+            for num in range(1, 61):
+                aparicoes = np.where(np.any(mat == num, axis=1))[0]
+                if len(aparicoes) >= 3:
+                    gaps = np.diff(aparicoes)
+                    ciclo_medio = gaps.mean()
+                    proximidade = aparicoes[0] / ciclo_medio if ciclo_medio > 0 else 0
+                    scores[num] = proximidade
+            candidatos = sorted(scores, key=scores.get, reverse=True)[:20]
+            if len(candidatos) >= 6:
+                return sorted(random.sample(candidatos, 6))
+        return sorted(random.sample(range(1, 61), 6))
     else:  # misto e outros
         atrasados = contagem_total.sort_values().head(15).index.tolist()
         quentes_list = contagem_recente.head(15).index.tolist()
@@ -237,11 +430,17 @@ def _gerar_jogo_sem_filtro(estrategia, contagem_total, contagem_recente, df_atra
         return sorted(jogo[:6])
 
 
+# Cache para clusters de sequências (evita recomputar KMeans por cartão)
+_cache_sequencias = {'key': None, 'cluster_dict': None, 'ultimo_sorteio': None}
+
+
 def _gerar_jogo_sequencias(df, contagem_total):
     """
     Gera um jogo de 6 números usando clusters de co-ocorrência + vizinhança + filtros.
     Versão standalone sem dependência do Streamlit.
     """
+    global _cache_sequencias
+
     if df is None or len(df) < 50:
         # Fallback: aleatório com filtros básicos
         for _ in range(100):
@@ -250,44 +449,50 @@ def _gerar_jogo_sequencias(df, contagem_total):
                 return jogo
         return sorted(random.sample(range(1, 61), 6))
 
-    # Construir matriz de co-ocorrência
-    cols = [f'dez{i}' for i in range(1, 7)]
-    co = np.zeros((61, 61), dtype=int)
+    cache_key = len(df)
+    if _cache_sequencias['key'] == cache_key:
+        cluster_dict = _cache_sequencias['cluster_dict']
+        ultimo_sorteio = _cache_sequencias['ultimo_sorteio']
+    else:
+        # Construir matriz de co-ocorrência
+        cols = [f'dez{i}' for i in range(1, 7)]
+        co = np.zeros((61, 61), dtype=int)
 
-    for col in cols:
-        if col not in df.columns:
-            return sorted(random.sample(range(1, 61), 6))
+        for col in cols:
+            if col not in df.columns:
+                return sorted(random.sample(range(1, 61), 6))
 
-    mat = df[cols].values.astype(int)
-    for row in mat:
-        for i in range(6):
-            for j in range(i + 1, 6):
-                co[row[i]][row[j]] += 1
-                co[row[j]][row[i]] += 1
+        mat = df[cols].values.astype(int)
+        for row in mat:
+            for i in range(6):
+                for j in range(i + 1, 6):
+                    co[row[i]][row[j]] += 1
+                    co[row[j]][row[i]] += 1
 
-    # KMeans em 4 clusters
-    try:
-        from sklearn.preprocessing import StandardScaler
-        from sklearn.cluster import KMeans
+        # KMeans em 4 clusters
+        try:
+            from sklearn.preprocessing import StandardScaler
+            from sklearn.cluster import KMeans
 
-        features = co[1:, 1:]
-        scaled = StandardScaler().fit_transform(features)
-        clusters = KMeans(n_clusters=4, random_state=42, n_init=10).fit_predict(scaled)
+            features = co[1:, 1:]
+            scaled = StandardScaler().fit_transform(features)
+            clusters = KMeans(n_clusters=4, random_state=42, n_init=10).fit_predict(scaled)
 
-        cluster_dict = {}
-        for c in range(4):
-            cluster_dict[c] = [d + 1 for d in range(60) if clusters[d] == c]
-    except Exception:
-        # Fallback: dividir em 4 faixas
-        cluster_dict = {
-            0: list(range(1, 16)),
-            1: list(range(16, 31)),
-            2: list(range(31, 46)),
-            3: list(range(46, 61)),
-        }
+            cluster_dict = {}
+            for c in range(4):
+                cluster_dict[c] = [d + 1 for d in range(60) if clusters[d] == c]
+        except Exception:
+            # Fallback: dividir em 4 faixas
+            cluster_dict = {
+                0: list(range(1, 16)),
+                1: list(range(16, 31)),
+                2: list(range(31, 46)),
+                3: list(range(46, 61)),
+            }
 
-    # Último sorteio para vizinhança
-    ultimo_sorteio = [int(df.iloc[0][f'dez{i}']) for i in range(1, 7)]
+        # Último sorteio para vizinhança
+        ultimo_sorteio = [int(df.iloc[0][f'dez{i}']) for i in range(1, 7)]
+        _cache_sequencias = {'key': cache_key, 'cluster_dict': cluster_dict, 'ultimo_sorteio': ultimo_sorteio}
 
     # Gerar jogo: 1-2 de cada cluster + vizinhança + filtros
     for _ in range(200):
@@ -437,6 +642,43 @@ def gerar_jogo_ensemble(contagem_total, contagem_recente, df_atrasos, df=None):
             return jogo
 
     # Fallback: top 6 mais votados
+    return sorted(candidatos[:6])
+
+
+def gerar_jogo_ensemble_v2(contagem_total, contagem_recente, df_atrasos, df=None):
+    """
+    Ensemble V2: vota apenas com as 7 melhores estratégias (exclui escada e atrasados).
+    Estratégias votantes: quentes, sequencias, consenso, atraso_recente,
+    candidatos_ouro, momentum, vizinhanca.
+    """
+    estrategias = [
+        'quentes', 'frequencia_desvio', 'consenso', 'atraso_recente',
+        'candidatos_ouro', 'momentum', 'vizinhanca'
+    ]
+
+    votos = Counter()
+    for est in estrategias:
+        try:
+            jogo = gerar_jogo(est, contagem_total, contagem_recente, df_atrasos, df=df)
+            for n in jogo:
+                votos[n] += 1
+        except Exception:
+            pass
+
+    candidatos = sorted(
+        votos.keys(),
+        key=lambda n: (votos[n], contagem_recente.get(n, 0)),
+        reverse=True
+    )
+
+    for _ in range(100):
+        pool = candidatos[:20]
+        jogo = sorted(random.sample(pool, 6))
+        pares = sum(1 for n in jogo if n % 2 == 0)
+        soma = sum(jogo)
+        if 2 <= pares <= 4 and 140 <= soma <= 210:
+            return jogo
+
     return sorted(candidatos[:6])
 
 

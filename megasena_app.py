@@ -27,6 +27,7 @@ from pagina_simulacao import pagina_simulacao
 from pagina_analise_sequencias import pagina_analise_sequencias
 from pagina_piloto_automatico import pagina_piloto_automatico
 from pagina_backtesting import pagina_backtesting
+from pagina_validacao_visual import pagina_validacao_visual
 from pagina_admin_banco import pagina_admin_banco
 
 warnings.filterwarnings('ignore')
@@ -112,6 +113,7 @@ def exibir_interface_principal():
             "🔄 Análise Escada",
             "🧬 Análise de Sequências",
             "📊 Backtesting Estatístico",
+            "🏆 Resultados Validação",
             "🗄️ Admin Banco de Dados",
             "⏰ Números Atrasados",
             "🔥 Números Quentes",
@@ -196,6 +198,9 @@ def exibir_interface_principal():
 
     elif menu == "📊 Backtesting Estatístico":
         pagina_backtesting(df)
+
+    elif menu == "🏆 Resultados Validação":
+        pagina_validacao_visual(df)
 
     elif menu == "🗄️ Admin Banco de Dados":
         pagina_admin_banco()

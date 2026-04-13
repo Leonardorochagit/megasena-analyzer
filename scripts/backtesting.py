@@ -51,7 +51,10 @@ from modules import statistics as stats
 ESTRATEGIAS_PADRAO = [
     'escada', 'atrasados', 'quentes',
     'equilibrado', 'misto', 'consenso',
-    'aleatorio_smart', 'ensemble', 'sequencias'
+    'aleatorio_smart', 'ensemble', 'sequencias',
+    'candidatos_ouro', 'momentum', 'vizinhanca',
+    'frequencia_desvio', 'pares_frequentes', 'ciclos',
+    'ensemble_v2'
 ]
 
 

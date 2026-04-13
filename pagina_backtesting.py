@@ -38,6 +38,13 @@ NOMES_ESTRATEGIAS = {
     'sequencias': '🧬 Sequências (Clusters)',
     'ensemble': '🧠 Ensemble',
     'wheel': '🎯 Wheel',
+    'candidatos_ouro': '🥇 Candidatos Ouro',
+    'momentum': '🚀 Momentum',
+    'vizinhanca': '📍 Vizinhança',
+    'frequencia_desvio': '📊 Frequência Desvio',
+    'pares_frequentes': '👫 Pares Frequentes',
+    'ciclos': '🔁 Ciclos',
+    'ensemble_v2': '🧠✨ Ensemble V2',
 }
 
 
