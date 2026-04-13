@@ -125,30 +125,28 @@ def exibir_interface_principal():
     if "menu_ativo" not in st.session_state:
         st.session_state["menu_ativo"] = "\U0001f916 Piloto Automático"
 
-    menu_ativo = st.session_state["menu_ativo"]
+    # Chaves simples para os radios (evita emojis em keys)
+    GRUPO_KEYS = {titulo: f"rg_{i}" for i, titulo in enumerate(GRUPOS)}
 
-    # Fase 1: detectar nova seleção ANTES de renderizar os widgets
-    novo = None
-    grupo_novo = None
+    def _on_grupo_change(grupo_titulo):
+        """Callback: roda ANTES dos widgets renderizarem no próximo rerun."""
+        key = GRUPO_KEYS[grupo_titulo]
+        val = st.session_state.get(key)
+        if val is not None:
+            st.session_state["menu_ativo"] = val
+            # Limpar seleção dos outros grupos
+            for outro, k in GRUPO_KEYS.items():
+                if outro != grupo_titulo:
+                    st.session_state[k] = None
+
     for titulo, itens in GRUPOS.items():
-        val = st.session_state.get(f"rg_{titulo}")
-        if val is not None and val != menu_ativo:
-            novo = val
-            grupo_novo = titulo
-            break
-
-    if novo is not None:
-        st.session_state["menu_ativo"] = novo
-        menu_ativo = novo
-        # Limpar outros grupos antes de renderizar (sem erro de "já instanciado")
-        for outro in GRUPOS:
-            if outro != grupo_novo:
-                st.session_state[f"rg_{outro}"] = None
-
-    # Fase 2: renderizar widgets
-    for titulo, itens in GRUPOS.items():
+        key = GRUPO_KEYS[titulo]
         st.sidebar.markdown(f"**{titulo}**")
-        st.sidebar.radio("", itens, key=f"rg_{titulo}", index=None, label_visibility="collapsed")
+        st.sidebar.radio(
+            "", itens, key=key, index=None,
+            on_change=_on_grupo_change, args=(titulo,),
+            label_visibility="collapsed"
+        )
         st.sidebar.markdown("---")
 
     menu = st.session_state["menu_ativo"]
