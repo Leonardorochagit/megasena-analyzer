@@ -127,19 +127,28 @@ def exibir_interface_principal():
 
     menu_ativo = st.session_state["menu_ativo"]
 
+    # Fase 1: detectar nova seleção ANTES de renderizar os widgets
+    novo = None
+    grupo_novo = None
     for titulo, itens in GRUPOS.items():
-        key = f"rg_{titulo}"
+        val = st.session_state.get(f"rg_{titulo}")
+        if val is not None and val != menu_ativo:
+            novo = val
+            grupo_novo = titulo
+            break
+
+    if novo is not None:
+        st.session_state["menu_ativo"] = novo
+        menu_ativo = novo
+        # Limpar outros grupos antes de renderizar (sem erro de "já instanciado")
+        for outro in GRUPOS:
+            if outro != grupo_novo:
+                st.session_state[f"rg_{outro}"] = None
+
+    # Fase 2: renderizar widgets
+    for titulo, itens in GRUPOS.items():
         st.sidebar.markdown(f"**{titulo}**")
-        escolha = st.sidebar.radio(
-            "", itens, key=key, index=None, label_visibility="collapsed"
-        )
-        if escolha is not None and escolha != menu_ativo:
-            # Limpa seleção de todos os outros grupos
-            for outro in GRUPOS:
-                if outro != titulo:
-                    st.session_state[f"rg_{outro}"] = None
-            st.session_state["menu_ativo"] = escolha
-            st.rerun()
+        st.sidebar.radio("", itens, key=f"rg_{titulo}", index=None, label_visibility="collapsed")
         st.sidebar.markdown("---")
 
     menu = st.session_state["menu_ativo"]
