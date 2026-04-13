@@ -106,16 +106,16 @@ def exibir_interface_principal():
     # Menu de navegação por grupos com session_state
     GRUPOS = {
         "\U0001f3e0 SISTEMA": [
-            "01. \U0001f916 Piloto Automático",
-            "02. \U0001f3af Simulação & Conferência",
-            "03. \u2705 Verificar Resultados",
+            "\U0001f916 Piloto Automático",
+            "\U0001f3af Simulação & Conferência",
+            "\u2705 Verificar Resultados",
         ],
         "\U0001f4ca ANÁLISE": [
-            "04. \U0001f4ca Backtesting Estatístico",
-            "05. \U0001f3c6 Resultados Validação",
-            "06. \U0001f504 Análise Escada",
-            "07. \U0001f9ec Análise de Sequências",
-            "08. \U0001f4ca Relatório Geral",
+            "\U0001f4ca Backtesting Estatístico",
+            "\U0001f3c6 Resultados Validação",
+            "\U0001f504 Análise Escada",
+            "\U0001f9ec Análise de Sequências",
+            "\U0001f4ca Relatório Geral",
         ],
         "\U0001f3b2 ESTRATÉGIAS": [
             "09. \U0001f9e0 Ensemble",
@@ -137,13 +137,13 @@ def exibir_interface_principal():
             "25. \U0001f3af Wheel Cobertura",
         ],
         "\u2699\ufe0f ADMIN": [
-            "26. \U0001f916 AutoML PyCaret",
-            "27. \U0001f5c4\ufe0f Admin Banco de Dados",
+            "\U0001f916 AutoML PyCaret",
+            "\U0001f5c4\ufe0f Admin Banco de Dados",
         ],
     }
 
     if "menu_ativo" not in st.session_state:
-        st.session_state["menu_ativo"] = "01. \U0001f916 Piloto Automático"
+        st.session_state["menu_ativo"] = "\U0001f916 Piloto Automático"
 
     menu_ativo = st.session_state["menu_ativo"]
 
@@ -298,32 +298,32 @@ def exibir_interface_principal():
     # Verificar se há navegação via session state
     if 'navegar_para' in st.session_state:
         if st.session_state['navegar_para'] == 'verificar_resultados':
-            st.session_state["menu_ativo"] = "03. ✅ Verificar Resultados"
-            menu = "03. ✅ Verificar Resultados"
+            st.session_state["menu_ativo"] = "✅ Verificar Resultados"
+            menu = "✅ Verificar Resultados"
         del st.session_state['navegar_para']
 
-    if menu == "01. 🤖 Piloto Automático":
+    if menu == "🤖 Piloto Automático":
         pagina_piloto_automatico(df)
 
-    elif menu == "02. 🎯 Simulação & Conferência":
+    elif menu == "🎯 Simulação & Conferência":
         pagina_simulacao(df)
 
-    elif menu == "03. ✅ Verificar Resultados":
+    elif menu == "✅ Verificar Resultados":
         pagina_verificar_resultados(df)
 
-    elif menu == "04. 📊 Backtesting Estatístico":
+    elif menu == "📊 Backtesting Estatístico":
         pagina_backtesting(df)
 
-    elif menu == "05. 🏆 Resultados Validação":
+    elif menu == "🏆 Resultados Validação":
         pagina_validacao_visual(df)
 
-    elif menu == "06. 🔄 Análise Escada":
+    elif menu == "🔄 Análise Escada":
         pagina_escada_temporal(df)
 
-    elif menu == "07. 🧬 Análise de Sequências":
+    elif menu == "🧬 Análise de Sequências":
         pagina_analise_sequencias(df)
 
-    elif menu == "08. 📊 Relatório Geral":
+    elif menu == "📊 Relatório Geral":
         pagina_relatorio_geral(df)
 
     elif menu == "09. 🧠 Ensemble":
@@ -377,10 +377,10 @@ def exibir_interface_principal():
     elif menu == "25. 🎯 Wheel Cobertura":
         pagina_analise_estrategia(df, "Wheel (Cobertura)", "wheel")
 
-    elif menu == "26. 🤖 AutoML PyCaret":
+    elif menu == "🤖 AutoML PyCaret":
         pagina_automl(df)
 
-    elif menu == "27. 🗄️ Admin Banco de Dados":
+    elif menu == "🗄️ Admin Banco de Dados":
         pagina_admin_banco()
 
 
