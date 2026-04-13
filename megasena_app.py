@@ -5,7 +5,7 @@
 Versão focada em análise escada e verificação de resultados
 Executa sem necessidade de senha
 
-Execute com: streamlit run app_modular.py
+Execute com: streamlit run megasena_app.py
 ================================================================================
 """
 
@@ -16,6 +16,7 @@ import streamlit as st
 from modules import data_manager as dm
 from modules import statistics as stats
 from modules import auth
+from modules.temas import aplicar_tema, renderizar_seletor_tema
 
 # Importar páginas separadas
 from pagina_escada_temporal import pagina_escada_temporal
@@ -43,33 +44,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# CSS personalizado
-st.markdown("""
-<style>
-    .main-header {
-        font-size: 2.5rem;
-        color: #1f77b4;
-        text-align: center;
-        padding: 1rem;
-        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-weight: bold;
-    }
-
-    .metric-card {
-        background-color: #f0f2f6;
-        padding: 1rem;
-        border-radius: 0.5rem;
-        border-left: 4px solid #1f77b4;
-    }
-
-    .stButton>button {
-        border-radius: 10px;
-        font-weight: bold;
-    }
-</style>
-""", unsafe_allow_html=True)
+aplicar_tema()
 
 
 # =============================================================================
@@ -100,7 +75,12 @@ def exibir_interface_principal():
     # SIDEBAR
     # =========================================================================
     st.sidebar.title("🎰 Mega Sena Analyzer")
-    st.sidebar.caption("Versão Modular 3.0")
+    st.sidebar.caption("Versão 3.7.0")
+    st.sidebar.markdown("---")
+
+    with st.sidebar.expander("🎨 Tema"):
+        renderizar_seletor_tema()
+
     st.sidebar.markdown("---")
 
     # Menu de navegação por grupos com session_state
@@ -149,13 +129,15 @@ def exibir_interface_principal():
 
     for titulo, itens in GRUPOS.items():
         key = f"rg_{titulo}"
-        if menu_ativo not in itens:
-            st.session_state[key] = None
         st.sidebar.markdown(f"**{titulo}**")
         escolha = st.sidebar.radio(
             "", itens, key=key, index=None, label_visibility="collapsed"
         )
         if escolha is not None and escolha != menu_ativo:
+            # Limpa seleção de todos os outros grupos
+            for outro in GRUPOS:
+                if outro != titulo:
+                    st.session_state[f"rg_{outro}"] = None
             st.session_state["menu_ativo"] = escolha
             st.rerun()
         st.sidebar.markdown("---")
