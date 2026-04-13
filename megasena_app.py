@@ -137,8 +137,8 @@ def exibir_interface_principal():
     )
 
     if escolha in SEPARADORES:
-        # Clicou num separador — ignorar, manter pagina atual
-        st.session_state["radio_menu_principal"] = st.session_state["menu_ativo"]
+        st.session_state["menu_ativo"] = st.session_state.get("menu_ativo", "🤖 Piloto Automático")
+        st.rerun()
     elif escolha != st.session_state["menu_ativo"]:
         st.session_state["menu_ativo"] = escolha
         st.rerun()

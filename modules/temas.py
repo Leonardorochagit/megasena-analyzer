@@ -107,12 +107,11 @@ def renderizar_seletor_tema():
     labels = [f"{TEMAS[n]['icon']} {TEMAS[n]['label']}" for n in nomes]
     idx_atual = nomes.index(st.session_state["tema_ativo"])
 
-    escolha_label = st.sidebar.radio(
-        "Tema",
+    escolha_label = st.sidebar.selectbox(
+        "🎨 Tema",
         labels,
         index=idx_atual,
-        key="radio_tema",
-        label_visibility="visible",
+        key="select_tema",
     )
     nome_escolhido = nomes[labels.index(escolha_label)]
     if nome_escolhido != st.session_state["tema_ativo"]:
