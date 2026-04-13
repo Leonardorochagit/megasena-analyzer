@@ -125,28 +125,27 @@ def exibir_interface_principal():
     if "menu_ativo" not in st.session_state:
         st.session_state["menu_ativo"] = "\U0001f916 Piloto Automático"
 
-    # Chaves simples para os radios (evita emojis em keys)
-    GRUPO_KEYS = {titulo: f"rg_{i}" for i, titulo in enumerate(GRUPOS)}
+    # Construir lista flat: todos os itens de todos os grupos
+    TODOS_ITENS = []
+    for itens in GRUPOS.values():
+        TODOS_ITENS.extend(itens)
 
-    def _on_grupo_change(grupo_titulo):
-        """Callback: roda ANTES dos widgets renderizarem no próximo rerun."""
-        key = GRUPO_KEYS[grupo_titulo]
-        val = st.session_state.get(key)
-        if val is not None:
-            st.session_state["menu_ativo"] = val
-            # Limpar seleção dos outros grupos
-            for outro, k in GRUPO_KEYS.items():
-                if outro != grupo_titulo:
-                    st.session_state[k] = None
+    menu_ativo = st.session_state["menu_ativo"]
 
     for titulo, itens in GRUPOS.items():
-        key = GRUPO_KEYS[titulo]
         st.sidebar.markdown(f"**{titulo}**")
-        st.sidebar.radio(
-            "", itens, key=key, index=None,
-            on_change=_on_grupo_change, args=(titulo,),
+        # Se o item ativo está nesse grupo, seleciona ele; senão nenhum
+        idx = None
+        if menu_ativo in itens:
+            idx = itens.index(menu_ativo)
+        escolha = st.sidebar.radio(
+            titulo, itens, index=idx,
             label_visibility="collapsed"
         )
+        # Se o user clicou em algo neste grupo (e não é o que já estava ativo)
+        if escolha is not None and escolha != menu_ativo and escolha in itens:
+            st.session_state["menu_ativo"] = escolha
+            st.rerun()
         st.sidebar.markdown("---")
 
     menu = st.session_state["menu_ativo"]
