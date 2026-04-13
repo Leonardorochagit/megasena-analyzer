@@ -143,35 +143,118 @@ def exibir_interface_principal():
     # Info do sistema
     with st.sidebar.expander("ℹ️ Sobre o Sistema"):
         st.markdown("""
-        **Mega Sena Analyzer v3.4**
+        **Mega Sena Analyzer v3.5**
 
-        **🤖 Piloto Automático** (NOVO!)
-        - Roda sozinho: confere e gera automaticamente
-        - Dashboard em tempo real
-        
+        ---
+        ### 🧭 Páginas principais
+
+        **🤖 Piloto Automático**
+        Roda automaticamente: confere o último resultado, gera cartões para o
+        próximo concurso e salva tudo. Ideal para usar no dia a dia sem
+        precisar entrar em cada página.
+
         **🎯 Simulação & Conferência**
-        - Gere jogos de TODAS as estratégias
-        - Escolha de 6 a 20 números por cartão
-        - Conferência automática de resultados
-        - Ranking de melhores estratégias
+        Gere jogos com qualquer estratégia, escolha de 6 a 20 números por
+        cartão e confira os resultados assim que saírem.
 
-        **Estratégias disponíveis:**
-        - 🔄 Escada Temporal
-        - ⏰ Números Atrasados
-        - 🔥 Números Quentes
-        - ⏳ Atraso Recente
-        - ⚖️ Equilibrado
-        - 🎨 Misto
-        - 🤝 Consenso
-        - 🎲 Aleatório Inteligente
-        - 🤖 AutoML (Machine Learning)
+        **📊 Backtesting Estatístico**
+        Testa as estratégias nos últimos N concursos com dados históricos reais
+        (sem data leakage) e compara as distribuições de acertos.
 
-        **Fluxo recomendado:**
-        1. Vá em **Simulação & Conferência**
-        2. Escolha qtd de números (6-20)
-        3. Gere simulação automática
-        4. Quando sair o resultado, confira
-        5. Veja qual estratégia foi melhor!
+        **🏆 Resultados Validação**
+        Visualiza o resultado do backtesting salvo: contagem absoluta de
+        ternos, quadras, quinas e senas por estratégia, com gráficos e ranking.
+
+        ---
+        ### 🎲 Estratégias disponíveis
+
+        **🔄 Escada Temporal**
+        Usa as inversões reais da escada temporal — números que "subiram" na
+        fila de espera e estão na vez de sair.
+
+        **⏰ Números Atrasados**
+        Top-20 números que aparecem com menos frequência no histórico total.
+        Aposta na reversão à média no longo prazo.
+
+        **🔥 Números Quentes**
+        Top-20 mais frequentes nos últimos 50 sorteios. Segue o momentum
+        recente da frequência.
+
+        **⏳ Atraso Recente**
+        Números que não saem há mais concursos do que o normal nos últimos
+        100 sorteios — combinação de atraso + janela recente.
+
+        **⚖️ Equilibrado**
+        Força exatamente 3 números pares e 3 ímpares. Aproveita a tendência
+        estatística de equilíbrio par/ímpar da Mega-Sena.
+
+        **🎨 Misto**
+        Combina 2 atrasados + 2 quentes + 2 de atraso recente, com filtros
+        básicos de soma e paridade.
+
+        **🤝 Consenso**
+        Interseção de 3 pools (atrasados, quentes, atraso recente) — só
+        entra número que aparece em pelo menos 2 dos 3 critérios.
+
+        **🎲 Aleatório Inteligente**
+        Sorteio aleatório puro com rejeição: só aceita jogos cuja soma fique
+        entre 140–210 e com 2–4 números pares. Serve como baseline.
+
+        **🧬 Sequências (Clusters)**
+        Agrupa números por co-ocorrência com KMeans (4 clusters) e expande
+        com vizinhança N±1. Captura padrões de agrupamento histórico.
+
+        **🧠 Ensemble**
+        Votação de 7 estratégias base (escada, atrasados, quentes, atraso
+        recente, equilibrado, misto, consenso). Os top-20 mais votados formam
+        o pool. Foi a estratégia com **mais quinas** no backtesting (15 quinas
+        em 4.960 jogos).
+
+        **🎯 Wheel (Cobertura)**
+        Gera múltiplos cartões com cobertura sistemática tipo "wheel" —
+        garante que qualquer subconjunto de N números seja coberto.
+
+        **🥇 Candidatos Ouro**
+        Combina números frios (abaixo da frequência esperada) com os muito
+        atrasados, usando score = déficit de frequência + atraso/10.
+
+        **🚀 Momentum**
+        Calcula a razão freq(últimos 20) / freq(últimos 100). Números com
+        ratio > 1,2 estão "acelerando" e entram no pool.
+
+        **📍 Vizinhança**
+        Usa os números ±2 de cada dezena do último sorteio como candidatos.
+        Explora a tendência de repetição de faixas numéricas.
+
+        **📊 Frequência Desvio**
+        Filtra os números cuja frequência histórica está mais de 1 desvio
+        padrão acima da média. Seleciona os genuinamente super-frequentes.
+
+        **👫 Pares Frequentes**
+        Identifica os 30 pares de números que mais co-ocorrem nos últimos
+        200 sorteios e extrai os números únicos desses pares como pool.
+
+        **🔁 Ciclos**
+        Calcula o intervalo médio de aparição de cada número e seleciona
+        aqueles cujo gap atual está próximo do ciclo médio — "na hora de sair".
+
+        **🧠✨ Ensemble V2**
+        Versão melhorada do ensemble: votação de 7 estratégias fortes
+        (sem escada nem atrasados, que performaram mal no backtesting).
+
+        ---
+        ### 📈 Resultados do backtesting (2500→2995)
+        496 concursos · 10 cartões · 14 números por estratégia
+
+        | Destaque | Estratégia |
+        |---|---|
+        | Mais quinas (15) | 🧠 Ensemble |
+        | Mais senas (1 cada) | 📍 Vizinhança, 🥇 Candidatos Ouro, ⏰ Atrasados |
+        | Mais quadras (123) | 🧬 Sequências |
+        | Melhor média | 🔁 Ciclos (+0.019 vs aleatório) |
+
+        ⚠️ Nenhuma estratégia é estatisticamente superior ao aleatório (p>0,05).
+        Lembre: loteria é aleatória — use como diversão responsável.
         """)
 
     st.sidebar.metric("💾 Cartões Salvos", total_cartoes)
