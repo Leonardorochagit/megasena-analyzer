@@ -28,7 +28,7 @@ TODAS_ESTRATEGIAS = [
     'escada', 'atrasados', 'quentes',
     'equilibrado', 'misto', 'consenso', 'aleatorio_smart', 'sequencias', 'wheel',
     'ensemble', 'candidatos_ouro', 'momentum', 'vizinhanca', 'frequencia_desvio',
-    'pares_frequentes', 'ciclos', 'ensemble_v2'
+    'pares_frequentes', 'ciclos'
 ]
 
 NOMES_ESTRATEGIAS = {
@@ -48,7 +48,6 @@ NOMES_ESTRATEGIAS = {
     'frequencia_desvio': '📊 Frequência Desvio',
     'pares_frequentes': '👫 Pares Frequentes',
     'ciclos': '🔁 Ciclos',
-    'ensemble_v2': '🧠✨ Ensemble V2',
     'automl': '🤖 AutoML',
     'Manual': '✍️ Manual'
 }

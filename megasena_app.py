@@ -138,13 +138,22 @@ def exibir_interface_principal():
         idx = None
         if menu_ativo in itens:
             idx = itens.index(menu_ativo)
+        radio_key = f"radio_grupo_{titulo}"
         escolha = st.sidebar.radio(
             titulo, itens, index=idx,
+            key=radio_key,
             label_visibility="collapsed"
         )
         # Se o user clicou em algo neste grupo (e não é o que já estava ativo)
         if escolha is not None and escolha != menu_ativo and escolha in itens:
             st.session_state["menu_ativo"] = escolha
+            # Limpar o estado dos radios dos outros grupos para evitar
+            # que o Streamlit restaure a selecao antiga e sobreescreva a navegacao
+            for outro_titulo in GRUPOS:
+                if outro_titulo != titulo:
+                    outro_key = f"radio_grupo_{outro_titulo}"
+                    if outro_key in st.session_state:
+                        del st.session_state[outro_key]
             st.rerun()
         st.sidebar.markdown("---")
 

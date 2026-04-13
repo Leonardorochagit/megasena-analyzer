@@ -233,9 +233,6 @@ def gerar_jogo(estrategia, contagem_total, contagem_recente, df_atrasos, df=None
         else:
             jogo = sorted(random.sample(range(1, 61), 6))
 
-    elif estrategia == 'ensemble_v2':
-        jogo = gerar_jogo_ensemble_v2(contagem_total, contagem_recente, df_atrasos, df=df)
-
     else:  # misto
         atrasados = contagem_total.sort_values().head(15).index.tolist()
         quentes = contagem_recente.head(15).index.tolist()
@@ -642,43 +639,6 @@ def gerar_jogo_ensemble(contagem_total, contagem_recente, df_atrasos, df=None):
             return jogo
 
     # Fallback: top 6 mais votados
-    return sorted(candidatos[:6])
-
-
-def gerar_jogo_ensemble_v2(contagem_total, contagem_recente, df_atrasos, df=None):
-    """
-    Ensemble V2: vota apenas com as 7 melhores estratégias (exclui escada e atrasados).
-    Estratégias votantes: quentes, sequencias, consenso, atraso_recente,
-    candidatos_ouro, momentum, vizinhanca.
-    """
-    estrategias = [
-        'quentes', 'frequencia_desvio', 'consenso', 'atraso_recente',
-        'candidatos_ouro', 'momentum', 'vizinhanca'
-    ]
-
-    votos = Counter()
-    for est in estrategias:
-        try:
-            jogo = gerar_jogo(est, contagem_total, contagem_recente, df_atrasos, df=df)
-            for n in jogo:
-                votos[n] += 1
-        except Exception:
-            pass
-
-    candidatos = sorted(
-        votos.keys(),
-        key=lambda n: (votos[n], contagem_recente.get(n, 0)),
-        reverse=True
-    )
-
-    for _ in range(100):
-        pool = candidatos[:20]
-        jogo = sorted(random.sample(pool, 6))
-        pares = sum(1 for n in jogo if n % 2 == 0)
-        soma = sum(jogo)
-        if 2 <= pares <= 4 and 140 <= soma <= 210:
-            return jogo
-
     return sorted(candidatos[:6])
 
 

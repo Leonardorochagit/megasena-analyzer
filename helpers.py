@@ -88,10 +88,6 @@ VERSOES_ESTRATEGIAS = {
         'versao': '1.0',
         'nota': 'Números cujo gap atual está próximo do ciclo médio de aparição',
     },
-    'ensemble_v2': {
-        'versao': '1.0',
-        'nota': 'Votação de 7 estratégias fortes (sem escada/atrasados); top votados com filtros',
-    },
     'Manual': {
         'versao': '-',
         'nota': 'Cartão inserido manualmente pelo usuário',

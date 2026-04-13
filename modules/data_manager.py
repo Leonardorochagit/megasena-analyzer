@@ -165,6 +165,7 @@ def verificar_acertos(dezenas_cartao: list, dezenas_resultado: list) -> int:
     return len(set(dezenas_cartao) & set(dezenas_resultado))
 
 
+@st.cache_data(ttl=3600)
 def buscar_resultado_concurso(numero_concurso: int):
     """Busca dezenas de um concurso específico na API."""
     try:
@@ -181,6 +182,7 @@ def buscar_resultado_concurso(numero_concurso: int):
         return None
 
 
+@st.cache_data(ttl=300)
 def buscar_detalhes_concurso(numero_concurso: int) -> dict:
     """Retorna {'acumulou': bool|None, 'valor_proximo_concurso': float|None}."""
     detalhes = {'acumulou': None, 'valor_proximo_concurso': None}

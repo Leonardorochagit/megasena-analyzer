@@ -6,3 +6,11 @@ fastReruns = true
 
 [client]
 showErrorDetails = true
+
+[theme]
+base = "light"
+primaryColor = "#667eea"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f0f2f6"
+textColor = "#262730"
+font = "sans serif"

@@ -53,8 +53,7 @@ ESTRATEGIAS_PADRAO = [
     'equilibrado', 'misto', 'consenso',
     'aleatorio_smart', 'ensemble', 'sequencias',
     'candidatos_ouro', 'momentum', 'vizinhanca',
-    'frequencia_desvio', 'pares_frequentes', 'ciclos',
-    'ensemble_v2'
+    'frequencia_desvio', 'pares_frequentes', 'ciclos'
 ]
 
 

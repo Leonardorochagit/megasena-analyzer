@@ -17,17 +17,43 @@ import os
 import json
 from datetime import datetime
 
+try:
+    import streamlit as st
+    _has_streamlit = True
+except ModuleNotFoundError:
+    _has_streamlit = False
+
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "megasena.db")
 
 
-def get_connection() -> sqlite3.Connection:
-    """Retorna uma conexão SQLite com row_factory configurada."""
-    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
-    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+def _init_conn(conn: sqlite3.Connection) -> sqlite3.Connection:
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=WAL")
     conn.execute("PRAGMA foreign_keys=ON")
     return conn
+
+
+if _has_streamlit:
+    @st.cache_resource
+    def _get_shared_connection() -> sqlite3.Connection:
+        os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+        conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+        return _init_conn(conn)
+else:
+    _shared_conn = None
+
+    def _get_shared_connection() -> sqlite3.Connection:
+        global _shared_conn
+        if _shared_conn is None:
+            os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+            _shared_conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+            _init_conn(_shared_conn)
+        return _shared_conn
+
+
+def get_connection() -> sqlite3.Connection:
+    """Retorna a conexao compartilhada (cache_resource) em vez de abrir uma nova por chamada."""
+    return _get_shared_connection()
 
 
 def inicializar_banco():
@@ -116,7 +142,6 @@ def inicializar_banco():
     """)
 
     conn.commit()
-    conn.close()
 
 
 # Inicializa automaticamente na importação
@@ -212,7 +237,6 @@ def salvar_cartoes_db(cartoes: list) -> bool:
                 _to_json(c.get('notas')),
             ))
         conn.commit()
-        conn.close()
         return True
     except Exception as e:
         print(f"[db] Erro ao salvar cartões: {e}")
@@ -258,7 +282,6 @@ def carregar_cartoes_db(
 
     cur.execute(sql, params)
     rows = cur.fetchall()
-    conn.close()
     return [_row_to_cartao(r) for r in rows]
 
 
@@ -267,7 +290,6 @@ def deletar_cartao_db(cartao_id: str) -> bool:
         conn = get_connection()
         conn.execute("DELETE FROM cartoes WHERE id = ?", (cartao_id,))
         conn.commit()
-        conn.close()
         return True
     except Exception as e:
         print(f"[db] Erro ao deletar cartão {cartao_id}: {e}")
@@ -289,7 +311,6 @@ def stats_cartoes_db() -> dict:
         FROM cartoes
     """)
     row = dict(cur.fetchone())
-    conn.close()
     return row
 
 
@@ -344,7 +365,6 @@ def salvar_historico_db(concurso: int, data_analise: str,
                 stats.get('media_acertos', 0.0),
             ))
         conn.commit()
-        conn.close()
         return True
     except Exception as e:
         print(f"[db] Erro ao salvar histórico: {e}")
@@ -366,7 +386,6 @@ def carregar_historico_db() -> list:
         ORDER BY concurso DESC, estrategia
     """)
     rows = cur.fetchall()
-    conn.close()
 
     por_concurso = {}
     for r in rows:
@@ -435,7 +454,6 @@ def salvar_backtesting_db(resultados: list, parametros: dict) -> bool:
                 params_json,
             ))
         conn.commit()
-        conn.close()
         return True
     except Exception as e:
         print(f"[db] Erro ao salvar backtesting: {e}")
@@ -452,7 +470,6 @@ def carregar_backtesting_db(limit: int = 10) -> list:
         LIMIT ?
     """, (limit,))
     rows = [dict(r) for r in cur.fetchall()]
-    conn.close()
     return rows
 
 
@@ -471,7 +488,6 @@ def salvar_config_db(chave: str, valor) -> bool:
                 atualizado=excluded.atualizado
         """, (chave, _to_json(valor), datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
         conn.commit()
-        conn.close()
         return True
     except Exception as e:
         print(f"[db] Erro ao salvar config '{chave}': {e}")
@@ -484,7 +500,6 @@ def carregar_config_db(chave: str, default=None):
         cur = conn.cursor()
         cur.execute("SELECT valor FROM config WHERE chave = ?", (chave,))
         row = cur.fetchone()
-        conn.close()
         if row:
             return _from_json(row['valor'])
         return default
@@ -498,7 +513,6 @@ def carregar_todas_configs_db() -> dict:
         cur = conn.cursor()
         cur.execute("SELECT chave, valor FROM config")
         rows = cur.fetchall()
-        conn.close()
         return {r['chave']: _from_json(r['valor']) for r in rows}
     except Exception:
         return {}

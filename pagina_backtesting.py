@@ -44,7 +44,6 @@ NOMES_ESTRATEGIAS = {
     'frequencia_desvio': '📊 Frequência Desvio',
     'pares_frequentes': '👫 Pares Frequentes',
     'ciclos': '🔁 Ciclos',
-    'ensemble_v2': '🧠✨ Ensemble V2',
 }
 
 

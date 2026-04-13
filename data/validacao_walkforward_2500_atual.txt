@@ -1,0 +1,72 @@
+====================================================================
+­ƒôè VALIDA├ç├âO WALK-FORWARD DE ESTRAT├ëGIAS
+====================================================================
+
+­ƒôÑ Carregando dados hist├│ricos...
+  Usando cache local (2995 concursos)
+  Total de concursos dispon├¡veis: 2995
+  Faixa validada: 2500 ÔåÆ 2995 (496 concursos)
+  Estrat├®gias: escada, atrasados, quentes, equilibrado, misto, consenso, aleatorio_smart, ensemble, sequencias
+
+­ƒöä Executando valida├º├úo...
+
+  Valida├º├úo walk-forward: 496 concursos ├ù 9 estrat├®gias ├ù 10 cart├Áes
+  Total de jogos simulados: 44,640
+  N├║meros por cart├úo: 14
+
+  [20/496] concursos processados... ├║ltimo=2519
+  [40/496] concursos processados... ├║ltimo=2539
+  [60/496] concursos processados... ├║ltimo=2559
+  [80/496] concursos processados... ├║ltimo=2579
+  [100/496] concursos processados... ├║ltimo=2599
+  [120/496] concursos processados... ├║ltimo=2619
+  [140/496] concursos processados... ├║ltimo=2639
+  [160/496] concursos processados... ├║ltimo=2659
+  [180/496] concursos processados... ├║ltimo=2679
+  [200/496] concursos processados... ├║ltimo=2699
+  [220/496] concursos processados... ├║ltimo=2719
+  [240/496] concursos processados... ├║ltimo=2739
+  [260/496] concursos processados... ├║ltimo=2759
+  [280/496] concursos processados... ├║ltimo=2779
+  [300/496] concursos processados... ├║ltimo=2799
+  [320/496] concursos processados... ├║ltimo=2819
+  [340/496] concursos processados... ├║ltimo=2839
+  [360/496] concursos processados... ├║ltimo=2859
+  [380/496] concursos processados... ├║ltimo=2879
+  [400/496] concursos processados... ├║ltimo=2899
+  [420/496] concursos processados... ├║ltimo=2919
+  [440/496] concursos processados... ├║ltimo=2939
+  [460/496] concursos processados... ├║ltimo=2959
+  [480/496] concursos processados... ├║ltimo=2979
+  [496/496] concursos processados... ├║ltimo=2995
+
+==============================================================================================================
+  RESULTADO DA VALIDA├ç├âO WALK-FORWARD (496 concursos, 14 n├║meros/cart├úo)
+==============================================================================================================
+
+  Benchmark aleat├│rio: m├®dia=1.400 | quadra+=2.26% | terno+=13.30%
+
+  #   Estrat├®gia         Ver    Jogos   M├®dia  ╬ö Aleat.  p(m├®dia)  Q+ jogo  Q+ conc    p(q+)  Melhor/Conc
+  ------------------------------------------------------------------------------------------------------------------
+  ­ƒÑç consenso           1.0     4960   1.417     0.017    0.2229    2.32%   15.93%   0.7742        2.651
+  ­ƒÑê sequencias         1.1     4960   1.412     0.012    0.3926    2.56%   22.98%   0.1517        3.010
+  ­ƒÑë quentes            1.0     4960   1.404     0.004    0.7866    2.26%   16.33%   1.0000        2.750
+   4 ensemble           1.0     4960   1.402     0.002    0.9100    2.56%   21.57%   0.1517        2.966
+   5 aleatorio_smart    1.0     4960   1.394    -0.006    0.6662    2.26%   19.96%   1.0000        2.960
+   6 equilibrado        1.0     4960   1.390    -0.010    0.4641    2.38%   21.57%   0.5662        2.980
+   7 misto              1.0     4960   1.380    -0.020    0.1639    2.20%   20.16%   0.8112        2.946
+   8 atrasados          1.0     4960   1.371    -0.029    0.0339    1.77%   14.92%   0.0217        2.694
+   9 escada             1.1     4960   1.297    -0.103    0.0000    1.41%    2.22%   0.0000        1.385
+
+  ------------------------------------------------------------------------------------------------------------------
+  Leitura r├ípida:
+    consenso v1.0: acima do acaso (+0.017) com evid├¬ncia fraca (p=0.2229)
+    sequencias v1.1: acima do acaso (+0.012) com evid├¬ncia fraca (p=0.3926)
+    quentes v1.0: acima do acaso (+0.004) com evid├¬ncia fraca (p=0.7866)
+    ensemble v1.0: acima do acaso (+0.002) com evid├¬ncia fraca (p=0.9100)
+    aleatorio_smart v1.0: abaixo do acaso (-0.006) com evid├¬ncia fraca (p=0.6662)
+
+==============================================================================================================
+
+  Resumo salvo em: C:\Projetos\1.Megasena\data\backtesting_resultado.json
+  Detalhes salvos em: C:\Projetos\1.Megasena\data\backtesting_detalhado.json

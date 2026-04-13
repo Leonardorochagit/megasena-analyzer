@@ -249,8 +249,8 @@ def pagina_piloto_automatico(df):
             )
             st.session_state['piloto_whatsapp_apikey'] = wa_apikey
 
-    # ----- SALVAR CONFIG NO DISCO -----
-    _salvar_config({
+    # ----- SALVAR CONFIG NO DISCO (somente quando muda) -----
+    nova_config = {
         'ativo': ativo,
         'intervalo': intervalo,
         'qtd_numeros': qtd_numeros,
@@ -258,7 +258,10 @@ def pagina_piloto_automatico(df):
         'whatsapp_ativo': st.session_state['piloto_whatsapp_ativo'],
         'whatsapp_telefone': st.session_state['piloto_whatsapp_telefone'],
         'whatsapp_apikey': st.session_state['piloto_whatsapp_apikey']
-    })
+    }
+    if nova_config != st.session_state.get('_piloto_ultima_config'):
+        _salvar_config(nova_config)
+        st.session_state['_piloto_ultima_config'] = nova_config
 
     # ----- AUTO-REFRESH -----
     if ativo:
@@ -275,16 +278,29 @@ def pagina_piloto_automatico(df):
 
     st.markdown("---")
 
+    # Carregar cartoes uma unica vez por rerun e repassar para as funcoes
+    todos_cartoes = dm.carregar_cartoes_salvos()
+
     # ----- STATUS DO SISTEMA -----
-    _exibir_status_sistema(df, ativo, intervalo, count)
+    _exibir_status_sistema(df, ativo, intervalo, count, todos_cartoes)
 
     st.markdown("---")
 
     # ----- EXECUÇÃO AUTOMÁTICA -----
     if ativo:
-        with st.spinner("🔄 Verificando novidades..."):
-            resultado_conferencia = _auto_conferir(df)
-            resultado_geracao = _auto_gerar(df, qtd_numeros, cartoes_por_estrategia)
+        # Guard de ciclo: so executa conferencia/geracao uma vez por ciclo de autorefresh
+        # (evita rodar a cada interacao de widget do usuario)
+        ultimo_ciclo_executado = st.session_state.get('_piloto_ciclo_executado', -1)
+        if count != ultimo_ciclo_executado:
+            st.session_state['_piloto_ciclo_executado'] = count
+            with st.spinner("🔄 Verificando novidades..."):
+                resultado_conferencia = _auto_conferir(df, todos_cartoes=todos_cartoes)
+                resultado_geracao = _auto_gerar(df, qtd_numeros, cartoes_por_estrategia, todos_cartoes=todos_cartoes)
+            st.session_state['_piloto_ultimo_resultado_conf'] = resultado_conferencia
+            st.session_state['_piloto_ultimo_resultado_ger'] = resultado_geracao
+        else:
+            resultado_conferencia = st.session_state.get('_piloto_ultimo_resultado_conf')
+            resultado_geracao = st.session_state.get('_piloto_ultimo_resultado_ger')
 
         # Enviar WhatsApp se configurado e houve conferência
         if (
@@ -313,7 +329,7 @@ def pagina_piloto_automatico(df):
     st.markdown("---")
 
     # ----- DASHBOARD -----
-    _exibir_dashboard(df)
+    _exibir_dashboard(df, todos_cartoes)
 
     # ----- BOTÕES MANUAIS -----
     st.markdown("---")
@@ -341,10 +357,9 @@ def pagina_piloto_automatico(df):
 # STATUS DO SISTEMA
 # =============================================================================
 
-def _exibir_status_sistema(df, ativo, intervalo, count):
+def _exibir_status_sistema(df, ativo, intervalo, count, todos_cartoes):
     """Mostra cards com status atual"""
 
-    todos_cartoes = dm.carregar_cartoes_salvos()
     verificados = [c for c in todos_cartoes if c.get('verificado', False)]
     pendentes = [c for c in todos_cartoes if not c.get('verificado', False)]
 
@@ -387,10 +402,11 @@ def _exibir_status_sistema(df, ativo, intervalo, count):
 # AUTO-CONFERIR
 # =============================================================================
 
-def _auto_conferir(df, forcar=False):
+def _auto_conferir(df, forcar=False, todos_cartoes=None):
     """Confere automaticamente todos os concursos pendentes"""
 
-    todos_cartoes = dm.carregar_cartoes_salvos()
+    if todos_cartoes is None:
+        todos_cartoes = dm.carregar_cartoes_salvos()
     pendentes_por_concurso = {}
 
     for c in todos_cartoes:
@@ -484,15 +500,21 @@ def _auto_conferir(df, forcar=False):
 # AUTO-GERAR
 # =============================================================================
 
-def _auto_gerar(df, qtd_numeros, cartoes_por_estrategia, forcar=False):
+@st.cache_data(show_spinner=False)
+def _calcular_estatisticas_cache(df):
+    """Wrapper cacheado de stats.calcular_estatisticas — evita recomputar a cada rerun."""
+    return stats.calcular_estatisticas(df)
+
+
+def _auto_gerar(df, qtd_numeros, cartoes_por_estrategia, forcar=False, todos_cartoes=None):
     """Gera cartões automaticamente para o próximo concurso"""
 
     proximo = int(df['concurso'].max()) + 1 if 'concurso' in df.columns else None
     if not proximo:
         return {'status': 'erro', 'mensagem': 'Não foi possível determinar próximo concurso', 'gerados': 0}
 
-    # Verificar se já existem cartões para este concurso
-    todos_cartoes = dm.carregar_cartoes_salvos()
+    if todos_cartoes is None:
+        todos_cartoes = dm.carregar_cartoes_salvos()
     ja_existem = [c for c in todos_cartoes if c.get('concurso_alvo') == proximo and not c.get('verificado', False)]
 
     if ja_existem and not forcar:
@@ -504,7 +526,7 @@ def _auto_gerar(df, qtd_numeros, cartoes_por_estrategia, forcar=False):
         }
 
     # Gerar cartões
-    contagem_total, contagem_recente, df_atrasos = stats.calcular_estatisticas(df)
+    contagem_total, contagem_recente, df_atrasos = _calcular_estatisticas_cache(df)
     novos_cartoes = []
 
     for estrategia in TODAS_ESTRATEGIAS:
@@ -620,12 +642,13 @@ def _exibir_log_acoes(resultado_conferencia, resultado_geracao):
 # DASHBOARD
 # =============================================================================
 
-def _exibir_dashboard(df):
+def _exibir_dashboard(df, todos_cartoes=None):
     """Dashboard com ranking e estatísticas consolidadas"""
 
     st.subheader("🏆 Dashboard - Ranking de Estratégias")
 
-    todos_cartoes = dm.carregar_cartoes_salvos()
+    if todos_cartoes is None:
+        todos_cartoes = dm.carregar_cartoes_salvos()
     verificados = [c for c in todos_cartoes if c.get('verificado', False) and c.get('acertos') is not None]
 
     if not verificados:
