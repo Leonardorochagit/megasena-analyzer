@@ -83,79 +83,65 @@ def exibir_interface_principal():
 
     st.sidebar.markdown("---")
 
-    # Menu de navegação por grupos com session_state
-    GRUPOS = {
-        "\U0001f3e0 SISTEMA": [
-            "\U0001f916 Piloto Automático",
-            "\U0001f3af Simulação & Conferência",
-            "\u2705 Verificar Resultados",
-        ],
-        "\U0001f4ca ANÁLISE": [
-            "\U0001f4ca Backtesting Estatístico",
-            "\U0001f3c6 Resultados Validação",
-            "\U0001f504 Análise Escada",
-            "\U0001f9ec Análise de Sequências",
-            "\U0001f4ca Relatório Geral",
-        ],
-        "\U0001f3b2 ESTRATÉGIAS": [
-            "01. \U0001f9e0 Ensemble",
-            "02. \U0001f4ca Frequência Desvio",
-            "03. \U0001f46b Pares Frequentes",
-            "04. \U0001f91d Consenso",
-            "05. \U0001f501 Ciclos",
-            "06. \U0001f9ec Sequências Clusters",
-            "07. \U0001f525 Números Quentes",
-            "08. \U0001f4cd Vizinhança",
-            "09. \U0001f947 Candidatos Ouro",
-            "10. \U0001f3b2 Aleatório Inteligente",
-            "11. \u2696\ufe0f Equilibrado",
-            "12. \U0001f3a8 Misto",
-            "13. \U0001f680 Momentum",
-            "14. \u23f0 Números Atrasados",
-            "15. \u23f3 Atraso Recente",
-            "16. \U0001f504 Escada Temporal",
-            "17. \U0001f3af Wheel Cobertura",
-        ],
-        "\u2699\ufe0f ADMIN": [
-            "\U0001f916 AutoML PyCaret",
-            "\U0001f5c4\ufe0f Admin Banco de Dados",
-        ],
-    }
+    # Menu de navegação — lista plana com um único radio (evita race condition entre grupos)
+    MENU_ITENS = [
+        "🤖 Piloto Automático",
+        "🎯 Simulação & Conferência",
+        "✅ Verificar Resultados",
+        "── ANÁLISE ──",
+        "📊 Backtesting Estatístico",
+        "🏆 Resultados Validação",
+        "🔄 Análise Escada",
+        "🧬 Análise de Sequências",
+        "📊 Relatório Geral",
+        "── ESTRATÉGIAS ──",
+        "01. 🧠 Ensemble",
+        "02. 📊 Frequência Desvio",
+        "03. 👫 Pares Frequentes",
+        "04. 🤝 Consenso",
+        "05. 🔁 Ciclos",
+        "06. 🧬 Sequências Clusters",
+        "07. 🔥 Números Quentes",
+        "08. 📍 Vizinhança",
+        "09. 🥇 Candidatos Ouro",
+        "10. 🎲 Aleatório Inteligente",
+        "11. ⚖️ Equilibrado",
+        "12. 🎨 Misto",
+        "13. 🚀 Momentum",
+        "14. ⏰ Números Atrasados",
+        "15. ⏳ Atraso Recente",
+        "16. 🔄 Escada Temporal",
+        "17. 🎯 Wheel Cobertura",
+        "── ADMIN ──",
+        "🤖 AutoML PyCaret",
+        "🗄️ Admin Banco de Dados",
+    ]
+
+    SEPARADORES = {"── ANÁLISE ──", "── ESTRATÉGIAS ──", "── ADMIN ──"}
 
     if "menu_ativo" not in st.session_state:
-        st.session_state["menu_ativo"] = "\U0001f916 Piloto Automático"
+        st.session_state["menu_ativo"] = "🤖 Piloto Automático"
 
-    # Construir lista flat: todos os itens de todos os grupos
-    TODOS_ITENS = []
-    for itens in GRUPOS.values():
-        TODOS_ITENS.extend(itens)
+    # Garantir que o valor atual nao e um separador
+    if st.session_state["menu_ativo"] in SEPARADORES:
+        st.session_state["menu_ativo"] = "🤖 Piloto Automático"
 
-    menu_ativo = st.session_state["menu_ativo"]
+    idx_atual = MENU_ITENS.index(st.session_state["menu_ativo"]) if st.session_state["menu_ativo"] in MENU_ITENS else 0
 
-    for titulo, itens in GRUPOS.items():
-        st.sidebar.markdown(f"**{titulo}**")
-        # Se o item ativo está nesse grupo, seleciona ele; senão nenhum
-        idx = None
-        if menu_ativo in itens:
-            idx = itens.index(menu_ativo)
-        radio_key = f"radio_grupo_{titulo}"
-        escolha = st.sidebar.radio(
-            titulo, itens, index=idx,
-            key=radio_key,
-            label_visibility="collapsed"
-        )
-        # Se o user clicou em algo neste grupo (e não é o que já estava ativo)
-        if escolha is not None and escolha != menu_ativo and escolha in itens:
-            st.session_state["menu_ativo"] = escolha
-            # Limpar o estado dos radios dos outros grupos para evitar
-            # que o Streamlit restaure a selecao antiga e sobreescreva a navegacao
-            for outro_titulo in GRUPOS:
-                if outro_titulo != titulo:
-                    outro_key = f"radio_grupo_{outro_titulo}"
-                    if outro_key in st.session_state:
-                        del st.session_state[outro_key]
-            st.rerun()
-        st.sidebar.markdown("---")
+    escolha = st.sidebar.radio(
+        "Navegação",
+        MENU_ITENS,
+        index=idx_atual,
+        key="radio_menu_principal",
+        label_visibility="collapsed",
+    )
+
+    if escolha in SEPARADORES:
+        # Clicou num separador — ignorar, manter pagina atual
+        st.session_state["radio_menu_principal"] = st.session_state["menu_ativo"]
+    elif escolha != st.session_state["menu_ativo"]:
+        st.session_state["menu_ativo"] = escolha
+        st.rerun()
 
     menu = st.session_state["menu_ativo"]
 
