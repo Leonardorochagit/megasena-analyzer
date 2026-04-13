@@ -103,40 +103,49 @@ def exibir_interface_principal():
     st.sidebar.caption("Versão Modular 3.0")
     st.sidebar.markdown("---")
 
-    # Menu de navegação
-    st.sidebar.markdown("### 🏠 Sistema")
-    menu = st.sidebar.radio(
+    # Menu de navegação por grupos
+    MENU_OPCOES = [
+        "━━━ 🏠 SISTEMA ━━━",
+        "01. 🤖 Piloto Automático",
+        "02. 🎯 Simulação & Conferência",
+        "03. ✅ Verificar Resultados",
+        "━━━ 📊 ANÁLISE ━━━",
+        "04. 📊 Backtesting Estatístico",
+        "05. 🏆 Resultados Validação",
+        "06. 🔄 Análise Escada",
+        "07. 🧬 Análise de Sequências",
+        "08. 📊 Relatório Geral",
+        "━━━ 🎲 ESTRATÉGIAS ━━━",
+        "09. 🧠 Ensemble",
+        "10. 📊 Frequência Desvio",
+        "11. 👫 Pares Frequentes",
+        "12. 🤝 Consenso",
+        "13. 🔁 Ciclos",
+        "14. 🧬 Sequências Clusters",
+        "15. 🔥 Números Quentes",
+        "16. 📍 Vizinhança",
+        "17. 🥇 Candidatos Ouro",
+        "18. 🎲 Aleatório Inteligente",
+        "19. ⚖️ Equilibrado",
+        "20. 🎨 Misto",
+        "21. 🚀 Momentum",
+        "22. ⏰ Números Atrasados",
+        "23. ⏳ Atraso Recente",
+        "24. 🔄 Escada Temporal",
+        "25. 🎯 Wheel Cobertura",
+        "━━━ ⚙️ ADMIN ━━━",
+        "26. 🤖 AutoML PyCaret",
+        "27. 🗄️ Admin Banco de Dados",
+    ]
+    SEPARADORES = [o for o in MENU_OPCOES if o.startswith("━━━")]
+    menu = st.sidebar.selectbox(
         "Navegação",
-        [
-            "01. 🤖 Piloto Automático",
-            "02. 🎯 Simulação & Conferência",
-            "03. ✅ Verificar Resultados",
-            "04. 📊 Backtesting Estatístico",
-            "05. 🏆 Resultados Validação",
-            "06. 🔄 Análise Escada",
-            "07. 🧬 Análise de Sequências",
-            "08. 📊 Relatório Geral",
-            "09. 🧠 Ensemble",
-            "10. 📊 Frequência Desvio",
-            "11. 👫 Pares Frequentes",
-            "12. 🤝 Consenso",
-            "13. 🔁 Ciclos",
-            "14. 🧬 Sequências Clusters",
-            "15. 🔥 Números Quentes",
-            "16. 📍 Vizinhança",
-            "17. 🥇 Candidatos Ouro",
-            "18. 🎲 Aleatório Inteligente",
-            "19. ⚖️ Equilibrado",
-            "20. 🎨 Misto",
-            "21. 🚀 Momentum",
-            "22. ⏰ Números Atrasados",
-            "23. ⏳ Atraso Recente",
-            "24. 🔄 Escada Temporal",
-            "25. 🎯 Wheel Cobertura",
-            "26. 🤖 AutoML PyCaret",
-            "27. 🗄️ Admin Banco de Dados",
-        ]
+        MENU_OPCOES,
+        index=1,
+        key="menu_nav"
     )
+    if menu in SEPARADORES:
+        menu = "01. 🤖 Piloto Automático"
 
     st.sidebar.markdown("---")
 
@@ -271,7 +280,7 @@ def exibir_interface_principal():
     # RENDERIZAR PÁGINA SELECIONADA
     # =========================================================================
 
-        # Verificar se há navegação via session state
+    # Verificar se há navegação via session state
     if 'navegar_para' in st.session_state:
         if st.session_state['navegar_para'] == 'verificar_resultados':
             menu = "03. ✅ Verificar Resultados"
