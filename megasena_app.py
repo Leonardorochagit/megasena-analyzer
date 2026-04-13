@@ -105,17 +105,17 @@ def exibir_interface_principal():
 
     # Menu de navegação por grupos
     MENU_OPCOES = [
-        "━━━ 🏠 SISTEMA ━━━",
+        "━━ 🏠 SISTEMA ━━",
         "01. 🤖 Piloto Automático",
         "02. 🎯 Simulação & Conferência",
         "03. ✅ Verificar Resultados",
-        "━━━ 📊 ANÁLISE ━━━",
+        "━━ 📊 ANÁLISE ━━",
         "04. 📊 Backtesting Estatístico",
         "05. 🏆 Resultados Validação",
         "06. 🔄 Análise Escada",
         "07. 🧬 Análise de Sequências",
         "08. 📊 Relatório Geral",
-        "━━━ 🎲 ESTRATÉGIAS ━━━",
+        "━━ 🎲 ESTRATÉGIAS ━━",
         "09. 🧠 Ensemble",
         "10. 📊 Frequência Desvio",
         "11. 👫 Pares Frequentes",
@@ -133,13 +133,13 @@ def exibir_interface_principal():
         "23. ⏳ Atraso Recente",
         "24. 🔄 Escada Temporal",
         "25. 🎯 Wheel Cobertura",
-        "━━━ ⚙️ ADMIN ━━━",
+        "━━ ⚙️ ADMIN ━━",
         "26. 🤖 AutoML PyCaret",
         "27. 🗄️ Admin Banco de Dados",
     ]
-    SEPARADORES = [o for o in MENU_OPCOES if o.startswith("━━━")]
-    menu = st.sidebar.selectbox(
-        "Navegação",
+    SEPARADORES = [o for o in MENU_OPCOES if o.startswith("━━")]
+    menu = st.sidebar.radio(
+        "",
         MENU_OPCOES,
         index=1,
         key="menu_nav"
