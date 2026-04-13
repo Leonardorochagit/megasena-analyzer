@@ -230,22 +230,24 @@ def aplicar_tema():
         color: var(--text) !important;
     }}
 
-    /* Menu lateral — separadores: sem bullet, sem tracos, so texto */
+    /* Menu lateral — separadores: sem bullet, com linha separadora */
     section[data-testid="stSidebar"] .stRadio label:nth-child(1),
     section[data-testid="stSidebar"] .stRadio label:nth-child(5),
     section[data-testid="stSidebar"] .stRadio label:nth-child(11),
     section[data-testid="stSidebar"] .stRadio label:nth-child(29) {{
-        margin-top: 12px !important;
-        padding: 1px 4px !important;
+        margin-top: 14px !important;
+        padding: 2px 4px 4px 4px !important;
         pointer-events: none !important;
         cursor: default !important;
-        opacity: 0.55 !important;
+        opacity: 0.6 !important;
         font-size: 0.72rem !important;
         font-weight: 700 !important;
         letter-spacing: 0.07em !important;
         background: none !important;
         border-radius: 0 !important;
         border: none !important;
+        border-bottom: 1px solid var(--border) !important;
+        margin-bottom: 4px !important;
     }}
     section[data-testid="stSidebar"] .stRadio label:nth-child(1) input,
     section[data-testid="stSidebar"] .stRadio label:nth-child(5) input,
