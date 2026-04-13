@@ -122,7 +122,17 @@ def exibir_interface_principal():
             "🎨 Misto",
             "🤝 Consenso",
             "🎲 Aleatório Inteligente",
-            "🤖 AutoML (PyCaret)",
+            "� Sequências (Clusters)",
+            "🧠 Ensemble",
+            "🎯 Wheel (Cobertura)",
+            "🥇 Candidatos Ouro",
+            "🚀 Momentum",
+            "📍 Vizinhança",
+            "📊 Frequência Desvio",
+            "👫 Pares Frequentes",
+            "🔁 Ciclos",
+            "🧠✨ Ensemble V2",
+            "�🤖 AutoML (PyCaret)",
             "📊 Relatório Geral",
             "🎯 Verificar Resultados"
         ]
@@ -227,7 +237,37 @@ def exibir_interface_principal():
         pagina_analise_estrategia(
             df, "Aleatório Inteligente", "aleatorio_smart")
 
-    elif menu == "🤖 AutoML (PyCaret)":
+    elif menu == "� Sequências (Clusters)":
+        pagina_analise_estrategia(df, "Sequências (Clusters)", "sequencias")
+
+    elif menu == "🧠 Ensemble":
+        pagina_analise_estrategia(df, "Ensemble", "ensemble")
+
+    elif menu == "🎯 Wheel (Cobertura)":
+        pagina_analise_estrategia(df, "Wheel (Cobertura)", "wheel")
+
+    elif menu == "🥇 Candidatos Ouro":
+        pagina_analise_estrategia(df, "Candidatos Ouro", "candidatos_ouro")
+
+    elif menu == "🚀 Momentum":
+        pagina_analise_estrategia(df, "Momentum", "momentum")
+
+    elif menu == "📍 Vizinhança":
+        pagina_analise_estrategia(df, "Vizinhança", "vizinhanca")
+
+    elif menu == "📊 Frequência Desvio":
+        pagina_analise_estrategia(df, "Frequência Desvio", "frequencia_desvio")
+
+    elif menu == "👫 Pares Frequentes":
+        pagina_analise_estrategia(df, "Pares Frequentes", "pares_frequentes")
+
+    elif menu == "🔁 Ciclos":
+        pagina_analise_estrategia(df, "Ciclos", "ciclos")
+
+    elif menu == "🧠✨ Ensemble V2":
+        pagina_analise_estrategia(df, "Ensemble V2", "ensemble_v2")
+
+    elif menu == "�🤖 AutoML (PyCaret)":
         pagina_automl(df)
 
     elif menu == "📊 Relatório Geral":
