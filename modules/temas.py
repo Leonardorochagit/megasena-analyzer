@@ -1,6 +1,7 @@
 import json
 import os
 import streamlit as st
+import streamlit.components.v1 as components
 
 TEMAS = {
     "Claro": {
@@ -230,34 +231,35 @@ def aplicar_tema():
         color: var(--text) !important;
     }}
 </style>
-<script>
-(function() {{
-    function espacarGrupos() {{
-        var labels = document.querySelectorAll(
-            'section[data-testid="stSidebar"] div[data-baseweb="radio"] label'
-        );
-        labels.forEach(function(label) {{
-            var txt = label.innerText || '';
-            if (txt.includes('──')) {{
-                label.style.marginTop = '14px';
-                label.style.opacity = '0.55';
-                label.style.fontSize = '0.75rem';
-                label.style.letterSpacing = '0.05em';
-                label.style.cursor = 'default';
-                label.style.pointerEvents = 'none';
-            }}
-        }});
-    }}
-    if (document.readyState === 'loading') {{
-        document.addEventListener('DOMContentLoaded', function() {{
-            setTimeout(espacarGrupos, 300);
-        }});
-    }} else {{
-        setTimeout(espacarGrupos, 300);
-    }}
-    var obs = new MutationObserver(function() {{ setTimeout(espacarGrupos, 150); }});
-    obs.observe(document.body, {{ childList: true, subtree: true }});
-}})();
-</script>
 """
     st.markdown(css, unsafe_allow_html=True)
+
+    # JS via components.html — acessa o DOM pai (fora do iframe sandbox do st.markdown)
+    components.html("""
+<script>
+(function() {
+    function espacarGrupos() {
+        var labels = window.parent.document.querySelectorAll(
+            'section[data-testid="stSidebar"] div[data-baseweb="radio"] label'
+        );
+        labels.forEach(function(label) {
+            var txt = (label.innerText || '').trim();
+            if (txt.indexOf('\u2500\u2500') !== -1) {
+                label.style.marginTop = '16px';
+                label.style.opacity = '0.5';
+                label.style.fontSize = '0.72rem';
+                label.style.letterSpacing = '0.08em';
+                label.style.pointerEvents = 'none';
+                label.style.cursor = 'default';
+                var radio = label.querySelector('input[type="radio"]');
+                if (radio) radio.style.display = 'none';
+            }
+        });
+    }
+    setTimeout(espacarGrupos, 200);
+    setTimeout(espacarGrupos, 600);
+    var obs = new MutationObserver(function() { setTimeout(espacarGrupos, 150); });
+    obs.observe(window.parent.document.body, { childList: true, subtree: true });
+})();
+</script>
+""", height=0)
