@@ -118,23 +118,23 @@ def exibir_interface_principal():
             "\U0001f4ca Relatório Geral",
         ],
         "\U0001f3b2 ESTRATÉGIAS": [
-            "09. \U0001f9e0 Ensemble",
-            "10. \U0001f4ca Frequência Desvio",
-            "11. \U0001f46b Pares Frequentes",
-            "12. \U0001f91d Consenso",
-            "13. \U0001f501 Ciclos",
-            "14. \U0001f9ec Sequências Clusters",
-            "15. \U0001f525 Números Quentes",
-            "16. \U0001f4cd Vizinhança",
-            "17. \U0001f947 Candidatos Ouro",
-            "18. \U0001f3b2 Aleatório Inteligente",
-            "19. \u2696\ufe0f Equilibrado",
-            "20. \U0001f3a8 Misto",
-            "21. \U0001f680 Momentum",
-            "22. \u23f0 Números Atrasados",
-            "23. \u23f3 Atraso Recente",
-            "24. \U0001f504 Escada Temporal",
-            "25. \U0001f3af Wheel Cobertura",
+            "01. \U0001f9e0 Ensemble",
+            "02. \U0001f4ca Frequência Desvio",
+            "03. \U0001f46b Pares Frequentes",
+            "04. \U0001f91d Consenso",
+            "05. \U0001f501 Ciclos",
+            "06. \U0001f9ec Sequências Clusters",
+            "07. \U0001f525 Números Quentes",
+            "08. \U0001f4cd Vizinhança",
+            "09. \U0001f947 Candidatos Ouro",
+            "10. \U0001f3b2 Aleatório Inteligente",
+            "11. \u2696\ufe0f Equilibrado",
+            "12. \U0001f3a8 Misto",
+            "13. \U0001f680 Momentum",
+            "14. \u23f0 Números Atrasados",
+            "15. \u23f3 Atraso Recente",
+            "16. \U0001f504 Escada Temporal",
+            "17. \U0001f3af Wheel Cobertura",
         ],
         "\u2699\ufe0f ADMIN": [
             "\U0001f916 AutoML PyCaret",
@@ -326,55 +326,55 @@ def exibir_interface_principal():
     elif menu == "📊 Relatório Geral":
         pagina_relatorio_geral(df)
 
-    elif menu == "09. 🧠 Ensemble":
+    elif menu == "01. 🧠 Ensemble":
         pagina_analise_estrategia(df, "Ensemble", "ensemble")
 
-    elif menu == "10. 📊 Frequência Desvio":
+    elif menu == "02. 📊 Frequência Desvio":
         pagina_analise_estrategia(df, "Frequência Desvio", "frequencia_desvio")
 
-    elif menu == "11. 👫 Pares Frequentes":
+    elif menu == "03. 👫 Pares Frequentes":
         pagina_analise_estrategia(df, "Pares Frequentes", "pares_frequentes")
 
-    elif menu == "12. 🤝 Consenso":
+    elif menu == "04. 🤝 Consenso":
         pagina_analise_estrategia(df, "Consenso de Estratégias", "consenso")
 
-    elif menu == "13. 🔁 Ciclos":
+    elif menu == "05. 🔁 Ciclos":
         pagina_analise_estrategia(df, "Ciclos", "ciclos")
 
-    elif menu == "14. 🧬 Sequências Clusters":
+    elif menu == "06. 🧬 Sequências Clusters":
         pagina_analise_estrategia(df, "Sequências (Clusters)", "sequencias")
 
-    elif menu == "15. 🔥 Números Quentes":
+    elif menu == "07. 🔥 Números Quentes":
         pagina_analise_estrategia(df, "Números Quentes", "quentes")
 
-    elif menu == "16. 📍 Vizinhança":
+    elif menu == "08. 📍 Vizinhança":
         pagina_analise_estrategia(df, "Vizinhança", "vizinhanca")
 
-    elif menu == "17. 🥇 Candidatos Ouro":
+    elif menu == "09. 🥇 Candidatos Ouro":
         pagina_analise_estrategia(df, "Candidatos Ouro", "candidatos_ouro")
 
-    elif menu == "18. 🎲 Aleatório Inteligente":
+    elif menu == "10. 🎲 Aleatório Inteligente":
         pagina_analise_estrategia(df, "Aleatório Inteligente", "aleatorio_smart")
 
-    elif menu == "19. ⚖️ Equilibrado":
+    elif menu == "11. ⚖️ Equilibrado":
         pagina_analise_estrategia(df, "Análise Equilibrada", "equilibrado")
 
-    elif menu == "20. 🎨 Misto":
+    elif menu == "12. 🎨 Misto":
         pagina_analise_estrategia(df, "Estratégia Mista", "misto")
 
-    elif menu == "21. 🚀 Momentum":
+    elif menu == "13. 🚀 Momentum":
         pagina_analise_estrategia(df, "Momentum", "momentum")
 
-    elif menu == "22. ⏰ Números Atrasados":
+    elif menu == "14. ⏰ Números Atrasados":
         pagina_analise_estrategia(df, "Números Atrasados", "atrasados")
 
-    elif menu == "23. ⏳ Atraso Recente":
+    elif menu == "15. ⏳ Atraso Recente":
         pagina_analise_estrategia(df, "Atraso Recente", "atraso_recente")
 
-    elif menu == "24. 🔄 Escada Temporal":
+    elif menu == "16. 🔄 Escada Temporal":
         pagina_escada_temporal(df)
 
-    elif menu == "25. 🎯 Wheel Cobertura":
+    elif menu == "17. 🎯 Wheel Cobertura":
         pagina_analise_estrategia(df, "Wheel (Cobertura)", "wheel")
 
     elif menu == "🤖 AutoML PyCaret":

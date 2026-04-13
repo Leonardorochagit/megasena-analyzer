@@ -22,7 +22,7 @@ import random
 import warnings
 from datetime import datetime
 from itertools import combinations as itertools_combinations
-from scipy.stats import binom_test
+from scipy.stats import binomtest
 from modules import data_manager as dm
 
 warnings.filterwarnings("ignore")
@@ -213,7 +213,7 @@ def _analise_pares_binomial(sorteios: list, n_concursos: int, alpha: float = 0.0
     for par, obs in contagem_pares.items():
         esperado = p_esperada * n_concursos
         try:
-            p_valor = float(binom_test(obs, n_concursos, p_esperada, alternative='two-sided'))
+            p_valor = float(binomtest(obs, n_concursos, p_esperada, alternative='two-sided').pvalue)
         except Exception:
             p_valor = 1.0
 
