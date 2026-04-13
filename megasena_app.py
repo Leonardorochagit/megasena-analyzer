@@ -103,49 +103,64 @@ def exibir_interface_principal():
     st.sidebar.caption("Versão Modular 3.0")
     st.sidebar.markdown("---")
 
-    # Menu de navegação por grupos
-    MENU_OPCOES = [
-        "━━ 🏠 SISTEMA ━━",
-        "01. 🤖 Piloto Automático",
-        "02. 🎯 Simulação & Conferência",
-        "03. ✅ Verificar Resultados",
-        "━━ 📊 ANÁLISE ━━",
-        "04. 📊 Backtesting Estatístico",
-        "05. 🏆 Resultados Validação",
-        "06. 🔄 Análise Escada",
-        "07. 🧬 Análise de Sequências",
-        "08. 📊 Relatório Geral",
-        "━━ 🎲 ESTRATÉGIAS ━━",
-        "09. 🧠 Ensemble",
-        "10. 📊 Frequência Desvio",
-        "11. 👫 Pares Frequentes",
-        "12. 🤝 Consenso",
-        "13. 🔁 Ciclos",
-        "14. 🧬 Sequências Clusters",
-        "15. 🔥 Números Quentes",
-        "16. 📍 Vizinhança",
-        "17. 🥇 Candidatos Ouro",
-        "18. 🎲 Aleatório Inteligente",
-        "19. ⚖️ Equilibrado",
-        "20. 🎨 Misto",
-        "21. 🚀 Momentum",
-        "22. ⏰ Números Atrasados",
-        "23. ⏳ Atraso Recente",
-        "24. 🔄 Escada Temporal",
-        "25. 🎯 Wheel Cobertura",
-        "━━ ⚙️ ADMIN ━━",
-        "26. 🤖 AutoML PyCaret",
-        "27. 🗄️ Admin Banco de Dados",
-    ]
-    SEPARADORES = [o for o in MENU_OPCOES if o.startswith("━━")]
-    menu = st.sidebar.radio(
-        "",
-        MENU_OPCOES,
-        index=1,
-        key="menu_nav"
-    )
-    if menu in SEPARADORES:
-        menu = "01. 🤖 Piloto Automático"
+    # Menu de navegação por grupos com session_state
+    GRUPOS = {
+        "\U0001f3e0 SISTEMA": [
+            "01. \U0001f916 Piloto Automático",
+            "02. \U0001f3af Simulação & Conferência",
+            "03. \u2705 Verificar Resultados",
+        ],
+        "\U0001f4ca ANÁLISE": [
+            "04. \U0001f4ca Backtesting Estatístico",
+            "05. \U0001f3c6 Resultados Validação",
+            "06. \U0001f504 Análise Escada",
+            "07. \U0001f9ec Análise de Sequências",
+            "08. \U0001f4ca Relatório Geral",
+        ],
+        "\U0001f3b2 ESTRATÉGIAS": [
+            "09. \U0001f9e0 Ensemble",
+            "10. \U0001f4ca Frequência Desvio",
+            "11. \U0001f46b Pares Frequentes",
+            "12. \U0001f91d Consenso",
+            "13. \U0001f501 Ciclos",
+            "14. \U0001f9ec Sequências Clusters",
+            "15. \U0001f525 Números Quentes",
+            "16. \U0001f4cd Vizinhança",
+            "17. \U0001f947 Candidatos Ouro",
+            "18. \U0001f3b2 Aleatório Inteligente",
+            "19. \u2696\ufe0f Equilibrado",
+            "20. \U0001f3a8 Misto",
+            "21. \U0001f680 Momentum",
+            "22. \u23f0 Números Atrasados",
+            "23. \u23f3 Atraso Recente",
+            "24. \U0001f504 Escada Temporal",
+            "25. \U0001f3af Wheel Cobertura",
+        ],
+        "\u2699\ufe0f ADMIN": [
+            "26. \U0001f916 AutoML PyCaret",
+            "27. \U0001f5c4\ufe0f Admin Banco de Dados",
+        ],
+    }
+
+    if "menu_ativo" not in st.session_state:
+        st.session_state["menu_ativo"] = "01. \U0001f916 Piloto Automático"
+
+    menu_ativo = st.session_state["menu_ativo"]
+
+    for titulo, itens in GRUPOS.items():
+        key = f"rg_{titulo}"
+        if menu_ativo not in itens:
+            st.session_state[key] = None
+        st.sidebar.markdown(f"**{titulo}**")
+        escolha = st.sidebar.radio(
+            "", itens, key=key, index=None, label_visibility="collapsed"
+        )
+        if escolha is not None and escolha != menu_ativo:
+            st.session_state["menu_ativo"] = escolha
+            st.rerun()
+        st.sidebar.markdown("---")
+
+    menu = st.session_state["menu_ativo"]
 
     st.sidebar.markdown("---")
 
@@ -283,6 +298,7 @@ def exibir_interface_principal():
     # Verificar se há navegação via session state
     if 'navegar_para' in st.session_state:
         if st.session_state['navegar_para'] == 'verificar_resultados':
+            st.session_state["menu_ativo"] = "03. ✅ Verificar Resultados"
             menu = "03. ✅ Verificar Resultados"
         del st.session_state['navegar_para']
 
