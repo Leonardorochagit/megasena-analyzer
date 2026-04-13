@@ -83,30 +83,6 @@ def exibir_interface_principal():
 
     st.sidebar.markdown("---")
 
-    # CSS para melhorar visual do menu
-    st.sidebar.markdown("""
-    <style>
-    /* Reduzir gap entre itens do radio */
-    div[data-testid="stSidebar"] .stRadio > div[role="radiogroup"] {
-        gap: 2px !important;
-    }
-    /* Itens do menu: padding e bordas arredondadas */
-    div[data-testid="stSidebar"] .stRadio > div[role="radiogroup"] > label {
-        padding: 4px 10px !important;
-        border-radius: 8px;
-        transition: background-color 0.15s;
-    }
-    /* Hover suave */
-    div[data-testid="stSidebar"] .stRadio > div[role="radiogroup"] > label:hover {
-        background-color: rgba(151, 166, 195, 0.12);
-    }
-    /* Esconder o radio button dos separadores e estilizar como título */
-    div[data-testid="stSidebar"] .stRadio > div[role="radiogroup"] > label:has(div > p:only-child) {
-        pointer-events: auto;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
     # Menu de navegação — lista plana com um único radio (evita race condition entre grupos)
     MENU_ITENS = [
         "━━ 🏠 SISTEMA ━━",
