@@ -230,5 +230,34 @@ def aplicar_tema():
         color: var(--text) !important;
     }}
 </style>
+<script>
+(function() {{
+    function espacarGrupos() {{
+        var labels = document.querySelectorAll(
+            'section[data-testid="stSidebar"] div[data-baseweb="radio"] label'
+        );
+        labels.forEach(function(label) {{
+            var txt = label.innerText || '';
+            if (txt.includes('──')) {{
+                label.style.marginTop = '14px';
+                label.style.opacity = '0.55';
+                label.style.fontSize = '0.75rem';
+                label.style.letterSpacing = '0.05em';
+                label.style.cursor = 'default';
+                label.style.pointerEvents = 'none';
+            }}
+        }});
+    }}
+    if (document.readyState === 'loading') {{
+        document.addEventListener('DOMContentLoaded', function() {{
+            setTimeout(espacarGrupos, 300);
+        }});
+    }} else {{
+        setTimeout(espacarGrupos, 300);
+    }}
+    var obs = new MutationObserver(function() {{ setTimeout(espacarGrupos, 150); }});
+    obs.observe(document.body, {{ childList: true, subtree: true }});
+}})();
+</script>
 """
     st.markdown(css, unsafe_allow_html=True)
