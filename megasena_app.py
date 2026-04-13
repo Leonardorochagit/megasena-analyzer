@@ -103,38 +103,38 @@ def exibir_interface_principal():
     st.sidebar.caption("Versão Modular 3.0")
     st.sidebar.markdown("---")
 
-    # Menu de navegação reorganizado
-    st.sidebar.markdown("### 🎯 Principal")
+    # Menu de navegação
+    st.sidebar.markdown("### 🏠 Sistema")
     menu = st.sidebar.radio(
         "Navegação",
         [
-            "🤖 Piloto Automático",
-            "🎯 Simulação & Conferência",
-            "🔄 Análise Escada",
-            "🧬 Análise de Sequências",
-            "📊 Backtesting Estatístico",
-            "🏆 Resultados Validação",
-            "🗄️ Admin Banco de Dados",
-            "⏰ Números Atrasados",
-            "🔥 Números Quentes",
-            "⏳ Atraso Recente",
-            "⚖️ Equilibrado",
-            "🎨 Misto",
-            "🤝 Consenso",
-            "🎲 Aleatório Inteligente",
-            "� Sequências (Clusters)",
-            "🧠 Ensemble",
-            "🎯 Wheel (Cobertura)",
-            "🥇 Candidatos Ouro",
-            "🚀 Momentum",
-            "📍 Vizinhança",
-            "📊 Frequência Desvio",
-            "👫 Pares Frequentes",
-            "🔁 Ciclos",
-            "🧠✨ Ensemble V2",
-            "�🤖 AutoML (PyCaret)",
-            "📊 Relatório Geral",
-            "🎯 Verificar Resultados"
+            "01. 🤖 Piloto Automático",
+            "02. 🎯 Simulação & Conferência",
+            "03. ✅ Verificar Resultados",
+            "04. 📊 Backtesting Estatístico",
+            "05. 🏆 Resultados Validação",
+            "06. 🔄 Análise Escada",
+            "07. 🧬 Análise de Sequências",
+            "08. 📊 Relatório Geral",
+            "09. 🧠 Ensemble",
+            "10. 📊 Frequência Desvio",
+            "11. 👫 Pares Frequentes",
+            "12. 🤝 Consenso",
+            "13. 🔁 Ciclos",
+            "14. 🧬 Sequências Clusters",
+            "15. 🔥 Números Quentes",
+            "16. 📍 Vizinhança",
+            "17. 🥇 Candidatos Ouro",
+            "18. 🎲 Aleatório Inteligente",
+            "19. ⚖️ Equilibrado",
+            "20. 🎨 Misto",
+            "21. 🚀 Momentum",
+            "22. ⏰ Números Atrasados",
+            "23. ⏳ Atraso Recente",
+            "24. 🔄 Escada Temporal",
+            "25. 🎯 Wheel Cobertura",
+            "26. 🤖 AutoML PyCaret",
+            "27. 🗄️ Admin Banco de Dados",
         ]
     )
 
@@ -271,93 +271,92 @@ def exibir_interface_principal():
     # RENDERIZAR PÁGINA SELECIONADA
     # =========================================================================
 
-    # Verificar se há navegação via session state
+        # Verificar se há navegação via session state
     if 'navegar_para' in st.session_state:
         if st.session_state['navegar_para'] == 'verificar_resultados':
-            menu = "🎯 Verificar Resultados"
+            menu = "03. ✅ Verificar Resultados"
         del st.session_state['navegar_para']
 
-    if menu == "🤖 Piloto Automático":
+    if menu == "01. 🤖 Piloto Automático":
         pagina_piloto_automatico(df)
 
-    elif menu == "🎯 Simulação & Conferência":
+    elif menu == "02. 🎯 Simulação & Conferência":
         pagina_simulacao(df)
 
-    elif menu == "🔄 Análise Escada":
-        pagina_escada_temporal(df)
+    elif menu == "03. ✅ Verificar Resultados":
+        pagina_verificar_resultados(df)
 
-    elif menu == "🧬 Análise de Sequências":
-        pagina_analise_sequencias(df)
-
-    elif menu == "📊 Backtesting Estatístico":
+    elif menu == "04. 📊 Backtesting Estatístico":
         pagina_backtesting(df)
 
-    elif menu == "🏆 Resultados Validação":
+    elif menu == "05. 🏆 Resultados Validação":
         pagina_validacao_visual(df)
 
-    elif menu == "🗄️ Admin Banco de Dados":
-        pagina_admin_banco()
+    elif menu == "06. 🔄 Análise Escada":
+        pagina_escada_temporal(df)
 
-    elif menu == "⏰ Números Atrasados":
-        pagina_analise_estrategia(df, "Números Atrasados", "atrasados")
+    elif menu == "07. 🧬 Análise de Sequências":
+        pagina_analise_sequencias(df)
 
-    elif menu == "🔥 Números Quentes":
-        pagina_analise_estrategia(df, "Números Quentes", "quentes")
-
-    elif menu == "⏳ Atraso Recente":
-        pagina_analise_estrategia(df, "Atraso Recente", "atraso_recente")
-
-    elif menu == "⚖️ Equilibrado":
-        pagina_analise_estrategia(df, "Análise Equilibrada", "equilibrado")
-
-    elif menu == "🎨 Misto":
-        pagina_analise_estrategia(df, "Estratégia Mista", "misto")
-
-    elif menu == "🤝 Consenso":
-        pagina_analise_estrategia(df, "Consenso de Estratégias", "consenso")
-
-    elif menu == "🎲 Aleatório Inteligente":
-        pagina_analise_estrategia(
-            df, "Aleatório Inteligente", "aleatorio_smart")
-
-    elif menu == "� Sequências (Clusters)":
-        pagina_analise_estrategia(df, "Sequências (Clusters)", "sequencias")
-
-    elif menu == "🧠 Ensemble":
-        pagina_analise_estrategia(df, "Ensemble", "ensemble")
-
-    elif menu == "🎯 Wheel (Cobertura)":
-        pagina_analise_estrategia(df, "Wheel (Cobertura)", "wheel")
-
-    elif menu == "🥇 Candidatos Ouro":
-        pagina_analise_estrategia(df, "Candidatos Ouro", "candidatos_ouro")
-
-    elif menu == "🚀 Momentum":
-        pagina_analise_estrategia(df, "Momentum", "momentum")
-
-    elif menu == "📍 Vizinhança":
-        pagina_analise_estrategia(df, "Vizinhança", "vizinhanca")
-
-    elif menu == "📊 Frequência Desvio":
-        pagina_analise_estrategia(df, "Frequência Desvio", "frequencia_desvio")
-
-    elif menu == "👫 Pares Frequentes":
-        pagina_analise_estrategia(df, "Pares Frequentes", "pares_frequentes")
-
-    elif menu == "🔁 Ciclos":
-        pagina_analise_estrategia(df, "Ciclos", "ciclos")
-
-    elif menu == "🧠✨ Ensemble V2":
-        pagina_analise_estrategia(df, "Ensemble V2", "ensemble_v2")
-
-    elif menu == "�🤖 AutoML (PyCaret)":
-        pagina_automl(df)
-
-    elif menu == "📊 Relatório Geral":
+    elif menu == "08. 📊 Relatório Geral":
         pagina_relatorio_geral(df)
 
-    elif menu == "🎯 Verificar Resultados":
-        pagina_verificar_resultados(df)
+    elif menu == "09. 🧠 Ensemble":
+        pagina_analise_estrategia(df, "Ensemble", "ensemble")
+
+    elif menu == "10. 📊 Frequência Desvio":
+        pagina_analise_estrategia(df, "Frequência Desvio", "frequencia_desvio")
+
+    elif menu == "11. 👫 Pares Frequentes":
+        pagina_analise_estrategia(df, "Pares Frequentes", "pares_frequentes")
+
+    elif menu == "12. 🤝 Consenso":
+        pagina_analise_estrategia(df, "Consenso de Estratégias", "consenso")
+
+    elif menu == "13. 🔁 Ciclos":
+        pagina_analise_estrategia(df, "Ciclos", "ciclos")
+
+    elif menu == "14. 🧬 Sequências Clusters":
+        pagina_analise_estrategia(df, "Sequências (Clusters)", "sequencias")
+
+    elif menu == "15. 🔥 Números Quentes":
+        pagina_analise_estrategia(df, "Números Quentes", "quentes")
+
+    elif menu == "16. 📍 Vizinhança":
+        pagina_analise_estrategia(df, "Vizinhança", "vizinhanca")
+
+    elif menu == "17. 🥇 Candidatos Ouro":
+        pagina_analise_estrategia(df, "Candidatos Ouro", "candidatos_ouro")
+
+    elif menu == "18. 🎲 Aleatório Inteligente":
+        pagina_analise_estrategia(df, "Aleatório Inteligente", "aleatorio_smart")
+
+    elif menu == "19. ⚖️ Equilibrado":
+        pagina_analise_estrategia(df, "Análise Equilibrada", "equilibrado")
+
+    elif menu == "20. 🎨 Misto":
+        pagina_analise_estrategia(df, "Estratégia Mista", "misto")
+
+    elif menu == "21. 🚀 Momentum":
+        pagina_analise_estrategia(df, "Momentum", "momentum")
+
+    elif menu == "22. ⏰ Números Atrasados":
+        pagina_analise_estrategia(df, "Números Atrasados", "atrasados")
+
+    elif menu == "23. ⏳ Atraso Recente":
+        pagina_analise_estrategia(df, "Atraso Recente", "atraso_recente")
+
+    elif menu == "24. 🔄 Escada Temporal":
+        pagina_escada_temporal(df)
+
+    elif menu == "25. 🎯 Wheel Cobertura":
+        pagina_analise_estrategia(df, "Wheel (Cobertura)", "wheel")
+
+    elif menu == "26. 🤖 AutoML PyCaret":
+        pagina_automl(df)
+
+    elif menu == "27. 🗄️ Admin Banco de Dados":
+        pagina_admin_banco()
 
 
 # =============================================================================
