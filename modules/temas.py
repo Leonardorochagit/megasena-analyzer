@@ -230,23 +230,13 @@ def aplicar_tema():
         color: var(--text) !important;
     }}
 
-    /* Menu lateral — itens normais */
-    section[data-testid="stSidebar"] .stRadio label {{
-        padding: 3px 8px !important;
-        border-radius: 6px !important;
-        transition: background 0.15s !important;
-    }}
-    section[data-testid="stSidebar"] .stRadio label:hover {{
-        background: rgba(151,166,195,0.12) !important;
-    }}
-
-    /* Separadores — esconder o radio bullet e estilizar como header */
+    /* Menu lateral — separadores: sem bullet, sem tracos, so texto */
     section[data-testid="stSidebar"] .stRadio label:nth-child(1),
     section[data-testid="stSidebar"] .stRadio label:nth-child(5),
     section[data-testid="stSidebar"] .stRadio label:nth-child(11),
     section[data-testid="stSidebar"] .stRadio label:nth-child(29) {{
-        margin-top: 10px !important;
-        padding: 2px 4px !important;
+        margin-top: 12px !important;
+        padding: 1px 4px !important;
         pointer-events: none !important;
         cursor: default !important;
         opacity: 0.55 !important;
@@ -254,18 +244,14 @@ def aplicar_tema():
         font-weight: 700 !important;
         letter-spacing: 0.07em !important;
         background: none !important;
-        border-bottom: 1px solid var(--border) !important;
         border-radius: 0 !important;
+        border: none !important;
     }}
     section[data-testid="stSidebar"] .stRadio label:nth-child(1) input,
     section[data-testid="stSidebar"] .stRadio label:nth-child(5) input,
     section[data-testid="stSidebar"] .stRadio label:nth-child(11) input,
     section[data-testid="stSidebar"] .stRadio label:nth-child(29) input {{
-        visibility: hidden !important;
-        width: 0 !important;
-        height: 0 !important;
-        margin: 0 !important;
-        padding: 0 !important;
+        display: none !important;
     }}
     section[data-testid="stSidebar"] .stRadio label:nth-child(1) {{
         margin-top: 0 !important;

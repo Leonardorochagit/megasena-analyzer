@@ -85,17 +85,17 @@ def exibir_interface_principal():
 
     # Menu de navegação — lista plana com um único radio (evita race condition entre grupos)
     MENU_ITENS = [
-        "━━ 🏠 SISTEMA ━━",
+        "🏠 SISTEMA",
         "🤖 Piloto Automático",
         "🎯 Simulação & Conferência",
         "✅ Verificar Resultados",
-        "━━ 📊 ANÁLISE ━━",
+        "📊 ANÁLISE",
         "📊 Backtesting Estatístico",
         "🏆 Resultados Validação",
         "🔄 Análise Escada",
         "🧬 Análise de Sequências",
         "📊 Relatório Geral",
-        "━━ 🎲 ESTRATÉGIAS ━━",
+        "🎲 ESTRATÉGIAS",
         "01. 🧠 Ensemble",
         "02. 📊 Frequência Desvio",
         "03. 👫 Pares Frequentes",
@@ -113,12 +113,12 @@ def exibir_interface_principal():
         "15. ⏳ Atraso Recente",
         "16. 🔄 Escada Temporal",
         "17. 🎯 Wheel Cobertura",
-        "━━ ⚙️ ADMIN ━━",
+        "⚙️ ADMIN",
         "🤖 AutoML PyCaret",
         "🗄️ Admin Banco de Dados",
     ]
 
-    SEPARADORES = {"━━ 🏠 SISTEMA ━━", "━━ 📊 ANÁLISE ━━", "━━ 🎲 ESTRATÉGIAS ━━", "━━ ⚙️ ADMIN ━━"}
+    SEPARADORES = {"🏠 SISTEMA", "📊 ANÁLISE", "🎲 ESTRATÉGIAS", "⚙️ ADMIN"}
 
     if "menu_ativo" not in st.session_state:
         st.session_state["menu_ativo"] = "🤖 Piloto Automático"
