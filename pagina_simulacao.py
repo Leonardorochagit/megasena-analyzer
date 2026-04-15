@@ -190,13 +190,26 @@ def _simular_automatico(df, concurso_alvo, qtd_numeros):
             format_func=_nome_estrategia
         )
 
-    total_cartoes = qtd_cartoes_por_estrategia * len(estrategias_selecionadas)
+    qtd_cartoes_ensemble = qtd_cartoes_por_estrategia
+    if 'ensemble' in estrategias_selecionadas:
+        qtd_cartoes_ensemble = st.number_input(
+            "🧠 Cartões Ensemble (votação)",
+            min_value=1, max_value=50, value=20, step=5,
+            help="Ensemble usa votação de 7 estratégias — gerar mais cartões aumenta cobertura"
+        )
+
+    # Calcular total considerando ensemble separado
+    _outras = [e for e in estrategias_selecionadas if e != 'ensemble']
+    total_cartoes = qtd_cartoes_por_estrategia * len(_outras)
+    if 'ensemble' in estrategias_selecionadas:
+        total_cartoes += qtd_cartoes_ensemble
     custo_total = total_cartoes * _calcular_custo(qtd_numeros)
     combinacoes_total = total_cartoes * _calcular_combinacoes(qtd_numeros)
 
+    _ensemble_info = f" (Ensemble: {qtd_cartoes_ensemble})" if 'ensemble' in estrategias_selecionadas and qtd_cartoes_ensemble != qtd_cartoes_por_estrategia else ""
     st.info(f"""
     📊 **Resumo da simulação:**
-    - **{len(estrategias_selecionadas)}** estratégias × **{qtd_cartoes_por_estrategia}** cartões = **{total_cartoes} cartões** no total
+    - **{len(estrategias_selecionadas)}** estratégias → **{total_cartoes} cartões** no total{_ensemble_info}
     - Cada cartão com **{qtd_numeros} números** ({_calcular_combinacoes(qtd_numeros)} combinações de 6 por cartão)
     - **Total de combinações cobertas: {combinacoes_total:,}** jogos de 6
     - Custo total estimado: **R$ {custo_total:,.2f}**
@@ -221,8 +234,8 @@ def _simular_automatico(df, concurso_alvo, qtd_numeros):
 
             for idx_est, estrategia in enumerate(estrategias_selecionadas):
                 status.text(f"Gerando cartões: {_nome_estrategia(estrategia)}...")
-                
-                for i in range(qtd_cartoes_por_estrategia):
+                qtd_est = qtd_cartoes_ensemble if estrategia == 'ensemble' else qtd_cartoes_por_estrategia
+                for i in range(qtd_est):
                     # Gerar jogo base (6 números)
                     dezenas_base = gen.gerar_jogo(
                         estrategia=estrategia,

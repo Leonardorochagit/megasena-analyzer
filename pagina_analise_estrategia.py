@@ -9,6 +9,7 @@ import streamlit as st
 from datetime import datetime
 from pagina_escada_temporal import (
     _descricao_estrategia,
+    _descricao_detalhada_estrategia,
     _calcular_custo,
     _calcular_combinacoes
 )
@@ -79,8 +80,7 @@ def pagina_analise_estrategia(df, estrategia_nome, estrategia_key):
 
     # TAB: INFORMAÇÕES
     with tab_info:
-        st.markdown(f"### ℹ️ Sobre a Estratégia {estrategia_nome}")
-        st.info(_descricao_estrategia(estrategia_key))
+        st.markdown(_descricao_detalhada_estrategia(estrategia_key))
 
         # Mostrar top números baseado na estratégia
         st.markdown("### 🎯 Top 15 Números Sugeridos")

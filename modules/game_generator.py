@@ -604,9 +604,10 @@ def _gerar_jogo_wheel(contagem_total, contagem_recente, df_atrasos, df):
 
 def gerar_jogo_ensemble(contagem_total, contagem_recente, df_atrasos, df=None):
     """
-    Estratégia ensemble: gera um jogo de cada estratégia base,
-    conta a frequência de cada número nas 7 saídas e seleciona
+    Estratégia ensemble: gera um jogo de cada estratégia disponível,
+    conta a frequência de cada número nas saídas e seleciona
     os 6 mais votados. Validação por soma gaussiana e paridade.
+    Usa 7 estratégias core para votação concentrada (evita diluição).
     """
     estrategias = [
         'escada', 'atrasados', 'quentes',
@@ -629,9 +630,11 @@ def gerar_jogo_ensemble(contagem_total, contagem_recente, df_atrasos, df=None):
         reverse=True
     )
 
+    pool_size = min(20, len(candidatos))
+
     # Tentar montar jogo válido (soma 140-210, 2-4 pares)
     for _ in range(100):
-        pool = candidatos[:20]
+        pool = candidatos[:pool_size]
         jogo = sorted(random.sample(pool, 6))
         pares = sum(1 for n in jogo if n % 2 == 0)
         soma = sum(jogo)
@@ -710,6 +713,159 @@ def gerar_jogo_avancado(contagem_total, contagem_recente, df_atrasos, df,
     return jogo, pesos
 
 
+def _pool_candidatos_expansao(estrategia, pool_size, contagem_total,
+                              contagem_recente, df_atrasos, df=None):
+    """
+    Retorna um pool de candidatos coerente com a lógica de cada estratégia,
+    usado para expandir jogos de 6 para N números. Reproduz a mesma fonte
+    estatística que a estratégia utiliza em seu `gerar_jogo` de 6.
+    """
+    if estrategia == 'atrasados':
+        return contagem_total.sort_values().head(pool_size).index.tolist()
+
+    if estrategia == 'quentes':
+        return contagem_recente.nlargest(pool_size).index.tolist()
+
+    if estrategia == 'escada':
+        cand = []
+        try:
+            _, _, _, _, _, inversoes = calcular_escada_temporal(df)
+            cand = [int(inv['numero']) for inv in inversoes] if inversoes else []
+        except Exception:
+            pass
+        if len(cand) < pool_size:
+            atrasos = contagem_total.sort_values().head(pool_size).index.tolist()
+            cand.extend([int(n) for n in atrasos if int(n) not in cand])
+        return cand[:pool_size]
+
+    if estrategia == 'consenso' or estrategia == 'wheel':
+        atrasados = set(contagem_total.sort_values().head(20).index.tolist())
+        quentes = set(contagem_recente.nlargest(20).index.tolist())
+        atraso_rec = set(df_atrasos.head(20)['numero'].tolist())
+        todos = list(atrasados) + list(quentes) + list(atraso_rec)
+        cand = [num for num, _ in Counter(todos).most_common(pool_size)]
+        if len(cand) < pool_size:
+            cand.extend([n for n in range(1, 61) if n not in cand])
+        return cand[:pool_size]
+
+    if estrategia == 'misto':
+        atrasados = contagem_total.sort_values().head(25).index.tolist()
+        quentes = contagem_recente.nlargest(25).index.tolist()
+        cand = list(dict.fromkeys(list(atrasados) + list(quentes)))
+        if len(cand) < pool_size:
+            cand.extend([n for n in range(1, 61) if n not in cand])
+        return cand[:pool_size]
+
+    if estrategia == 'candidatos_ouro':
+        cand = []
+        try:
+            cands = calcular_candidatos_ouro(contagem_total, df_atrasos)
+            cand = [int(c['numero']) for c in cands]
+        except Exception:
+            pass
+        if len(cand) < pool_size:
+            atrasos = contagem_total.sort_values().head(pool_size).index.tolist()
+            cand.extend([int(n) for n in atrasos if int(n) not in cand])
+        return cand[:pool_size]
+
+    if estrategia == 'momentum':
+        if df is not None and len(df) >= 100:
+            freq20 = Counter()
+            freq100 = Counter()
+            for i in range(1, 7):
+                freq20.update(df.head(20)[f'dez{i}'].astype(int).tolist())
+                freq100.update(df.head(100)[f'dez{i}'].astype(int).tolist())
+            ratios = {}
+            for num in range(1, 61):
+                f20 = freq20.get(num, 0) / (20 * 6 / 60)
+                f100 = freq100.get(num, 0) / (100 * 6 / 60)
+                ratios[num] = f20 / f100 if f100 > 0 else f20
+            return sorted(ratios, key=ratios.get, reverse=True)[:pool_size]
+        return contagem_recente.nlargest(pool_size).index.tolist()
+
+    if estrategia == 'vizinhanca':
+        if df is not None and len(df) >= 1:
+            ultimo = [int(df.iloc[0][f'dez{i}']) for i in range(1, 7)]
+            viz = set()
+            for n in ultimo:
+                for delta in [-3, -2, -1, 1, 2, 3]:
+                    v = n + delta
+                    if 1 <= v <= 60 and v not in ultimo:
+                        viz.add(v)
+            cand = list(viz)
+            if len(cand) < pool_size:
+                extras = contagem_total.sort_values().head(pool_size).index.tolist()
+                cand.extend([n for n in extras if n not in cand])
+            return cand[:pool_size]
+        return list(range(1, 61))
+
+    if estrategia == 'frequencia_desvio':
+        freqs = np.array([contagem_total.get(n, 0) for n in range(1, 61)])
+        media = freqs.mean()
+        cand = sorted(
+            [n for n in range(1, 61) if contagem_total.get(n, 0) > media],
+            key=lambda n: contagem_total.get(n, 0),
+            reverse=True
+        )
+        if len(cand) < pool_size:
+            cand.extend([n for n in range(1, 61) if n not in cand])
+        return cand[:pool_size]
+
+    if estrategia == 'pares_frequentes':
+        if df is not None and len(df) >= 50:
+            cols = [f'dez{i}' for i in range(1, 7)]
+            mat = df.head(200)[cols].values.astype(int)
+            co_pairs = Counter()
+            for row in mat:
+                sr = sorted(row)
+                for i in range(6):
+                    for j in range(i + 1, 6):
+                        co_pairs[(sr[i], sr[j])] += 1
+            num_score = Counter()
+            for (a, b), cnt in co_pairs.most_common(80):
+                num_score[a] += cnt
+                num_score[b] += cnt
+            cand = [n for n, _ in num_score.most_common(pool_size)]
+            if len(cand) < pool_size:
+                cand.extend([n for n in range(1, 61) if n not in cand])
+            return cand[:pool_size]
+        return list(range(1, 61))
+
+    if estrategia == 'ciclos':
+        if df is not None and len(df) >= 100:
+            cols = [f'dez{i}' for i in range(1, 7)]
+            mat = df[cols].values.astype(int)
+            scores = {}
+            for num in range(1, 61):
+                aparicoes = np.where(np.any(mat == num, axis=1))[0]
+                if len(aparicoes) >= 3:
+                    gaps = np.diff(aparicoes)
+                    ciclo_medio = gaps.mean()
+                    scores[num] = aparicoes[0] / ciclo_medio if ciclo_medio > 0 else 0
+            cand = sorted(scores, key=scores.get, reverse=True)[:pool_size]
+            if len(cand) < pool_size:
+                cand.extend([n for n in range(1, 61) if n not in cand])
+            return cand[:pool_size]
+        return list(range(1, 61))
+
+    if estrategia == 'sequencias':
+        cand = contagem_total.nlargest(30).index.tolist()
+        if df is not None and len(df) >= 1:
+            ultimo = [int(df.iloc[0][f'dez{i}']) for i in range(1, 7)]
+            for n in ultimo:
+                for delta in [-2, -1, 1, 2]:
+                    v = n + delta
+                    if 1 <= v <= 60 and v not in cand and v not in ultimo:
+                        cand.append(v)
+        if len(cand) < pool_size:
+            cand.extend([n for n in range(1, 61) if n not in cand])
+        return cand[:pool_size]
+
+    # equilibrado, aleatorio_smart, ensemble, atraso_recente, unknowns → pool amplo
+    # (filtros de paridade/soma em expandir_jogo cuidam do equilíbrio)
+    return list(range(1, 61))
+
+
 def expandir_jogo(dezenas_base, qtd_numeros, estrategia,
                   contagem_total, contagem_recente, df_atrasos, df=None):
     """
@@ -734,36 +890,13 @@ def expandir_jogo(dezenas_base, qtd_numeros, estrategia,
     if extras_necessarios <= 0:
         return sorted(dezenas_base[:qtd_numeros])
 
-    # Pool de candidatos coerente com a estratégia
-    if estrategia == 'atrasados':
-        candidatos = contagem_total.sort_values().head(pool_size).index.tolist()
-    elif estrategia == 'quentes':
-        candidatos = contagem_recente.nlargest(pool_size).index.tolist()
-    elif estrategia == 'escada':
-        try:
-            _, _, _, _, _, inversoes = calcular_escada_temporal(df)
-            candidatos = [inv['numero'] for inv in inversoes[:pool_size]] if inversoes else list(range(1, 61))
-        except Exception:
-            candidatos = list(range(1, 61))
-    elif estrategia == 'equilibrado':
-        candidatos = list(range(1, 61))
-    elif estrategia == 'consenso':
-        atrasados = set(contagem_total.sort_values().head(20).index.tolist())
-        quentes = set(contagem_recente.nlargest(20).index.tolist())
-        atraso_rec = set(df_atrasos.head(20)['numero'].tolist())
-        todos = list(atrasados) + list(quentes) + list(atraso_rec)
-        contagem = Counter(todos)
-        candidatos = [num for num, _ in contagem.most_common(pool_size)]
-    elif estrategia == 'misto':
-        atrasados = contagem_total.sort_values().head(20).index.tolist()
-        quentes = contagem_recente.nlargest(20).index.tolist()
-        candidatos = list(set(atrasados + quentes))
-        if len(candidatos) < pool_size:
-            candidatos.extend([n for n in range(1, 61) if n not in candidatos])
-    else:
-        candidatos = list(range(1, 61))
-
-    candidatos = [n for n in candidatos if n not in dezenas_base]
+    candidatos = _pool_candidatos_expansao(
+        estrategia, pool_size, contagem_total, contagem_recente, df_atrasos, df
+    )
+    candidatos = [int(n) for n in candidatos if int(n) not in dezenas_base]
+    # Safeguard: garantir extras suficientes mesmo se o pool da estratégia for pequeno
+    if len(candidatos) < extras_necessarios:
+        candidatos.extend([n for n in range(1, 61) if n not in dezenas_base and n not in candidatos])
 
     # Tentar gerar expansão com filtros de qualidade
     melhor_jogo = None

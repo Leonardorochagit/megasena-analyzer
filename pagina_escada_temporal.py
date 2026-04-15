@@ -935,18 +935,317 @@ Acertou: {' - '.join([f'{n:02d}' for n in acertados]) if acertados else 'Nenhum'
 
 
 def _descricao_estrategia(estrategia):
-    """Retorna descrição da estratégia"""
+    """Retorna descrição curta da estratégia"""
     descricoes = {
         'escada': '🔄 Foca em números que estão invertendo tendência (frios que esquentaram recentemente)',
         'atrasados': '⏰ Prioriza números que há mais tempo não saem',
         'quentes': '🔥 Seleciona números que saíram mais recentemente',
+        'atraso_recente': '⏳ Números que não saem há mais concursos que o normal nos últimos 100 sorteios',
         'equilibrado': '⚖️ Balanceia números quentes, frios e médios',
         'misto': '🎨 Combina diferentes critérios estatísticos',
-        'consenso': '🤝 Usa média ponderada de todas as estratégias',
+        'consenso': '🤝 Usa interseção de múltiplos critérios — só entra quem aparece em 2+ pools',
         'aleatorio_smart': '🎲 Aleatório mas respeitando padrões estatísticos',
+        'ensemble': '🧠 Votação de 7 estratégias core — os mais votados formam o pool',
+        'sequencias': '🧬 Agrupa números por co-ocorrência com KMeans e expande com vizinhança',
+        'wheel': '🎯 Cobertura combinatória sistemática tipo wheel',
+        'candidatos_ouro': '🥇 Combina números frios com muito atrasados por score composto',
+        'momentum': '🚀 Detecta números cuja frequência está acelerando recentemente',
+        'vizinhanca': '📍 Usa números vizinhos (±2) do último sorteio como candidatos',
+        'frequencia_desvio': '📊 Filtra números com frequência acima de 1 desvio padrão da média',
+        'pares_frequentes': '👫 Identifica pares de números que mais co-ocorrem no histórico',
+        'ciclos': '🔁 Seleciona números cujo gap atual está próximo do ciclo médio de aparição',
         'automl': '🤖 Usa Machine Learning (PyCaret) para prever probabilidades de cada número'
     }
     return descricoes.get(estrategia, 'Estratégia baseada em análise estatística')
+
+
+def _descricao_detalhada_estrategia(estrategia):
+    """Retorna descrição detalhada da estratégia para a aba de informações."""
+    detalhes = {
+        'escada': """
+### 🔄 Escada Temporal
+
+**Conceito:** Identifica números que estão **invertendo tendência** — eram frios e começaram a esquentar.
+
+**Como funciona:**
+1. Calcula a "escada temporal": ordena os 60 números por frequência recente vs histórica
+2. Detecta **inversões** — números cuja posição no ranking recente subiu significativamente em relação ao ranking histórico
+3. Os top-20 números com maior inversão positiva formam o pool de candidatos
+4. Sorteia 6 números desse pool
+
+**Quando funciona bem:** Quando há ciclos claros de aparição dos números — um número que ficou muito tempo sem sair tende a voltar.
+
+**Pool:** Top 20 inversões | **Filtros:** Nenhum adicional
+""",
+        'atrasados': """
+### ⏰ Números Atrasados
+
+**Conceito:** Aposta na **reversão à média** — números que há muito tempo não saem tendem a voltar.
+
+**Como funciona:**
+1. Conta a frequência total de cada número em todo o histórico
+2. Ordena do **menos frequente** para o mais frequente
+3. Os 20 números menos sorteados formam o pool
+4. Sorteia 6 desse pool
+
+**Quando funciona bem:** Quando a loteria apresenta comportamento de "compensação" estatística no longo prazo.
+
+**Pool:** 20 menos frequentes do histórico total | **Filtros:** Nenhum
+""",
+        'quentes': """
+### 🔥 Números Quentes
+
+**Conceito:** Segue o **momentum recente** — números que estão saindo muito ultimamente tendem a continuar.
+
+**Como funciona:**
+1. Conta a frequência de cada número nos últimos N concursos (janela recente, padrão 50)
+2. Ordena do **mais frequente** para o menos frequente
+3. Os top-20 mais quentes formam o pool
+4. Sorteia 6 desse pool
+
+**Quando funciona bem:** Quando há "streaks" — períodos onde certos números repetem com frequência acima do normal.
+
+**Pool:** Top 20 mais frequentes recentes | **Filtros:** Nenhum
+""",
+        'atraso_recente': """
+### ⏳ Atraso Recente
+
+**Conceito:** Números que não saem há mais concursos que o normal dentro de uma **janela recente** (100 sorteios).
+
+**Como funciona:**
+1. Calcula o atraso (quantos concursos desde a última aparição) de cada número
+2. Foca apenas na janela dos últimos 100 concursos
+3. Os 20 números com maior atraso recente formam o pool
+4. Sorteia 6 desse pool
+
+**Quando funciona bem:** Combina a ideia de atraso com foco temporal — não olha todo o histórico, apenas o recente.
+
+**Pool:** 20 mais atrasados nos últimos 100 | **Filtros:** Nenhum
+""",
+        'equilibrado': """
+### ⚖️ Equilibrado
+
+**Conceito:** Força uma distribuição **exatamente balanceada** entre pares e ímpares.
+
+**Como funciona:**
+1. Separa os 60 números em dois grupos: pares (2,4,6...60) e ímpares (1,3,5...59)
+2. Sorteia exatamente **3 pares** e **3 ímpares**
+3. Combina e ordena
+
+**Quando funciona bem:** Historicamente, ~75% dos sorteios da Mega-Sena têm entre 2 e 4 números pares. Forçar 3-3 é o equilíbrio mais comum.
+
+**Pool:** Todos os 60 números | **Filtros:** Exatamente 3 pares + 3 ímpares
+""",
+        'misto': """
+### 🎨 Misto
+
+**Conceito:** Combina **três fontes** diferentes de candidatos para diversificar.
+
+**Como funciona:**
+1. Pega 2 números dos **atrasados** (top-15 menos frequentes)
+2. Pega 2 números dos **quentes** (top-15 mais frequentes recentes)
+3. Pega 2 números de **atraso recente** (top-15 mais atrasados recentemente)
+4. Valida soma (140-210) e paridade (2-4 pares)
+
+**Quando funciona bem:** Quando você quer cobrir diferentes perfis de números sem depender de uma única lógica.
+
+**Pool:** 15 de cada fonte (atrasados + quentes + atraso recente) | **Filtros:** Soma 140-210, 2-4 pares
+""",
+        'consenso': """
+### 🤝 Consenso
+
+**Conceito:** Só entram números que aparecem em **pelo menos 2 de 3 critérios** diferentes.
+
+**Como funciona:**
+1. Monta 3 pools independentes: atrasados (top-15), quentes (top-15), atraso recente (top-15)
+2. Conta em quantos pools cada número aparece
+3. Filtra apenas os que aparecem em **2 ou mais** pools (consenso)
+4. Sorteia 6 do grupo de consenso
+
+**Quando funciona bem:** Reduz ruído — se um número é tanto quente quanto atrasado, provavelmente há algo relevante.
+
+**Pool:** Interseção de 3 critérios (mínimo 2 de 3) | **Filtros:** Nenhum adicional
+""",
+        'aleatorio_smart': """
+### 🎲 Aleatório Inteligente
+
+**Conceito:** Sorteio puramente **aleatório**, mas com rejeição de jogos estatisticamente improváveis.
+
+**Como funciona:**
+1. Sorteia 6 números aleatórios de 1 a 60
+2. Verifica se a soma está entre **140 e 210** (faixa mais provável)
+3. Verifica se tem entre **2 e 4 números pares**
+4. Se não passou, sorteia de novo (até 100 tentativas)
+
+**Quando funciona bem:** Serve como **baseline** — qualquer estratégia que não supere o aleatório inteligente não está agregando valor.
+
+**Pool:** Todos os 60 números | **Filtros:** Soma 140-210, 2-4 pares
+""",
+        'ensemble': """
+### 🧠 Ensemble (Votação)
+
+**Conceito:** Gera 1 jogo de **cada uma das 7 estratégias core** e faz uma **votação** — os números mais votados formam o pool.
+
+**Como funciona:**
+1. Gera 1 jogo com cada estratégia: escada, atrasados, quentes, equilibrado, misto, consenso, aleatório inteligente
+2. Conta quantas vezes cada número apareceu nas 7 saídas (votos)
+3. Ordena por número de votos (desempate por frequência recente)
+4. Os top-20 mais votados formam o pool
+5. Sorteia 6 do pool, validando soma (140-210) e paridade (2-4 pares)
+
+**Por que 7 estratégias?** Testes mostraram que com mais estratégias (15) ocorre **diluição de votos** — estratégias fracas adicionam ruído.
+
+**Pool:** Top 20 mais votados | **Filtros:** Soma 140-210, 2-4 pares
+""",
+        'sequencias': """
+### 🧬 Sequências (Clusters + Vizinhança)
+
+**Conceito:** Agrupa números por **co-ocorrência histórica** usando KMeans e expande com vizinhança.
+
+**Como funciona:**
+1. Monta uma matriz de co-ocorrência dos números nos últimos concursos
+2. Aplica **KMeans** com 4 clusters para identificar grupos de números que costumam sair juntos
+3. Seleciona candidatos de cada cluster
+4. Expande com **vizinhos N±1** de cada candidato
+5. Aplica filtros de soma e amplitude
+
+**Quando funciona bem:** Quando existem padrões de agrupamento real — certas faixas numéricas tendem a sair juntas.
+
+**Pool:** Clusters KMeans + vizinhança | **Filtros:** Soma e amplitude
+""",
+        'wheel': """
+### 🎯 Wheel (Cobertura Combinatória)
+
+**Conceito:** Gera um **sistema wheel** que garante cobertura de subconjuntos.
+
+**Como funciona:**
+1. Seleciona um pool de candidatos baseado em atrasados + quentes + atraso recente
+2. Gera múltiplos cartões usando algoritmo de **cobertura combinatória** (wheel)
+3. Garante que qualquer subconjunto de K números seja coberto por pelo menos 1 cartão
+4. Retorna um cartão aleatório do set gerado
+
+**Quando funciona bem:** Quando você quer maximizar a chance de acertar pelo menos uma combinação parcial.
+
+**Pool:** ~18 candidatos compostos | **Filtros:** Cobertura k=3
+""",
+        'candidatos_ouro': """
+### 🥇 Candidatos Ouro
+
+**Conceito:** Combina dois sinais — **déficit de frequência** (está abaixo do esperado) + **atraso alto** — num score composto.
+
+**Como funciona:**
+1. Calcula a frequência esperada de cada número (total_concursos × 6/60)
+2. Calcula o **déficit**: esperado - real (quanto falta para "compensar")
+3. Calcula o atraso atual de cada número
+4. Score = déficit + atraso/10
+5. Top-20 scores formam o pool, sorteia 6
+
+**Quando funciona bem:** Quando há números que estão claramente "devendo" — abaixo do esperado E atrasados.
+
+**Pool:** Top 20 por score composto | **Filtros:** Nenhum adicional
+""",
+        'momentum': """
+### 🚀 Momentum
+
+**Conceito:** Detecta números cuja frequência está **acelerando** — saem mais nos últimos 20 do que nos últimos 100.
+
+**Como funciona:**
+1. Calcula a frequência de cada número nos últimos **20** concursos
+2. Calcula a frequência de cada número nos últimos **100** concursos
+3. Calcula a **razão** freq(20) / freq(100) — normalizada
+4. Números com ratio > 1.2 estão "acelerando"
+5. Top-20 por ratio formam o pool, sorteia 6
+
+**Quando funciona bem:** Quando há tendências de curto prazo reais — um número começa a sair com frequência crescente.
+
+**Pool:** Top 20 por ratio de aceleração | **Filtros:** Nenhum
+""",
+        'vizinhanca': """
+### 📍 Vizinhança
+
+**Conceito:** Os números do **último sorteio** influenciam o próximo — usa vizinhos ±2 como candidatos.
+
+**Como funciona:**
+1. Pega os 6 números do último sorteio
+2. Para cada número N, gera vizinhos: N-2, N-1, N+1, N+2
+3. Remove os que já saíram no último sorteio e os fora de 1-60
+4. Pool resultante (~20 números vizinhos), sorteia 6
+
+**Quando funciona bem:** Quando há "inércia numérica" — os sorteios seguintes tendem a ter números próximos dos anteriores.
+
+**Pool:** Vizinhos ±2 do último sorteio (~20) | **Filtros:** Nenhum
+""",
+        'frequencia_desvio': """
+### 📊 Frequência Desvio
+
+**Conceito:** Seleciona apenas números **genuinamente super-frequentes** — acima de 1 desvio padrão da média.
+
+**Como funciona:**
+1. Calcula a frequência total de todos os 60 números
+2. Calcula a **média** e o **desvio padrão** dessas frequências
+3. Filtra apenas números com freq > média + 1×desvio
+4. Se poucos, relaxa para freq > média
+5. Sorteia 6 dos candidatos
+
+**Quando funciona bem:** Quando alguns números são estatisticamente outliers positivos no histórico.
+
+**Pool:** Números > média + 1σ | **Filtros:** Nenhum
+""",
+        'pares_frequentes': """
+### 👫 Pares Frequentes
+
+**Conceito:** Identifica **duplas de números** que mais co-ocorrem e usa esses números como pool.
+
+**Como funciona:**
+1. Analisa os últimos 200 sorteios
+2. Para cada sorteio, lista todos os pares possíveis (15 pares por sorteio de 6 números)
+3. Conta a frequência de cada **par (i,j)**
+4. Pega os **30 pares mais frequentes**
+5. Extrai os números únicos desses pares (~20-30 números)
+6. Sorteia 6 desse pool
+
+**Quando funciona bem:** Quando certos números têm afinidade real — costumam sair juntos mais que o esperado.
+
+**Pool:** Números dos 30 pares mais co-ocorrentes | **Filtros:** Nenhum
+""",
+        'ciclos': """
+### 🔁 Ciclos
+
+**Conceito:** Cada número tem um **ciclo médio** de aparição — seleciona os que estão "na hora de sair".
+
+**Como funciona:**
+1. Para cada número, calcula todos os intervalos (gaps) entre aparições
+2. Calcula o **ciclo médio** (média dos gaps)
+3. Calcula a **proximidade**: gap_atual / ciclo_médio
+4. Números com proximidade ≈ 1.0 estão "na hora"
+5. Top-20 por proximidade formam o pool, sorteia 6
+
+**Quando funciona bem:** Quando os números têm ciclos relativamente estáveis e previsíveis.
+
+**Pool:** Top 20 por proximidade ao ciclo | **Filtros:** Nenhum
+""",
+        'automl': """
+### 🤖 AutoML (PyCaret)
+
+**Conceito:** Usa **Machine Learning** para prever a probabilidade de cada número no próximo sorteio.
+
+**Como funciona:**
+1. Cria features para cada número: frequência, atraso, tendência, etc.
+2. Treina modelos de classificação/regressão usando PyCaret
+3. Prevê a probabilidade de cada número sair
+4. Os top-N mais prováveis formam o pool
+
+**Quando funciona bem:** Quando há padrões não-lineares que métodos estatísticos simples não capturam.
+
+**Pool:** Top N por probabilidade prevista | **Filtros:** Depende do modelo
+"""
+    }
+    return detalhes.get(estrategia, f"""
+### {estrategia.replace('_', ' ').title()}
+
+Estratégia baseada em análise estatística dos concursos anteriores.
+Gera jogos utilizando critérios específicos para selecionar os melhores candidatos.
+""")
 
 
 def _calcular_custo(qtd_numeros):

@@ -30,6 +30,9 @@ from pagina_piloto_automatico import pagina_piloto_automatico
 from pagina_backtesting import pagina_backtesting
 from pagina_validacao_visual import pagina_validacao_visual
 from pagina_admin_banco import pagina_admin_banco
+from pagina_simulador_combinacoes import pagina_simulador_combinacoes
+from pagina_ensemble_14 import pagina_ensemble_14
+from pagina_validacao_ensemble import pagina_validacao_ensemble
 
 warnings.filterwarnings('ignore')
 
@@ -87,10 +90,13 @@ def exibir_interface_principal():
     MENU_ITENS = [
         "🏠 SISTEMA",
         "🤖 Piloto Automático",
+        "🏆 Ensemble Top 10 (14 nums)",
         "🎯 Simulação & Conferência",
         "✅ Verificar Resultados",
         "📊 ANÁLISE",
+        "🔬 Simulador Combinações",
         "📊 Backtesting Estatístico",
+        "🧪 Validacao Ensemble",
         "🏆 Resultados Validação",
         "🔄 Análise Escada",
         "🧬 Análise de Sequências",
@@ -289,14 +295,23 @@ def exibir_interface_principal():
     if menu == "🤖 Piloto Automático":
         pagina_piloto_automatico(df)
 
+    elif menu == "🏆 Ensemble Top 10 (14 nums)":
+        pagina_ensemble_14(df)
+
     elif menu == "🎯 Simulação & Conferência":
         pagina_simulacao(df)
 
     elif menu == "✅ Verificar Resultados":
         pagina_verificar_resultados(df)
 
+    elif menu == "🔬 Simulador Combinações":
+        pagina_simulador_combinacoes(df)
+
     elif menu == "📊 Backtesting Estatístico":
         pagina_backtesting(df)
+
+    elif menu == "🧪 Validacao Ensemble":
+        pagina_validacao_ensemble(df)
 
     elif menu == "🏆 Resultados Validação":
         pagina_validacao_visual(df)

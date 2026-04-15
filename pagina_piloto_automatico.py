@@ -65,6 +65,8 @@ def _carregar_config():
         'intervalo': 60,
         'qtd_numeros': 14,
         'cartoes_por_est': 20,
+        'cartoes_ensemble': 40,
+        'ensemble_only': False,
         'whatsapp_ativo': False,
         'whatsapp_telefone': '',
         'whatsapp_apikey': ''
@@ -146,6 +148,8 @@ def pagina_piloto_automatico(df):
         st.session_state['piloto_intervalo'] = config['intervalo']
         st.session_state['piloto_qtd_numeros'] = config['qtd_numeros']
         st.session_state['piloto_cartoes_por_est'] = config['cartoes_por_est']
+        st.session_state['piloto_cartoes_ensemble'] = config['cartoes_ensemble']
+        st.session_state['piloto_ensemble_only'] = config['ensemble_only']
         st.session_state['piloto_whatsapp_ativo'] = config['whatsapp_ativo']
         st.session_state['piloto_whatsapp_telefone'] = config['whatsapp_telefone']
         st.session_state['piloto_whatsapp_apikey'] = config['whatsapp_apikey']
@@ -189,13 +193,44 @@ def pagina_piloto_automatico(df):
         )
         st.session_state['piloto_qtd_numeros'] = qtd_numeros
 
-    cartoes_por_estrategia = st.slider(
-        "📋 Cartões por estratégia", 1, 20,
-        value=st.session_state['piloto_cartoes_por_est'],
-        key="slider_cartoes_est",
-        help="Quantos cartões gerar para cada estratégia"
+    # ----- MODO ENSEMBLE ONLY -----
+    ensemble_only = st.toggle(
+        "🧠 Modo Ensemble Only",
+        value=st.session_state['piloto_ensemble_only'],
+        key="toggle_ensemble_only",
+        help="Gera cartões APENAS da estratégia Ensemble (votação de 15 estratégias). Ideal para focar na metodologia mais consistente."
     )
-    st.session_state['piloto_cartoes_por_est'] = cartoes_por_estrategia
+    st.session_state['piloto_ensemble_only'] = ensemble_only
+
+    if ensemble_only:
+        st.info("🧠 **Modo Ensemble Only ativo** — Apenas cartões ensemble serão gerados (votação de 15 estratégias).")
+        cartoes_ensemble = st.slider(
+            "🧠 Cartões Ensemble", 5, 50,
+            value=st.session_state['piloto_cartoes_ensemble'],
+            key="slider_cartoes_ensemble",
+            help="Quantos cartões ensemble gerar. Recomendado: 30-50"
+        )
+        st.session_state['piloto_cartoes_ensemble'] = cartoes_ensemble
+        cartoes_por_estrategia = st.session_state['piloto_cartoes_por_est']
+    else:
+        col_cart1, col_cart2 = st.columns(2)
+        with col_cart1:
+            cartoes_por_estrategia = st.slider(
+                "📋 Cartões por estratégia", 1, 20,
+                value=st.session_state['piloto_cartoes_por_est'],
+                key="slider_cartoes_est",
+                help="Quantos cartões gerar para cada estratégia"
+            )
+            st.session_state['piloto_cartoes_por_est'] = cartoes_por_estrategia
+
+        with col_cart2:
+            cartoes_ensemble = st.slider(
+                "🧠 Cartões Ensemble (extra)", 1, 50,
+                value=st.session_state['piloto_cartoes_ensemble'],
+                key="slider_cartoes_ensemble",
+                help="Ensemble gera mais cartões por usar votação de 15 estratégias. Recomendado: 30-50"
+            )
+            st.session_state['piloto_cartoes_ensemble'] = cartoes_ensemble
 
     # ----- NOTIFICAÇÕES WHATSAPP -----
     with st.expander("📲 Notificações WhatsApp", expanded=False):
@@ -255,6 +290,8 @@ def pagina_piloto_automatico(df):
         'intervalo': intervalo,
         'qtd_numeros': qtd_numeros,
         'cartoes_por_est': cartoes_por_estrategia,
+        'cartoes_ensemble': cartoes_ensemble,
+        'ensemble_only': ensemble_only,
         'whatsapp_ativo': st.session_state['piloto_whatsapp_ativo'],
         'whatsapp_telefone': st.session_state['piloto_whatsapp_telefone'],
         'whatsapp_apikey': st.session_state['piloto_whatsapp_apikey']
@@ -295,7 +332,7 @@ def pagina_piloto_automatico(df):
             st.session_state['_piloto_ciclo_executado'] = count
             with st.spinner("🔄 Verificando novidades..."):
                 resultado_conferencia = _auto_conferir(df, todos_cartoes=todos_cartoes)
-                resultado_geracao = _auto_gerar(df, qtd_numeros, cartoes_por_estrategia, todos_cartoes=todos_cartoes)
+                resultado_geracao = _auto_gerar(df, qtd_numeros, cartoes_por_estrategia, cartoes_ensemble=cartoes_ensemble, ensemble_only=ensemble_only, todos_cartoes=todos_cartoes)
             st.session_state['_piloto_ultimo_resultado_conf'] = resultado_conferencia
             st.session_state['_piloto_ultimo_resultado_ger'] = resultado_geracao
         else:
@@ -345,7 +382,7 @@ def pagina_piloto_automatico(df):
     with col_m2:
         if st.button("🎲 Gerar Agora", type="primary", use_container_width=True):
             with st.spinner("Gerando..."):
-                resultado = _auto_gerar(df, qtd_numeros, cartoes_por_estrategia, forcar=True)
+                resultado = _auto_gerar(df, qtd_numeros, cartoes_por_estrategia, cartoes_ensemble=cartoes_ensemble, ensemble_only=ensemble_only, forcar=True)
                 _exibir_log_acoes(None, resultado)
 
     with col_m3:
@@ -506,7 +543,7 @@ def _calcular_estatisticas_cache(df):
     return stats.calcular_estatisticas(df)
 
 
-def _auto_gerar(df, qtd_numeros, cartoes_por_estrategia, forcar=False, todos_cartoes=None):
+def _auto_gerar(df, qtd_numeros, cartoes_por_estrategia, cartoes_ensemble=None, ensemble_only=False, forcar=False, todos_cartoes=None):
     """Gera cartões automaticamente para o próximo concurso"""
 
     proximo = int(df['concurso'].max()) + 1 if 'concurso' in df.columns else None
@@ -529,8 +566,10 @@ def _auto_gerar(df, qtd_numeros, cartoes_por_estrategia, forcar=False, todos_car
     contagem_total, contagem_recente, df_atrasos = _calcular_estatisticas_cache(df)
     novos_cartoes = []
 
-    for estrategia in TODAS_ESTRATEGIAS:
-        for i in range(cartoes_por_estrategia):
+    estrategias_ativas = ['ensemble'] if ensemble_only else TODAS_ESTRATEGIAS
+    for estrategia in estrategias_ativas:
+        qtd = cartoes_ensemble if (estrategia == 'ensemble' and cartoes_ensemble) else cartoes_por_estrategia
+        for i in range(qtd):
             try:
                 # Gerar jogo base (6 números)
                 dezenas_base = gen.gerar_jogo(

@@ -77,7 +77,9 @@ def testar_estrategias(df, concurso_corte, n_jogos_por_estrategia=10):
     estrategias = [
         'atrasados', 'quentes', 'atraso_recente', 'equilibrado',
         'misto', 'escada', 'consenso', 'aleatorio_smart',
-        'ensemble', 'sequencias', 'wheel'
+        'ensemble', 'sequencias', 'wheel',
+        'candidatos_ouro', 'momentum', 'vizinhanca',
+        'frequencia_desvio', 'pares_frequentes', 'ciclos'
     ]
 
     resultados = {}
