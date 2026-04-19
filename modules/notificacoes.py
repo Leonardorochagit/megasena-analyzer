@@ -53,9 +53,10 @@ def enviar_whatsapp(telefone, apikey, mensagem, max_tentativas=3, delay_base=5):
     for tentativa in range(1, max_tentativas + 1):
         try:
             response = requests.get(url, timeout=30)
-            if response.status_code == 200:
+            body = response.text[:300]
+            if response.status_code == 200 and 'ERROR' not in body.upper():
                 return {'sucesso': True, 'mensagem': 'Mensagem enviada com sucesso!'}
-            ultimo_erro = f'Erro HTTP {response.status_code}: {response.text[:200]}'
+            ultimo_erro = f'HTTP {response.status_code}: {body}'
         except requests.exceptions.Timeout:
             ultimo_erro = 'Timeout — CallMeBot não respondeu em 30s'
         except requests.exceptions.ConnectionError:

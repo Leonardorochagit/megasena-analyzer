@@ -1,0 +1,40 @@
+======================================================================
+VALIDACAO: ensemble NOVO vs ANTIGO  (400 concursos × 5 cartoes)
+======================================================================
+Historico: 2995 concursos | Testando 400 (de 2596 a 2995)
+  [ 20/400] 0.2m ETA 3.4m | novo_med=1.590  antigo_med=1.510
+  [ 40/400] 0.3m ETA 3.1m | novo_med=1.525  antigo_med=1.435
+  [ 60/400] 0.5m ETA 3.0m | novo_med=1.367  antigo_med=1.287
+  [ 80/400] 0.7m ETA 2.8m | novo_med=1.360  antigo_med=1.285
+  [100/400] 0.9m ETA 2.6m | novo_med=1.342  antigo_med=1.284
+  [120/400] 1.0m ETA 2.4m | novo_med=1.380  antigo_med=1.322
+  [140/400] 1.2m ETA 2.2m | novo_med=1.410  antigo_med=1.367
+  [160/400] 1.4m ETA 2.1m | novo_med=1.387  antigo_med=1.374
+  [180/400] 1.5m ETA 1.9m | novo_med=1.397  antigo_med=1.394
+  [200/400] 1.7m ETA 1.7m | novo_med=1.389  antigo_med=1.374
+  [220/400] 1.9m ETA 1.5m | novo_med=1.405  antigo_med=1.398
+  [240/400] 2.0m ETA 1.3m | novo_med=1.413  antigo_med=1.416
+  [260/400] 2.2m ETA 1.2m | novo_med=1.422  antigo_med=1.417
+  [280/400] 2.3m ETA 1.0m | novo_med=1.429  antigo_med=1.434
+  [300/400] 2.5m ETA 0.8m | novo_med=1.429  antigo_med=1.429
+  [320/400] 2.7m ETA 0.7m | novo_med=1.424  antigo_med=1.424
+  [340/400] 2.9m ETA 0.5m | novo_med=1.421  antigo_med=1.419
+  [360/400] 3.0m ETA 0.3m | novo_med=1.411  antigo_med=1.412
+  [380/400] 3.2m ETA 0.2m | novo_med=1.400  antigo_med=1.418
+  [400/400] 3.4m ETA 0.0m | novo_med=1.397  antigo_med=1.411
+
+Concluido em 3.4 minutos
+
+======================================================================
+RESUMO
+======================================================================
+METODO     MEDIA  MELHOR_MED  MAX   3+   4+   5+   6
+novo      1.3975       2.470    6  259   52    8   1
+antigo    1.4115       2.373    5  254   46    5   0
+
+Comparacao por concurso (melhor cartao):
+  Novo venceu:    134
+  Antigo venceu:  116
+  Empate:         150
+
+Salvo em validacao_ensemble_novo.json

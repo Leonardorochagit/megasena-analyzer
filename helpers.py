@@ -3,12 +3,33 @@ Funções helper para conversão de dados e constantes compartilhadas
 """
 
 # ── Custos oficiais da Mega-Sena por quantidade de números ────
-# Fonte: Caixa Econômica Federal (atualizado 2025)
+# Fonte: Caixa Econômica Federal (atualizado 2026)
+# Preço base: R$ 6,00 (conforme README.md)
 CUSTOS_CARTAO = {
-    6: 5.00, 7: 35.00, 8: 140.00, 9: 420.00, 10: 1050.00,
-    11: 2310.00, 12: 4620.00, 13: 8580.00, 14: 15015.00,
-    15: 25025.00, 16: 40040.00, 17: 61880.00, 18: 92820.00,
-    19: 135660.00, 20: 193800.00
+    6: 6.00, 7: 42.00, 8: 168.00, 9: 504.00, 10: 1260.00,
+    11: 2772.00, 12: 5544.00, 13: 10296.00, 14: 18018.00,
+    15: 30030.00, 16: 48048.00, 17: 74256.00, 18: 111384.00,
+    19: 162792.00, 20: 232560.00
+}
+
+# ── Filtros e Parâmetros de Qualidade ─────────────────────────
+# Centralizados para facilitar ajustes e testes
+FILTROS_JOGO = {
+    'soma_min': 140,
+    'soma_max': 210,
+    'pares_min': 2,
+    'pares_max': 4,
+    'amplitude_min': 30,
+    'tentativas_max': 100,  # Máximo de tentativas para gerar jogo válido
+}
+
+# ── Janelas de Análise Estatística ─────────────────────────────
+JANELAS_ANALISE = {
+    'recente': 50,       # Jogos recentes para análise de tendência
+    'momentum_curto': 20, # Jogos para cálculo de momentum
+    'momentum_longo': 100, # Jogos para base de comparação momentum
+    'co_ocorrencia': 200, # Jogos para análise de pares frequentes
+    'ciclos_min': 100,    # Jogos mínimos para análise de ciclos
 }
 
 # ── Versionamento de estratégias ──────────────────────────────
@@ -88,6 +109,10 @@ VERSOES_ESTRATEGIAS = {
         'versao': '1.0',
         'nota': 'Números cujo gap atual está próximo do ciclo médio de aparição',
     },
+    'atraso_recente': {
+        'versao': '1.0',
+        'nota': 'Números que não saem há mais concursos do que o normal nos últimos 100 sorteios',
+    },
     'Manual': {
         'versao': '-',
         'nota': 'Cartão inserido manualmente pelo usuário',
@@ -95,13 +120,28 @@ VERSOES_ESTRATEGIAS = {
 }
 
 
-def versao_estrategia(estrategia):
+def versao_estrategia(estrategia: str) -> str:
     """Retorna a versão atual de uma estratégia."""
     info = VERSOES_ESTRATEGIAS.get(estrategia, {})
     return info.get('versao', '?')
 
 
-def converter_dezenas_para_int(dezenas):
+def obter_preco_cartao(qtd_numeros: int) -> float:
+    """Retorna o preço de um cartão com a quantidade de números informada."""
+    return CUSTOS_CARTAO.get(qtd_numeros, 0.0)
+
+
+def obter_parametros_filtro() -> dict:
+    """Retorna os parâmetros de filtro para validação de jogos."""
+    return FILTROS_JOGO.copy()
+
+
+def obter_janelas_analise() -> dict:
+    """Retorna as janelas de análise estatística configuradas."""
+    return JANELAS_ANALISE.copy()
+
+
+def converter_dezenas_para_int(dezenas) -> list[int]:
     """
     Converte dezenas para lista de inteiros de forma robusta
 
@@ -131,7 +171,7 @@ def converter_dezenas_para_int(dezenas):
     # Se é pandas Series ou array
     try:
         return [int(n) for n in list(dezenas)]
-    except:
+    except Exception:
         pass
 
     # Último recurso: retornar lista vazia

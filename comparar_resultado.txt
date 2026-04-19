@@ -1,0 +1,91 @@
+Carregando dados...
+OK: 2995 concursos
+
+  Concurso 2981 - Resultado: [15, 22, 27, 32, 50, 58]
+      ensemble_7: melhor=3  (seed=2981)
+     ensemble_15: melhor=2  (seed=2981)
+
+  Concurso 2982 - Resultado: [2, 35, 41, 46, 49, 58]
+      ensemble_7: melhor=2  (seed=2982)
+     ensemble_15: melhor=2  (seed=2982)
+
+  Concurso 2983 - Resultado: [3, 15, 30, 32, 40, 52]
+      ensemble_7: melhor=2  (seed=2983)
+     ensemble_15: melhor=2  (seed=2983)
+
+  Concurso 2984 - Resultado: [6, 11, 15, 28, 42, 60]
+      ensemble_7: melhor=3  (seed=2984)
+     ensemble_15: melhor=2  (seed=2984)
+
+  Concurso 2985 - Resultado: [6, 8, 21, 32, 41, 60]
+      ensemble_7: melhor=4  (seed=2985)
+     ensemble_15: melhor=3  (seed=2985)
+
+  Concurso 2986 - Resultado: [1, 5, 13, 26, 41, 53]
+      ensemble_7: melhor=3  (seed=2986)
+     ensemble_15: melhor=3  (seed=2986)
+
+  Concurso 2987 - Resultado: [16, 17, 20, 28, 46, 47]
+      ensemble_7: melhor=2  (seed=2987)
+     ensemble_15: melhor=2  (seed=2987)
+
+  Concurso 2988 - Resultado: [21, 23, 28, 36, 57, 58]
+      ensemble_7: melhor=2  (seed=2988)
+     ensemble_15: melhor=2  (seed=2988)
+
+  Concurso 2989 - Resultado: [6, 14, 28, 31, 56, 59]
+      ensemble_7: melhor=2  (seed=2989)
+     ensemble_15: melhor=2  (seed=2989)
+
+  Concurso 2990 - Resultado: [6, 14, 18, 29, 30, 44]
+      ensemble_7: melhor=2  (seed=2990)
+     ensemble_15: melhor=3  (seed=2990)
+
+  Concurso 2991 - Resultado: [4, 14, 19, 23, 36, 53]
+      ensemble_7: melhor=2  (seed=2991)
+     ensemble_15: melhor=2  (seed=2991)
+
+  Concurso 2992 - Resultado: [4, 17, 23, 33, 36, 49]
+      ensemble_7: melhor=1  (seed=2992)
+     ensemble_15: melhor=2  (seed=2992)
+
+  Concurso 2993 - Resultado: [3, 15, 31, 42, 43, 51]
+      ensemble_7: melhor=2  (seed=2993)
+     ensemble_15: melhor=2  (seed=2993)
+
+  Concurso 2994 - Resultado: [1, 10, 23, 31, 40, 55]
+      ensemble_7: melhor=2  (seed=2994)
+     ensemble_15: melhor=3  (seed=2994)
+
+  Concurso 2995 - Resultado: [8, 29, 42, 49, 50, 58]
+      ensemble_7: melhor=2  (seed=2995)
+     ensemble_15: melhor=2  (seed=2995)
+
+======================================================================
+  COMPARACAO ENSEMBLE: 7 vs 15 ESTRATEGIAS
+  15 concursos, 50 jogos cada
+======================================================================
+  VERSAO            MEDIA  MELHOR_MED   MAX  DISTRIBUICAO
+----------------------------------------------------------------------
+  ensemble_7       0.57        2.27     4  4ac:1x  3ac:9x  2ac:67x  1ac:265x  0ac:408x
+  ensemble_15      0.54        2.27     3  3ac:8x  2ac:58x  1ac:267x  0ac:417x
+
+  POR CONCURSO (melhor de cada):
+  CONCURSO      7-EST  15-EST
+  ----------------------------
+  2981            3       2   <--
+  2982            2       2  
+  2983            2       2  
+  2984            3       2   <--
+  2985            4       3   <--
+  2986            3       3  
+  2987            2       2  
+  2988            2       2  
+  2989            2       2  
+  2990            2       3   **
+  2991            2       2  
+  2992            1       2   **
+  2993            2       2  
+  2994            2       3   **
+  2995            2       2  
+

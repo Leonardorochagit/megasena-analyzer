@@ -423,8 +423,11 @@ def enviar_whatsapp(resultado_conferencia):
 
     if not telefone or not apikey:
         log("⚠️  WHATSAPP_TELEFONE ou WHATSAPP_APIKEY não configurados.")
+        log(f"  WHATSAPP_TELEFONE presente: {bool(telefone)}")
+        log(f"  WHATSAPP_APIKEY presente: {bool(apikey)}")
         return False
 
+    log(f"  Enviando para: ...{telefone[-4:]} (apikey: ...{apikey[-4:]})")
     mensagem = notif.formatar_resultado_concurso(resultado_conferencia)
     res = notif.enviar_whatsapp(telefone, apikey, mensagem)
 

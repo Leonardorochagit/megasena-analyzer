@@ -1,0 +1,850 @@
+Carregando dados da API...
+Dados carregados: 2995 concursos
+Ultimo concurso disponivel: 2995
+
+######################################################################
+# TESTE 1: Ultimo concurso
+######################################################################
+======================================================================
+  TESTE DE ESTRATEGIAS - Concurso 2995
+  Resultado real: [8, 29, 42, 49, 50, 58]
+  Dados de treino: 2994 concursos anteriores
+  Jogos por estrategia: 20
+======================================================================
+
+----------------------------------------------------------------------
+  ESTRATEGIA            MELHOR   MEDIA  JOGOS  DISTRIBUICAO DE ACERTOS
+----------------------------------------------------------------------
+  aleatorio_smart          3    0.95     20  3ac:1x  2ac:5x  1ac:6x  0ac:8x
+  momentum                 2    0.75     20  2ac:2x  1ac:11x  0ac:7x
+  vizinhanca               2    0.70     20  2ac:2x  1ac:10x  0ac:8x
+  atraso_recente           2    0.60     20  2ac:1x  1ac:10x  0ac:9x
+  ensemble                 2    0.55     20  2ac:2x  1ac:7x  0ac:11x
+  sequencias               2    0.45     20  2ac:1x  1ac:7x  0ac:12x
+  equilibrado              2    0.40     20  2ac:1x  1ac:6x  0ac:13x
+  wheel                    2    0.25     20  2ac:1x  1ac:3x  0ac:16x
+  quentes                  1    0.55     20  1ac:11x  0ac:9x
+  escada                   1    0.45     20  1ac:9x  0ac:11x
+  misto                    1    0.40     20  1ac:8x  0ac:12x
+  atrasados                1    0.25     20  1ac:5x  0ac:15x
+  candidatos_ouro          1    0.25     20  1ac:5x  0ac:15x
+  ciclos                   1    0.25     20  1ac:5x  0ac:15x
+  consenso                 0    0.00     20  0ac:20x
+  frequencia_desvio        0    0.00     20  0ac:20x
+  pares_frequentes         0    0.00     20  0ac:20x
+
+======================================================================
+  MELHORES JOGOS POR ESTRATEGIA
+======================================================================
+  aleatorio_smart      -> [08]  17  [29]  46  [50]  59   (3 acertos: [8, 29, 50])
+  momentum             ->  15   19   20   23  [42] [50]  (2 acertos: [42, 50])
+  vizinhanca           ->  03  [08]  21   32  [42]  56   (2 acertos: [8, 42])
+  atraso_recente       ->  03   06   21   25  [50] [58]  (2 acertos: [50, 58])
+  ensemble             ->  09   15   33  [42]  48  [50]  (2 acertos: [42, 50])
+  sequencias           ->  09   13   35  [42]  48  [58]  (2 acertos: [42, 58])
+  equilibrado          -> [08]  22   35   45   48  [49]  (2 acertos: [8, 49])
+  wheel                ->  07   18   39  [42]  46  [50]  (2 acertos: [42, 50])
+  quentes              ->  09   10   21  [42]  44   47   (1 acertos: [42])
+  escada               ->  09   14   20   45  [58]  60   (1 acertos: [58])
+  misto                ->  01   06   40   48  [50]  57   (1 acertos: [50])
+  atrasados            ->  03   12   18   40   57  [58]  (1 acertos: [58])
+  candidatos_ouro      ->  03   07   39   40   55  [58]  (1 acertos: [58])
+  ciclos               ->  02   11   24   27   38  [50]  (1 acertos: [50])
+  consenso             -> (nenhum jogo valido gerado)
+  frequencia_desvio    -> (nenhum jogo valido gerado)
+  pares_frequentes     -> (nenhum jogo valido gerado)
+
+======================================================================
+  NUMEROS MAIS FREQUENTES NOS JOGOS GERADOS (todas estrategias)
+======================================================================
+  Num 03:   78x escolhido
+  Num 09:   78x escolhido
+  Num 21:   73x escolhido
+  Num 48:   73x escolhido
+  Num 37:   73x escolhido
+  Num 22:   69x escolhido
+  Num 07:   67x escolhido
+  Num 27:   65x escolhido
+  Num 15:   64x escolhido
+  Num 39:   55x escolhido
+  Num 12:   53x escolhido
+  Num 32:   53x escolhido
+  Num 33:   51x escolhido
+  Num 53:   47x escolhido
+  Num 18:   45x escolhido
+  Num 60:   41x escolhido
+  Num 47:   40x escolhido
+  Num 40:   39x escolhido
+  Num 24:   39x escolhido
+  Num 31:   38x escolhido
+
+  Dos 20 mais frequentes, 0 estavam no resultado real
+
+######################################################################
+# TESTE 2: Consolidado dos ultimos 10 concursos
+######################################################################
+======================================================================
+  TESTE DE ESTRATEGIAS - Concurso 2986
+  Resultado real: [1, 5, 13, 26, 41, 53]
+  Dados de treino: 2985 concursos anteriores
+  Jogos por estrategia: 20
+======================================================================
+
+----------------------------------------------------------------------
+  ESTRATEGIA            MELHOR   MEDIA  JOGOS  DISTRIBUICAO DE ACERTOS
+----------------------------------------------------------------------
+  consenso                 2    1.60     20  2ac:12x  1ac:8x
+  frequencia_desvio        2    1.55     20  2ac:11x  1ac:9x
+  ciclos                   2    1.35     20  2ac:7x  1ac:13x
+  quentes                  2    0.85     20  2ac:3x  1ac:11x  0ac:6x
+  atraso_recente           2    0.85     20  2ac:3x  1ac:11x  0ac:6x
+  misto                    2    0.80     20  2ac:2x  1ac:12x  0ac:6x
+  sequencias               2    0.75     20  2ac:3x  1ac:9x  0ac:8x
+  aleatorio_smart          2    0.70     20  2ac:2x  1ac:10x  0ac:8x
+  ensemble                 2    0.70     20  2ac:5x  1ac:4x  0ac:11x
+  wheel                    2    0.65     20  2ac:1x  1ac:11x  0ac:8x
+  momentum                 2    0.65     20  2ac:1x  1ac:11x  0ac:8x
+  pares_frequentes         2    0.60     20  2ac:1x  1ac:10x  0ac:9x
+  equilibrado              2    0.55     20  2ac:3x  1ac:5x  0ac:12x
+  atrasados                1    0.45     20  1ac:9x  0ac:11x
+  candidatos_ouro          1    0.40     20  1ac:8x  0ac:12x
+  vizinhanca               1    0.25     20  1ac:5x  0ac:15x
+  escada                   1    0.20     20  1ac:4x  0ac:16x
+
+======================================================================
+  MELHORES JOGOS POR ESTRATEGIA
+======================================================================
+  consenso             -> [01]  15  [26]  48   55   57   (2 acertos: [1, 26])
+  frequencia_desvio    -> [05]  32   33   37   38  [53]  (2 acertos: [5, 53])
+  ciclos               -> [01] [05]  24   29   34   57   (2 acertos: [1, 5])
+  quentes              ->  07   08  [13]  15   46  [53]  (2 acertos: [13, 53])
+  atraso_recente       -> [01]  04  [05]  25   56   59   (2 acertos: [1, 5])
+  misto                -> [01]  23  [26]  34   42   57   (2 acertos: [1, 26])
+  sequencias           -> [01]  07  [26]  42   52   60   (2 acertos: [1, 26])
+  aleatorio_smart      -> [01]  19   21  [26]  28   50   (2 acertos: [1, 26])
+  ensemble             -> [01]  07  [26]  40   57   59   (2 acertos: [1, 26])
+  wheel                ->  03  [05] [26]  42   49   57   (2 acertos: [5, 26])
+  momentum             -> [01]  07   22  [41]  47   60   (2 acertos: [1, 41])
+  pares_frequentes     -> [01]  10  [13]  22   33   38   (2 acertos: [1, 13])
+  equilibrado          ->  10  [13]  22   32  [41]  43   (2 acertos: [13, 41])
+  atrasados            ->  09  [26]  31   39   47   58   (1 acertos: [26])
+  candidatos_ouro      ->  15   18  [26]  47   48   55   (1 acertos: [26])
+  vizinhanca           -> [05]  20   33   34   39   59   (1 acertos: [5])
+  escada               -> [01]  03   08   40   47   60   (1 acertos: [1])
+
+======================================================================
+  NUMEROS MAIS FREQUENTES NOS JOGOS GERADOS (todas estrategias)
+======================================================================
+  Num 07:   96x escolhido
+  Num 26:   82x escolhido <-- ACERTO!
+  Num 39:   78x escolhido
+  Num 15:   73x escolhido
+  Num 48:   65x escolhido
+  Num 01:   65x escolhido <-- ACERTO!
+  Num 22:   62x escolhido
+  Num 40:   56x escolhido
+  Num 10:   54x escolhido
+  Num 05:   51x escolhido <-- ACERTO!
+  Num 09:   50x escolhido
+  Num 57:   50x escolhido
+  Num 34:   49x escolhido
+  Num 03:   48x escolhido
+  Num 32:   48x escolhido
+  Num 31:   46x escolhido
+  Num 58:   46x escolhido
+  Num 55:   46x escolhido
+  Num 33:   46x escolhido
+  Num 60:   44x escolhido
+
+  Dos 20 mais frequentes, 3 estavam no resultado real
+======================================================================
+  TESTE DE ESTRATEGIAS - Concurso 2987
+  Resultado real: [16, 17, 20, 28, 46, 47]
+  Dados de treino: 2986 concursos anteriores
+  Jogos por estrategia: 20
+======================================================================
+
+----------------------------------------------------------------------
+  ESTRATEGIA            MELHOR   MEDIA  JOGOS  DISTRIBUICAO DE ACERTOS
+----------------------------------------------------------------------
+  sequencias               3    0.70     20  3ac:1x  2ac:1x  1ac:9x  0ac:9x
+  aleatorio_smart          2    0.70     20  2ac:3x  1ac:8x  0ac:9x
+  ciclos                   2    0.65     20  2ac:1x  1ac:11x  0ac:8x
+  momentum                 2    0.60     20  2ac:1x  1ac:10x  0ac:9x
+  equilibrado              2    0.25     20  2ac:1x  1ac:3x  0ac:16x
+  escada                   1    0.55     20  1ac:11x  0ac:9x
+  consenso                 1    0.40     20  1ac:8x  0ac:12x
+  quentes                  1    0.35     20  1ac:7x  0ac:13x
+  vizinhanca               1    0.35     20  1ac:7x  0ac:13x
+  atraso_recente           1    0.25     20  1ac:5x  0ac:15x
+  ensemble                 1    0.25     20  1ac:5x  0ac:15x
+  candidatos_ouro          1    0.20     20  1ac:4x  0ac:16x
+  atrasados                1    0.10     20  1ac:2x  0ac:18x
+  misto                    1    0.10     20  1ac:2x  0ac:18x
+  pares_frequentes         1    0.10     20  1ac:2x  0ac:18x
+  wheel                    1    0.05     20  1ac:1x  0ac:19x
+  frequencia_desvio        0    0.00     20  0ac:20x
+
+======================================================================
+  MELHORES JOGOS POR ESTRATEGIA
+======================================================================
+  sequencias           ->  15  [16] [20]  39   41  [47]  (3 acertos: [16, 20, 47])
+  aleatorio_smart      ->  07   22   30   43  [46] [47]  (2 acertos: [46, 47])
+  ciclos               -> [16] [17]  29   39   44   57   (2 acertos: [16, 17])
+  momentum             ->  02   10   41  [46] [47]  60   (2 acertos: [46, 47])
+  equilibrado          ->  14  [17]  25   40  [47]  48   (2 acertos: [17, 47])
+  escada               ->  07   09   22   45  [47]  60   (1 acertos: [47])
+  consenso             ->  07   15   18   40  [47]  59   (1 acertos: [47])
+  quentes              ->  03   06   27   35   37  [46]  (1 acertos: [46])
+  vizinhanca           ->  14   15   25  [28]  39   52   (1 acertos: [28])
+  atraso_recente       ->  01   24   25   31   40  [46]  (1 acertos: [46])
+  ensemble             ->  14   18   22   23   44  [47]  (1 acertos: [47])
+  candidatos_ouro      ->  07   12   22   31  [47]  57   (1 acertos: [47])
+  atrasados            ->  07   12   26  [47]  58   59   (1 acertos: [47])
+  misto                ->  06   12   21   23  [46]  48   (1 acertos: [46])
+  pares_frequentes     ->  06  [16]  27   30   32   38   (1 acertos: [16])
+  wheel                ->  12   15   25   32   36  [46]  (1 acertos: [46])
+  frequencia_desvio    -> (nenhum jogo valido gerado)
+
+======================================================================
+  NUMEROS MAIS FREQUENTES NOS JOGOS GERADOS (todas estrategias)
+======================================================================
+  Num 39:   70x escolhido
+  Num 07:   68x escolhido
+  Num 15:   68x escolhido
+  Num 40:   66x escolhido
+  Num 03:   64x escolhido
+  Num 22:   63x escolhido
+  Num 09:   58x escolhido
+  Num 10:   58x escolhido
+  Num 60:   57x escolhido
+  Num 12:   56x escolhido
+  Num 32:   52x escolhido
+  Num 27:   49x escolhido
+  Num 58:   47x escolhido
+  Num 18:   46x escolhido
+  Num 57:   46x escolhido
+  Num 21:   45x escolhido
+  Num 06:   45x escolhido
+  Num 59:   41x escolhido
+  Num 48:   41x escolhido
+  Num 31:   40x escolhido
+
+  Dos 20 mais frequentes, 0 estavam no resultado real
+======================================================================
+  TESTE DE ESTRATEGIAS - Concurso 2988
+  Resultado real: [21, 23, 28, 36, 57, 58]
+  Dados de treino: 2987 concursos anteriores
+  Jogos por estrategia: 20
+======================================================================
+
+----------------------------------------------------------------------
+  ESTRATEGIA            MELHOR   MEDIA  JOGOS  DISTRIBUICAO DE ACERTOS
+----------------------------------------------------------------------
+  ensemble                 3    0.50     20  3ac:1x  1ac:7x  0ac:12x
+  candidatos_ouro          2    0.95     20  2ac:4x  1ac:11x  0ac:5x
+  momentum                 2    0.90     20  2ac:3x  1ac:12x  0ac:5x
+  atrasados                2    0.85     20  2ac:3x  1ac:11x  0ac:6x
+  ciclos                   2    0.80     20  2ac:5x  1ac:6x  0ac:9x
+  atraso_recente           2    0.70     20  2ac:5x  1ac:4x  0ac:11x
+  equilibrado              2    0.70     20  2ac:3x  1ac:8x  0ac:9x
+  misto                    2    0.55     20  2ac:1x  1ac:9x  0ac:10x
+  aleatorio_smart          2    0.55     20  2ac:2x  1ac:7x  0ac:11x
+  wheel                    2    0.55     20  2ac:3x  1ac:5x  0ac:12x
+  consenso                 1    1.00     20  1ac:20x
+  escada                   1    0.55     20  1ac:11x  0ac:9x
+  vizinhanca               1    0.45     20  1ac:9x  0ac:11x
+  sequencias               1    0.35     20  1ac:7x  0ac:13x
+  quentes                  1    0.30     20  1ac:6x  0ac:14x
+  pares_frequentes         1    0.20     20  1ac:4x  0ac:16x
+  frequencia_desvio        0    0.00     20  0ac:20x
+
+======================================================================
+  MELHORES JOGOS POR ESTRATEGIA
+======================================================================
+  ensemble             ->  06  [23] [36]  37   48  [58]  (3 acertos: [23, 36, 58])
+  candidatos_ouro      ->  12  [21]  22   31   40  [58]  (2 acertos: [21, 58])
+  momentum             ->  01   03   22  [28]  43  [58]  (2 acertos: [28, 58])
+  atrasados            ->  03   19   22   39  [57] [58]  (2 acertos: [57, 58])
+  ciclos               ->  04   24   29  [36]  51  [57]  (2 acertos: [36, 57])
+  atraso_recente       ->  07   10  [23]  24   48  [57]  (2 acertos: [23, 57])
+  equilibrado          ->  08   14   19  [23]  50  [57]  (2 acertos: [23, 57])
+  misto                ->  03   04   10  [23] [57]  60   (2 acertos: [23, 57])
+  aleatorio_smart      ->  07   10   12  [21]  45  [58]  (2 acertos: [21, 58])
+  wheel                ->  03   07   18  [21]  48  [57]  (2 acertos: [21, 57])
+  consenso             ->  15   31   39   48   55  [57]  (1 acertos: [57])
+  escada               ->  03   08  [21]  39   47   60   (1 acertos: [21])
+  vizinhanca           ->  14   18  [21]  22   30   49   (1 acertos: [21])
+  sequencias           ->  18   31  [36]  40   45   50   (1 acertos: [36])
+  quentes              ->  10  [21]  35   44   46   47   (1 acertos: [21])
+  pares_frequentes     ->  01   03   06   15  [21]  38   (1 acertos: [21])
+  frequencia_desvio    -> (nenhum jogo valido gerado)
+
+======================================================================
+  NUMEROS MAIS FREQUENTES NOS JOGOS GERADOS (todas estrategias)
+======================================================================
+  Num 15:   99x escolhido
+  Num 48:   75x escolhido
+  Num 10:   70x escolhido
+  Num 31:   66x escolhido
+  Num 39:   66x escolhido
+  Num 22:   61x escolhido
+  Num 57:   61x escolhido <-- ACERTO!
+  Num 09:   56x escolhido
+  Num 21:   56x escolhido <-- ACERTO!
+  Num 03:   52x escolhido
+  Num 55:   52x escolhido
+  Num 12:   51x escolhido
+  Num 32:   50x escolhido
+  Num 60:   47x escolhido
+  Num 18:   45x escolhido
+  Num 47:   43x escolhido
+  Num 19:   42x escolhido
+  Num 44:   42x escolhido
+  Num 40:   41x escolhido
+  Num 33:   41x escolhido
+
+  Dos 20 mais frequentes, 2 estavam no resultado real
+======================================================================
+  TESTE DE ESTRATEGIAS - Concurso 2989
+  Resultado real: [6, 14, 28, 31, 56, 59]
+  Dados de treino: 2988 concursos anteriores
+  Jogos por estrategia: 20
+======================================================================
+
+----------------------------------------------------------------------
+  ESTRATEGIA            MELHOR   MEDIA  JOGOS  DISTRIBUICAO DE ACERTOS
+----------------------------------------------------------------------
+  aleatorio_smart          3    0.70     20  3ac:1x  2ac:1x  1ac:9x  0ac:9x
+  misto                    2    1.05     20  2ac:5x  1ac:11x  0ac:4x
+  ciclos                   2    0.90     20  2ac:6x  1ac:6x  0ac:8x
+  atraso_recente           2    0.75     20  2ac:3x  1ac:9x  0ac:8x
+  atrasados                2    0.60     20  2ac:1x  1ac:10x  0ac:9x
+  sequencias               2    0.60     20  2ac:4x  1ac:4x  0ac:12x
+  wheel                    2    0.55     20  2ac:2x  1ac:7x  0ac:11x
+  equilibrado              2    0.50     20  2ac:1x  1ac:8x  0ac:11x
+  pares_frequentes         2    0.50     20  2ac:1x  1ac:8x  0ac:11x
+  ensemble                 2    0.45     20  2ac:2x  1ac:5x  0ac:13x
+  momentum                 2    0.45     20  2ac:1x  1ac:7x  0ac:12x
+  vizinhanca               2    0.45     20  2ac:1x  1ac:7x  0ac:12x
+  candidatos_ouro          2    0.30     20  2ac:1x  1ac:4x  0ac:15x
+  consenso                 1    0.90     20  1ac:18x  0ac:2x
+  quentes                  1    0.45     20  1ac:9x  0ac:11x
+  escada                   0    0.00     20  0ac:20x
+  frequencia_desvio        0    0.00     20  0ac:20x
+
+======================================================================
+  MELHORES JOGOS POR ESTRATEGIA
+======================================================================
+  aleatorio_smart      ->  07   13  [14] [28]  55  [59]  (3 acertos: [14, 28, 59])
+  misto                -> [06]  15   25   26   37  [56]  (2 acertos: [6, 56])
+  ciclos               ->  04   19   24   29  [31] [59]  (2 acertos: [31, 59])
+  atraso_recente       -> [06]  12   34   42   57  [59]  (2 acertos: [6, 59])
+  atrasados            ->  03   18   19  [31]  40  [59]  (2 acertos: [31, 59])
+  sequencias           -> [06]  15   23   30   55  [59]  (2 acertos: [6, 59])
+  wheel                ->  03  [06]  12  [31]  39   49   (2 acertos: [6, 31])
+  equilibrado          ->  03  [06]  09  [14]  57   60   (2 acertos: [6, 14])
+  pares_frequentes     ->  01  [06] [14]  24   33   38   (2 acertos: [6, 14])
+  ensemble             -> [06]  15   21   27  [28]  51   (2 acertos: [6, 28])
+  momentum             -> [06]  19   21  [28]  46   58   (2 acertos: [6, 28])
+  vizinhanca           ->  19   20   22   30  [56] [59]  (2 acertos: [56, 59])
+  candidatos_ouro      ->  03   22   26  [31]  58  [59]  (2 acertos: [31, 59])
+  consenso             ->  12   15  [31]  39   48   55   (1 acertos: [31])
+  quentes              -> [06]  10   15   32   49   53   (1 acertos: [6])
+  escada               -> (nenhum jogo valido gerado)
+  frequencia_desvio    -> (nenhum jogo valido gerado)
+
+======================================================================
+  NUMEROS MAIS FREQUENTES NOS JOGOS GERADOS (todas estrategias)
+======================================================================
+  Num 15:   81x escolhido
+  Num 12:   77x escolhido
+  Num 21:   76x escolhido
+  Num 55:   67x escolhido
+  Num 39:   63x escolhido
+  Num 22:   62x escolhido
+  Num 48:   62x escolhido
+  Num 10:   62x escolhido
+  Num 31:   60x escolhido <-- ACERTO!
+  Num 07:   58x escolhido
+  Num 38:   53x escolhido
+  Num 32:   51x escolhido
+  Num 37:   51x escolhido
+  Num 03:   50x escolhido
+  Num 60:   49x escolhido
+  Num 40:   46x escolhido
+  Num 19:   45x escolhido
+  Num 09:   43x escolhido
+  Num 34:   42x escolhido
+  Num 06:   40x escolhido <-- ACERTO!
+
+  Dos 20 mais frequentes, 2 estavam no resultado real
+======================================================================
+  TESTE DE ESTRATEGIAS - Concurso 2990
+  Resultado real: [6, 14, 18, 29, 30, 44]
+  Dados de treino: 2989 concursos anteriores
+  Jogos por estrategia: 20
+======================================================================
+
+----------------------------------------------------------------------
+  ESTRATEGIA            MELHOR   MEDIA  JOGOS  DISTRIBUICAO DE ACERTOS
+----------------------------------------------------------------------
+  equilibrado              4    0.75     20  4ac:1x  2ac:1x  1ac:9x  0ac:9x
+  wheel                    3    1.00     20  3ac:1x  2ac:6x  1ac:5x  0ac:8x
+  quentes                  2    1.00     20  2ac:4x  1ac:12x  0ac:4x
+  misto                    2    0.95     20  2ac:4x  1ac:11x  0ac:5x
+  pares_frequentes         2    0.95     20  2ac:5x  1ac:9x  0ac:6x
+  ciclos                   2    0.80     20  2ac:2x  1ac:12x  0ac:6x
+  aleatorio_smart          2    0.70     20  2ac:4x  1ac:6x  0ac:10x
+  vizinhanca               2    0.65     20  2ac:3x  1ac:7x  0ac:10x
+  ensemble                 2    0.60     20  2ac:3x  1ac:6x  0ac:11x
+  sequencias               2    0.60     20  2ac:2x  1ac:8x  0ac:10x
+  atraso_recente           2    0.50     20  2ac:2x  1ac:6x  0ac:12x
+  atrasados                1    0.55     20  1ac:11x  0ac:9x
+  escada                   1    0.45     20  1ac:9x  0ac:11x
+  candidatos_ouro          1    0.35     20  1ac:7x  0ac:13x
+  momentum                 1    0.25     20  1ac:5x  0ac:15x
+  consenso                 0    0.00     20  0ac:20x
+  frequencia_desvio        0    0.00     20  0ac:20x
+
+======================================================================
+  MELHORES JOGOS POR ESTRATEGIA
+======================================================================
+  equilibrado          ->  03  [18] [29] [30]  43  [44]  (4 acertos: [18, 29, 30, 44])
+  wheel                ->  15  [18] [29] [30]  39   55   (3 acertos: [18, 29, 30])
+  quentes              -> [06] [30]  32   35   46   53   (2 acertos: [6, 30])
+  misto                ->  01   07   12  [30] [44]  51   (2 acertos: [30, 44])
+  pares_frequentes     ->  03  [06]  13  [14]  15   38   (2 acertos: [6, 14])
+  ciclos               ->  10  [18]  25   33   34  [44]  (2 acertos: [18, 44])
+  aleatorio_smart      -> [18]  28  [29]  35   42   47   (2 acertos: [18, 29])
+  vizinhanca           ->  07   15  [29] [30]  55   58   (2 acertos: [29, 30])
+  ensemble             ->  15  [18]  22   33  [44]  54   (2 acertos: [18, 44])
+  sequencias           ->  04  [18] [30]  37   43   59   (2 acertos: [18, 30])
+  atraso_recente       ->  07   09  [18] [29]  48   51   (2 acertos: [18, 29])
+  atrasados            ->  09   12  [18]  40   55   59   (1 acertos: [18])
+  escada               ->  07   09  [14]  45   58   59   (1 acertos: [14])
+  candidatos_ouro      ->  03  [18]  21   22   39   55   (1 acertos: [18])
+  momentum             -> [06]  10   27   32   41   42   (1 acertos: [6])
+  consenso             -> (nenhum jogo valido gerado)
+  frequencia_desvio    -> (nenhum jogo valido gerado)
+
+======================================================================
+  NUMEROS MAIS FREQUENTES NOS JOGOS GERADOS (todas estrategias)
+======================================================================
+  Num 07:   85x escolhido
+  Num 10:   82x escolhido
+  Num 15:   81x escolhido
+  Num 21:   78x escolhido
+  Num 55:   71x escolhido
+  Num 12:   68x escolhido
+  Num 48:   65x escolhido
+  Num 39:   62x escolhido
+  Num 09:   58x escolhido
+  Num 32:   58x escolhido
+  Num 37:   52x escolhido
+  Num 18:   51x escolhido <-- ACERTO!
+  Num 33:   50x escolhido
+  Num 38:   47x escolhido
+  Num 03:   44x escolhido
+  Num 60:   44x escolhido
+  Num 34:   42x escolhido
+  Num 26:   41x escolhido
+  Num 30:   40x escolhido <-- ACERTO!
+  Num 05:   39x escolhido
+
+  Dos 20 mais frequentes, 2 estavam no resultado real
+======================================================================
+  TESTE DE ESTRATEGIAS - Concurso 2991
+  Resultado real: [4, 14, 19, 23, 36, 53]
+  Dados de treino: 2990 concursos anteriores
+  Jogos por estrategia: 20
+======================================================================
+
+----------------------------------------------------------------------
+  ESTRATEGIA            MELHOR   MEDIA  JOGOS  DISTRIBUICAO DE ACERTOS
+----------------------------------------------------------------------
+  frequencia_desvio        3    0.90     20  3ac:1x  2ac:3x  1ac:9x  0ac:7x
+  quentes                  2    0.85     20  2ac:5x  1ac:7x  0ac:8x
+  ciclos                   2    0.85     20  2ac:3x  1ac:11x  0ac:6x
+  momentum                 2    0.75     20  2ac:1x  1ac:13x  0ac:6x
+  sequencias               2    0.60     20  2ac:1x  1ac:10x  0ac:9x
+  misto                    2    0.55     20  2ac:2x  1ac:7x  0ac:11x
+  atraso_recente           2    0.40     20  2ac:1x  1ac:6x  0ac:13x
+  vizinhanca               2    0.40     20  2ac:1x  1ac:6x  0ac:13x
+  escada                   1    0.50     20  1ac:10x  0ac:10x
+  aleatorio_smart          1    0.45     20  1ac:9x  0ac:11x
+  candidatos_ouro          1    0.35     20  1ac:7x  0ac:13x
+  atrasados                1    0.30     20  1ac:6x  0ac:14x
+  equilibrado              1    0.30     20  1ac:6x  0ac:14x
+  pares_frequentes         1    0.30     20  1ac:6x  0ac:14x
+  ensemble                 1    0.25     20  1ac:5x  0ac:15x
+  wheel                    1    0.15     20  1ac:3x  0ac:17x
+  consenso                 0    0.00     20  0ac:20x
+
+======================================================================
+  MELHORES JOGOS POR ESTRATEGIA
+======================================================================
+  frequencia_desvio    -> [04] [23]  32   35  [36]  41   (3 acertos: [4, 23, 36])
+  quentes              ->  09  [14]  21   37  [53]  60   (2 acertos: [14, 53])
+  ciclos               -> [04]  10  [19]  27   37   51   (2 acertos: [4, 19])
+  momentum             -> [14]  15  [19]  21   28   58   (2 acertos: [14, 19])
+  sequencias           ->  10  [19]  30   40   42  [53]  (2 acertos: [19, 53])
+  misto                -> [04] [19]  26   48   49   60   (2 acertos: [4, 19])
+  atraso_recente       -> [04]  10  [19]  34   51   55   (2 acertos: [4, 19])
+  vizinhanca           -> [04]  16  [19]  31   32   43   (2 acertos: [4, 19])
+  escada               ->  03  [14]  15   20   40   59   (1 acertos: [14])
+  aleatorio_smart      -> [04]  17   21   38   45   51   (1 acertos: [4])
+  candidatos_ouro      ->  07   18  [19]  31   57   60   (1 acertos: [19])
+  atrasados            ->  03   18  [19]  21   39   60   (1 acertos: [19])
+  equilibrado          ->  17   26  [36]  37   42   49   (1 acertos: [36])
+  pares_frequentes     ->  03   06  [14]  15   24   38   (1 acertos: [14])
+  ensemble             ->  07  [19]  30   32   40   46   (1 acertos: [19])
+  wheel                ->  03   12   18  [19]  39   60   (1 acertos: [19])
+  consenso             -> (nenhum jogo valido gerado)
+
+======================================================================
+  NUMEROS MAIS FREQUENTES NOS JOGOS GERADOS (todas estrategias)
+======================================================================
+  Num 07:   92x escolhido
+  Num 15:   81x escolhido
+  Num 21:   79x escolhido
+  Num 39:   76x escolhido
+  Num 12:   73x escolhido
+  Num 10:   70x escolhido
+  Num 09:   65x escolhido
+  Num 03:   58x escolhido
+  Num 19:   53x escolhido <-- ACERTO!
+  Num 55:   50x escolhido
+  Num 32:   50x escolhido
+  Num 48:   49x escolhido
+  Num 46:   49x escolhido
+  Num 40:   47x escolhido
+  Num 27:   46x escolhido
+  Num 18:   45x escolhido
+  Num 60:   45x escolhido
+  Num 28:   42x escolhido
+  Num 38:   42x escolhido
+  Num 47:   37x escolhido
+
+  Dos 20 mais frequentes, 1 estavam no resultado real
+======================================================================
+  TESTE DE ESTRATEGIAS - Concurso 2992
+  Resultado real: [4, 17, 23, 33, 36, 49]
+  Dados de treino: 2991 concursos anteriores
+  Jogos por estrategia: 20
+======================================================================
+
+----------------------------------------------------------------------
+  ESTRATEGIA            MELHOR   MEDIA  JOGOS  DISTRIBUICAO DE ACERTOS
+----------------------------------------------------------------------
+  frequencia_desvio        3    1.50     20  3ac:1x  2ac:10x  1ac:7x  0ac:2x
+  pares_frequentes         2    1.60     20  2ac:12x  1ac:8x
+  aleatorio_smart          2    0.70     20  2ac:3x  1ac:8x  0ac:9x
+  sequencias               2    0.65     20  2ac:2x  1ac:9x  0ac:9x
+  equilibrado              2    0.60     20  2ac:1x  1ac:10x  0ac:9x
+  vizinhanca               1    0.35     20  1ac:7x  0ac:13x
+  quentes                  1    0.20     20  1ac:4x  0ac:16x
+  ensemble                 1    0.20     20  1ac:4x  0ac:16x
+  ciclos                   1    0.20     20  1ac:4x  0ac:16x
+  misto                    1    0.15     20  1ac:3x  0ac:17x
+  wheel                    1    0.10     20  1ac:2x  0ac:18x
+  atraso_recente           1    0.05     20  1ac:1x  0ac:19x
+  atrasados                0    0.00     20  0ac:20x
+  escada                   0    0.00     20  0ac:20x
+  consenso                 0    0.00     20  0ac:20x
+  candidatos_ouro          0    0.00     20  0ac:20x
+  momentum                 0    0.00     20  0ac:20x
+
+======================================================================
+  MELHORES JOGOS POR ESTRATEGIA
+======================================================================
+  frequencia_desvio    -> [04] [17]  32   35  [36]  38   (3 acertos: [4, 17, 36])
+  pares_frequentes     ->  02  [04]  14   15   27  [33]  (2 acertos: [4, 33])
+  aleatorio_smart      -> [17]  18   22  [23]  32   51   (2 acertos: [17, 23])
+  sequencias           -> [04]  09  [23]  24   34   54   (2 acertos: [4, 23])
+  equilibrado          -> [04] [17]  28   29   51   52   (2 acertos: [4, 17])
+  vizinhanca           ->  06  [17]  18   37   38   55   (1 acertos: [17])
+  quentes              ->  01   06   27   28  [49]  53   (1 acertos: [49])
+  ensemble             -> [04]  16   27   35   39   60   (1 acertos: [4])
+  ciclos               ->  07   24  [33]  43   48   54   (1 acertos: [33])
+  misto                ->  03   09   21  [33]  46   48   (1 acertos: [33])
+  wheel                ->  12   31  [33]  38   42   53   (1 acertos: [33])
+  atraso_recente       ->  09   24  [33]  38   43   51   (1 acertos: [33])
+  atrasados            -> (nenhum jogo valido gerado)
+  escada               -> (nenhum jogo valido gerado)
+  consenso             -> (nenhum jogo valido gerado)
+  candidatos_ouro      -> (nenhum jogo valido gerado)
+  momentum             -> (nenhum jogo valido gerado)
+
+======================================================================
+  NUMEROS MAIS FREQUENTES NOS JOGOS GERADOS (todas estrategias)
+======================================================================
+  Num 09:   87x escolhido
+  Num 15:   79x escolhido
+  Num 07:   76x escolhido
+  Num 12:   72x escolhido
+  Num 48:   71x escolhido
+  Num 21:   69x escolhido
+  Num 39:   60x escolhido
+  Num 37:   60x escolhido
+  Num 10:   58x escolhido
+  Num 55:   56x escolhido
+  Num 03:   49x escolhido
+  Num 27:   45x escolhido
+  Num 18:   44x escolhido
+  Num 54:   44x escolhido
+  Num 60:   43x escolhido
+  Num 38:   43x escolhido
+  Num 22:   42x escolhido
+  Num 40:   42x escolhido
+  Num 28:   41x escolhido
+  Num 24:   39x escolhido
+
+  Dos 20 mais frequentes, 0 estavam no resultado real
+======================================================================
+  TESTE DE ESTRATEGIAS - Concurso 2993
+  Resultado real: [3, 15, 31, 42, 43, 51]
+  Dados de treino: 2992 concursos anteriores
+  Jogos por estrategia: 20
+======================================================================
+
+----------------------------------------------------------------------
+  ESTRATEGIA            MELHOR   MEDIA  JOGOS  DISTRIBUICAO DE ACERTOS
+----------------------------------------------------------------------
+  candidatos_ouro          3    1.00     20  3ac:1x  2ac:4x  1ac:9x  0ac:6x
+  vizinhanca               3    1.00     20  3ac:1x  2ac:3x  1ac:11x  0ac:5x
+  atrasados                3    0.90     20  3ac:1x  2ac:3x  1ac:9x  0ac:7x
+  momentum                 3    0.75     20  3ac:1x  2ac:1x  1ac:10x  0ac:8x
+  escada                   2    0.90     20  2ac:5x  1ac:8x  0ac:7x
+  ensemble                 2    0.85     20  2ac:4x  1ac:9x  0ac:7x
+  quentes                  2    0.80     20  2ac:4x  1ac:8x  0ac:8x
+  misto                    2    0.75     20  2ac:3x  1ac:9x  0ac:8x
+  aleatorio_smart          2    0.75     20  2ac:4x  1ac:7x  0ac:9x
+  wheel                    2    0.75     20  2ac:3x  1ac:9x  0ac:8x
+  equilibrado              2    0.70     20  2ac:2x  1ac:10x  0ac:8x
+  atraso_recente           2    0.50     20  2ac:1x  1ac:8x  0ac:11x
+  ciclos                   2    0.50     20  2ac:1x  1ac:8x  0ac:11x
+  pares_frequentes         2    0.25     20  2ac:1x  1ac:3x  0ac:16x
+  sequencias               1    0.55     20  1ac:11x  0ac:9x
+  consenso                 1    0.40     20  1ac:8x  0ac:12x
+  frequencia_desvio        0    0.00     20  0ac:20x
+
+======================================================================
+  MELHORES JOGOS POR ESTRATEGIA
+======================================================================
+  candidatos_ouro      -> [03] [15]  18  [31]  57   60   (3 acertos: [3, 15, 31])
+  vizinhanca           -> [03] [15]  18   35   50  [51]  (3 acertos: [3, 15, 51])
+  atrasados            -> [03]  09  [15]  26  [31]  58   (3 acertos: [3, 15, 31])
+  momentum             ->  06  [15]  20  [31]  36  [43]  (3 acertos: [15, 31, 43])
+  escada               -> [03]  07  [15]  18   47   60   (2 acertos: [3, 15])
+  ensemble             -> [03] [15]  21   27   48   54   (2 acertos: [3, 15])
+  quentes              ->  01  [03] [15]  32   46   53   (2 acertos: [3, 15])
+  misto                ->  06  [15]  37   40  [51]  55   (2 acertos: [15, 51])
+  aleatorio_smart      ->  08  [15]  29  [31]  32   48   (2 acertos: [15, 31])
+  wheel                -> [03]  12  [15]  34   53   60   (2 acertos: [3, 15])
+  equilibrado          -> [03]  04   17   32  [43]  60   (2 acertos: [3, 43])
+  atraso_recente       ->  07   10  [15]  26  [51]  54   (2 acertos: [15, 51])
+  ciclos               ->  02   24   25   39  [43] [51]  (2 acertos: [43, 51])
+  pares_frequentes     -> [03]  04   09   14  [15]  33   (2 acertos: [3, 15])
+  sequencias           ->  02   12   17  [43]  50   55   (1 acertos: [43])
+  consenso             ->  10   12  [15]  21   48   55   (1 acertos: [15])
+  frequencia_desvio    -> (nenhum jogo valido gerado)
+
+======================================================================
+  NUMEROS MAIS FREQUENTES NOS JOGOS GERADOS (todas estrategias)
+======================================================================
+  Num 37:   83x escolhido
+  Num 15:   82x escolhido <-- ACERTO!
+  Num 10:   79x escolhido
+  Num 48:   73x escolhido
+  Num 21:   72x escolhido
+  Num 07:   72x escolhido
+  Num 12:   66x escolhido
+  Num 09:   63x escolhido
+  Num 39:   59x escolhido
+  Num 03:   55x escolhido <-- ACERTO!
+  Num 32:   54x escolhido
+  Num 60:   52x escolhido
+  Num 55:   51x escolhido
+  Num 18:   49x escolhido
+  Num 34:   48x escolhido
+  Num 58:   42x escolhido
+  Num 05:   42x escolhido
+  Num 27:   39x escolhido
+  Num 24:   39x escolhido
+  Num 47:   38x escolhido
+
+  Dos 20 mais frequentes, 2 estavam no resultado real
+======================================================================
+  TESTE DE ESTRATEGIAS - Concurso 2994
+  Resultado real: [1, 10, 23, 31, 40, 55]
+  Dados de treino: 2993 concursos anteriores
+  Jogos por estrategia: 20
+======================================================================
+
+----------------------------------------------------------------------
+  ESTRATEGIA            MELHOR   MEDIA  JOGOS  DISTRIBUICAO DE ACERTOS
+----------------------------------------------------------------------
+  misto                    4    0.85     20  4ac:1x  2ac:1x  1ac:11x  0ac:7x
+  momentum                 3    1.05     20  3ac:1x  2ac:4x  1ac:10x  0ac:5x
+  candidatos_ouro          3    0.85     20  3ac:1x  2ac:1x  1ac:12x  0ac:6x
+  equilibrado              3    0.55     20  3ac:1x  2ac:1x  1ac:6x  0ac:12x
+  consenso                 2    1.20     20  2ac:8x  1ac:8x  0ac:4x
+  atrasados                2    1.05     20  2ac:6x  1ac:9x  0ac:5x
+  atraso_recente           2    1.00     20  2ac:5x  1ac:10x  0ac:5x
+  wheel                    2    0.85     20  2ac:3x  1ac:11x  0ac:6x
+  pares_frequentes         2    0.70     20  2ac:2x  1ac:10x  0ac:8x
+  ensemble                 2    0.65     20  2ac:2x  1ac:9x  0ac:9x
+  vizinhanca               2    0.60     20  2ac:2x  1ac:8x  0ac:10x
+  ciclos                   2    0.50     20  2ac:2x  1ac:6x  0ac:12x
+  sequencias               2    0.35     20  2ac:1x  1ac:5x  0ac:14x
+  frequencia_desvio        1    1.00     20  1ac:20x
+  aleatorio_smart          1    0.60     20  1ac:12x  0ac:8x
+  quentes                  1    0.50     20  1ac:10x  0ac:10x
+  escada                   1    0.25     20  1ac:5x  0ac:15x
+
+======================================================================
+  MELHORES JOGOS POR ESTRATEGIA
+======================================================================
+  misto                ->  09  [10] [31] [40]  49  [55]  (4 acertos: [10, 31, 40, 55])
+  momentum             -> [10]  14  [23]  27  [31]  41   (3 acertos: [10, 23, 31])
+  candidatos_ouro      ->  03   19  [31] [40] [55]  60   (3 acertos: [31, 40, 55])
+  equilibrado          ->  04   06  [31]  39  [40] [55]  (3 acertos: [31, 40, 55])
+  consenso             ->  03  [10]  15   27   48  [55]  (2 acertos: [10, 55])
+  atrasados            ->  12   22  [31] [40]  48   57   (2 acertos: [31, 40])
+  atraso_recente       ->  07  [10]  15   34  [40]  46   (2 acertos: [10, 40])
+  wheel                -> [01]  18   21  [31]  37   48   (2 acertos: [1, 31])
+  pares_frequentes     -> [01]  14  [23]  24   30   32   (2 acertos: [1, 23])
+  ensemble             ->  06  [10]  12  [40]  47   49   (2 acertos: [10, 40])
+  vizinhanca           -> [01]  04   29  [40]  45   50   (2 acertos: [1, 40])
+  ciclos               ->  07  [10]  24   34   37  [55]  (2 acertos: [10, 55])
+  sequencias           ->  15   16  [23] [40]  44   45   (2 acertos: [23, 40])
+  frequencia_desvio    ->  05  [10]  33   34   37   53   (1 acertos: [10])
+  aleatorio_smart      ->  05   11   18  [31]  37   38   (1 acertos: [31])
+  quentes              -> [01]  14   32   37   44   49   (1 acertos: [1])
+  escada               -> [01]  18   20   45   58   59   (1 acertos: [1])
+
+======================================================================
+  NUMEROS MAIS FREQUENTES NOS JOGOS GERADOS (todas estrategias)
+======================================================================
+  Num 09:   77x escolhido
+  Num 15:   70x escolhido
+  Num 07:   68x escolhido
+  Num 21:   66x escolhido
+  Num 10:   66x escolhido <-- ACERTO!
+  Num 03:   63x escolhido
+  Num 37:   63x escolhido
+  Num 27:   58x escolhido
+  Num 48:   56x escolhido
+  Num 12:   55x escolhido
+  Num 58:   53x escolhido
+  Num 53:   52x escolhido
+  Num 55:   50x escolhido <-- ACERTO!
+  Num 22:   49x escolhido
+  Num 45:   46x escolhido
+  Num 33:   45x escolhido
+  Num 39:   44x escolhido
+  Num 32:   44x escolhido
+  Num 60:   42x escolhido
+  Num 01:   42x escolhido <-- ACERTO!
+
+  Dos 20 mais frequentes, 3 estavam no resultado real
+======================================================================
+  TESTE DE ESTRATEGIAS - Concurso 2995
+  Resultado real: [8, 29, 42, 49, 50, 58]
+  Dados de treino: 2994 concursos anteriores
+  Jogos por estrategia: 20
+======================================================================
+
+----------------------------------------------------------------------
+  ESTRATEGIA            MELHOR   MEDIA  JOGOS  DISTRIBUICAO DE ACERTOS
+----------------------------------------------------------------------
+  vizinhanca               3    0.85     20  3ac:1x  2ac:5x  1ac:4x  0ac:10x
+  momentum                 2    1.00     20  2ac:4x  1ac:12x  0ac:4x
+  quentes                  2    0.70     20  2ac:1x  1ac:12x  0ac:7x
+  equilibrado              2    0.70     20  2ac:4x  1ac:6x  0ac:10x
+  atraso_recente           2    0.60     20  2ac:1x  1ac:10x  0ac:9x
+  aleatorio_smart          2    0.60     20  2ac:3x  1ac:6x  0ac:11x
+  misto                    1    0.70     20  1ac:14x  0ac:6x
+  escada                   1    0.65     20  1ac:13x  0ac:7x
+  candidatos_ouro          1    0.45     20  1ac:9x  0ac:11x
+  ciclos                   1    0.35     20  1ac:7x  0ac:13x
+  atrasados                1    0.30     20  1ac:6x  0ac:14x
+  sequencias               1    0.25     20  1ac:5x  0ac:15x
+  ensemble                 1    0.20     20  1ac:4x  0ac:16x
+  wheel                    1    0.05     20  1ac:1x  0ac:19x
+  consenso                 0    0.00     20  0ac:20x
+  frequencia_desvio        0    0.00     20  0ac:20x
+  pares_frequentes         0    0.00     20  0ac:20x
+
+======================================================================
+  MELHORES JOGOS POR ESTRATEGIA
+======================================================================
+  vizinhanca           -> [08]  09  [29]  32   38  [42]  (3 acertos: [8, 29, 42])
+  momentum             ->  06   15   17   31  [50] [58]  (2 acertos: [50, 58])
+  quentes              ->  01   06   15  [42] [49]  53   (2 acertos: [42, 49])
+  equilibrado          ->  02  [08]  27   47   48  [49]  (2 acertos: [8, 49])
+  atraso_recente       ->  18   21   27   31  [42] [50]  (2 acertos: [42, 50])
+  aleatorio_smart      ->  04   11   30   31  [49] [58]  (2 acertos: [49, 58])
+  misto                ->  03   12   24   46   48  [49]  (1 acertos: [49])
+  escada               ->  03   14   31   45   47  [58]  (1 acertos: [58])
+  candidatos_ouro      ->  03   07   18   48   57  [58]  (1 acertos: [58])
+  ciclos               ->  02   07   11   34   37  [50]  (1 acertos: [50])
+  atrasados            ->  03   07   22   26   31  [58]  (1 acertos: [58])
+  sequencias           ->  03   16   22   37  [49]  54   (1 acertos: [49])
+  ensemble             ->  09   18   23   25   37  [58]  (1 acertos: [58])
+  wheel                ->  03   12   45   46   48  [50]  (1 acertos: [50])
+  consenso             -> (nenhum jogo valido gerado)
+  frequencia_desvio    -> (nenhum jogo valido gerado)
+  pares_frequentes     -> (nenhum jogo valido gerado)
+
+======================================================================
+  NUMEROS MAIS FREQUENTES NOS JOGOS GERADOS (todas estrategias)
+======================================================================
+  Num 22:   76x escolhido
+  Num 21:   74x escolhido
+  Num 37:   74x escolhido
+  Num 15:   71x escolhido
+  Num 09:   69x escolhido
+  Num 07:   68x escolhido
+  Num 12:   67x escolhido
+  Num 39:   65x escolhido
+  Num 03:   65x escolhido
+  Num 48:   64x escolhido
+  Num 31:   58x escolhido
+  Num 53:   56x escolhido
+  Num 27:   52x escolhido
+  Num 58:   47x escolhido <-- ACERTO!
+  Num 32:   47x escolhido
+  Num 60:   43x escolhido
+  Num 01:   43x escolhido
+  Num 18:   42x escolhido
+  Num 33:   42x escolhido
+  Num 34:   41x escolhido
+
+  Dos 20 mais frequentes, 1 estavam no resultado real
+
+======================================================================
+  CONSOLIDADO: 10 CONCURSOS (2986 a 2995)
+  20 jogos por estrategia por concurso
+======================================================================
+  ESTRATEGIA             MEDIA  MELHOR   MAX  DISTRIBUICAO
+----------------------------------------------------------------------
+  misto                 0.65    1.90     4  4ac:1x  2ac:18x  1ac:89x  0ac:92x
+  equilibrado           0.56    2.20     4  4ac:1x  3ac:1x  2ac:17x  1ac:71x  0ac:110x
+  aleatorio_smart       0.65    1.90     3  3ac:1x  2ac:22x  1ac:82x  0ac:95x
+  momentum              0.64    1.90     3  3ac:2x  2ac:16x  1ac:90x  0ac:92x
+  sequencias            0.54    1.80     3  3ac:1x  2ac:14x  1ac:77x  0ac:108x
+  vizinhanca            0.54    1.80     3  3ac:2x  2ac:15x  1ac:71x  0ac:112x
+  atrasados             0.51    1.40     3  3ac:1x  2ac:13x  1ac:73x  0ac:113x
+  frequencia_desvio     0.49    0.90     3  3ac:2x  2ac:24x  1ac:45x  0ac:129x
+  candidatos_ouro       0.48    1.50     3  3ac:2x  2ac:10x  1ac:71x  0ac:117x
+  wheel                 0.47    1.70     3  3ac:1x  2ac:18x  1ac:55x  0ac:126x
+  ensemble              0.47    1.70     3  3ac:1x  2ac:16x  1ac:58x  0ac:125x
+  ciclos                0.69    1.80     2  2ac:27x  1ac:84x  0ac:89x
+  quentes               0.60    1.50     2  2ac:17x  1ac:86x  0ac:97x
+  atraso_recente        0.56    1.80     2  2ac:21x  1ac:70x  0ac:109x
+  consenso              0.55    0.80     2  2ac:20x  1ac:70x  0ac:110x
+  pares_frequentes      0.52    1.50     2  2ac:22x  1ac:60x  0ac:118x
+  escada                0.41    0.90     2  2ac:5x  1ac:71x  0ac:124x
+
