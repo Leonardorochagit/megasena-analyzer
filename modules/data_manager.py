@@ -57,6 +57,55 @@ except ModuleNotFoundError:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# CAMINHOS DOS ARQUIVOS JSON LEGADOS
+# ─────────────────────────────────────────────────────────────────────────────
+
+_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_JSON_CARTOES = os.path.join(_ROOT, "meus_cartoes.json")
+_JSON_HISTORICO = os.path.join(_ROOT, "historico_analises.json")
+
+
+def _ler_json(path, default):
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except Exception:
+        return default
+
+
+def _escrever_json(path, data):
+    with open(path, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+
+def sincronizar_json_para_db():
+    """Importa JSON → SQLite quando o banco estiver vazio. Chame na inicialização."""
+    try:
+        existentes = carregar_cartoes_db()
+    except Exception:
+        existentes = []
+
+    if not existentes:
+        cartoes_json = _ler_json(_JSON_CARTOES, [])
+        if cartoes_json:
+            normalizados = [_normalizar_cartao(c) for c in cartoes_json if isinstance(c, dict)]
+            salvar_cartoes_db(normalizados)
+
+    try:
+        historico_db = carregar_historico_db()
+    except Exception:
+        historico_db = []
+
+    if not historico_db:
+        for r in _ler_json(_JSON_HISTORICO, []):
+            if isinstance(r, dict) and r.get('concurso') and r.get('estatisticas'):
+                salvar_historico_db(
+                    r['concurso'], r.get('data_analise', ''),
+                    r['estatisticas'], r.get('dezenas_sorteadas')
+                )
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # SORTEIOS — API DA CAIXA (sem alteração)
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -134,27 +183,30 @@ def _normalizar_cartao(cartao: dict, concurso_alvo: int = None) -> dict:
 
 
 def salvar_cartoes(cartoes: list, concurso_alvo: int = None) -> bool:
-    """
-    Persiste lista de cartões no banco SQLite.
-    Assinatura idêntica à versão JSON para compatibilidade.
-    """
+    """Persiste cartões no SQLite e espelha no JSON para persistência entre deploys."""
     normalizados = [_normalizar_cartao(c, concurso_alvo) for c in cartoes]
     ok = salvar_cartoes_db(normalizados)
     if not ok:
         st.error("Erro ao salvar cartões no banco de dados.")
+    else:
+        try:
+            _escrever_json(_JSON_CARTOES, normalizados)
+        except Exception:
+            pass
     return ok
 
 
 def carregar_cartoes_salvos() -> list:
-    """
-    Carrega todos os cartões do banco.
-    Retorna lista de dicts no formato legado.
-    """
+    """Carrega cartões do SQLite; se vazio, importa do JSON automaticamente."""
     try:
-        return carregar_cartoes_db()
+        dados = carregar_cartoes_db()
+        if not dados:
+            sincronizar_json_para_db()
+            dados = carregar_cartoes_db()
+        return dados
     except Exception as e:
         st.warning(f"Erro ao carregar cartões: {e}")
-        return []
+        return _ler_json(_JSON_CARTOES, [])
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -241,20 +293,30 @@ def verificar_resultados_automatico(cartoes: list, df: pd.DataFrame) -> list:
 # ─────────────────────────────────────────────────────────────────────────────
 
 def carregar_historico_analises() -> list:
-    """Retorna histórico no formato legado [{concurso, estatisticas, ...}]."""
+    """Retorna histórico do SQLite; se vazio, importa do JSON automaticamente."""
     try:
-        return carregar_historico_db()
+        dados = carregar_historico_db()
+        if not dados:
+            sincronizar_json_para_db()
+            dados = carregar_historico_db()
+        return dados
     except Exception as e:
         st.warning(f'Erro ao carregar histórico: {e}')
-        return []
+        return _ler_json(_JSON_HISTORICO, [])
 
 
 def salvar_historico_analise(concurso: int, data_analise: str,
                               estatisticas: dict, dezenas_sorteadas: list = None) -> bool:
-    """Salva/atualiza resultado de análise no banco."""
+    """Salva/atualiza análise no banco e espelha no JSON."""
     ok = salvar_historico_db(concurso, data_analise, estatisticas, dezenas_sorteadas)
     if not ok:
         st.error('Erro ao salvar histórico no banco de dados.')
+    else:
+        try:
+            historico = carregar_historico_db()
+            _escrever_json(_JSON_HISTORICO, historico)
+        except Exception:
+            pass
     return ok
 
 

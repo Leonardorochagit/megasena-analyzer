@@ -57,6 +57,11 @@ aplicar_tema()
 def main():
     """Função principal da aplicação"""
 
+    # Sincronizar JSON → SQLite na primeira carga (Streamlit Cloud não persiste .db)
+    if 'db_sincronizado' not in st.session_state:
+        dm.sincronizar_json_para_db()
+        st.session_state['db_sincronizado'] = True
+
     # Inicializar sessão (sem necessidade de login)
     auth.inicializar_sessao()
 
