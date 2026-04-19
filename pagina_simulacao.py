@@ -543,43 +543,39 @@ def _mostrar_historico_testados(todos_cartoes):
 def _aba_conferir(df):
     """Aba de conferência de resultados"""
 
-    st.subheader("🔍 Conferir Novo Concurso")
+    st.subheader("🔍 Selecionar Concurso")
 
-    # Carregar cartões
     todos_cartoes = dm.carregar_cartoes_salvos()
-    
-    # Listar concursos com jogos pendentes
-    concursos_pendentes = sorted(set(
-        c.get('concurso_alvo') for c in todos_cartoes
-        if c.get('concurso_alvo') and not c.get('verificado', False)
-    ))
 
-    if not concursos_pendentes:
-        st.info("📭 Nenhum concurso pendente de conferência. Gere jogos na aba 'Simular Jogos'.")
-        
-        # Mostrar opção de conferir qualquer concurso
-        st.markdown("---")
-        st.markdown("#### 🔍 Conferir concurso específico")
-    
+    # Todos os concursos com cartões salvos (verificados + pendentes)
+    todos_concursos = sorted(set(
+        c.get('concurso_alvo') for c in todos_cartoes if c.get('concurso_alvo')
+    ), reverse=True)
+
+    if not todos_concursos:
+        st.info("📭 Nenhum jogo salvo ainda.")
+        return
+
+    def _label_concurso(conc):
+        jogos = [c for c in todos_cartoes if c.get('concurso_alvo') == conc]
+        verif = sum(1 for c in jogos if c.get('verificado', False))
+        pend = len(jogos) - verif
+        if pend == 0:
+            return f"✅ Concurso {conc}  ({verif} verificados)"
+        elif verif == 0:
+            return f"⏳ Concurso {conc}  ({pend} pendentes)"
+        return f"⚡ Concurso {conc}  ({verif} verificados · {pend} pendentes)"
+
     col1, col2 = st.columns([3, 1])
-    
     with col1:
-        if concursos_pendentes:
-            concurso_conferir = st.selectbox(
-                "🎯 Concurso para conferir",
-                options=concursos_pendentes,
-                format_func=lambda x: f"Concurso {x} ({sum(1 for c in todos_cartoes if c.get('concurso_alvo') == x and not c.get('verificado', False))} jogos pendentes)"
-            )
-        else:
-            ultimo = int(df['concurso'].max()) if 'concurso' in df.columns else 2955
-            concurso_conferir = st.number_input(
-                "Número do concurso", min_value=1, max_value=9999,
-                value=ultimo, step=1
-            )
-
+        concurso_conferir = st.selectbox(
+            "Concurso",
+            options=todos_concursos,
+            format_func=_label_concurso,
+            label_visibility="collapsed",
+        )
     with col2:
-        st.markdown("##### ")
-        conferir_btn = st.button("🔍 CONFERIR", type="primary", width="stretch")
+        conferir_btn = st.button("🔍 VER / CONFERIR", type="primary", width="stretch")
 
     if conferir_btn or st.session_state.get('ultimo_conferido') == concurso_conferir:
         st.session_state['ultimo_conferido'] = concurso_conferir
