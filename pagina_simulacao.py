@@ -672,20 +672,15 @@ def _executar_conferencia(df, todos_cartoes, concurso):
         est = r['estrategia']
         por_estrategia.setdefault(est, []).append(r)
 
-    def _ordem_estrategia(est):
-        return (0 if est == 'ensemble' else 1, est)
-
-    for estrategia, jogos_est in sorted(por_estrategia.items(), key=lambda x: _ordem_estrategia(x[0])):
+    for estrategia, jogos_est in sorted(por_estrategia.items(), key=lambda x: -max(j['acertos'] for j in x[1])):
         total_est = len(jogos_est)
         melhor_est = max(j['acertos'] for j in jogos_est)
         media_est = sum(j['acertos'] for j in jogos_est) / total_est
         ver = jogos_est[0]['cartao'].get('estrategia_versao', versao_estrategia(estrategia))
 
-        is_ensemble = (estrategia == 'ensemble')
-        label_prefix = "🧠 " if is_ensemble else ""
         with st.expander(
-            f"{label_prefix}{_nome_estrategia(estrategia)} v{ver} — {total_est} jogos | Melhor: {melhor_est} | Média: {media_est:.1f}",
-            expanded=(is_ensemble or melhor_est >= 4)
+            f"{_nome_estrategia(estrategia)} v{ver} — {total_est} jogos | Melhor: {melhor_est} | Média: {media_est:.1f}",
+            expanded=(melhor_est >= 4)
         ):
             for i, r in enumerate(sorted(jogos_est, key=lambda x: x['acertos'], reverse=True), 1):
                 col1, col2, col3 = st.columns([5, 2, 1])
@@ -749,200 +744,71 @@ def _executar_conferencia(df, todos_cartoes, concurso):
 # =============================================================================
 
 def _aba_ranking(df):
-    """Aba com ranking consolidado de todas as estratégias"""
-    
-    st.subheader("🏆 Ranking Geral de Estratégias")
-    st.caption("Baseado em todos os concursos verificados")
+    """Ranking simples: qual estratégia acerta mais dezenas"""
 
-    # Fonte 1: Cartões verificados salvos
+    st.subheader("🏆 Qual estratégia acerta mais?")
+    st.caption("Ordenado por mais acertos — use para escolher o bolão")
+
     todos_cartoes = dm.carregar_cartoes_salvos()
     cartoes_verificados = [c for c in todos_cartoes if c.get('verificado', False) and c.get('acertos') is not None]
 
-    # Fonte 2: Histórico arquivado
-    historico = dm.carregar_historico_analises()
-
-    if not cartoes_verificados and not historico:
-        st.info("📭 Nenhum dado de performance ainda. Gere jogos, confira resultados e os dados aparecerão aqui!")
+    if not cartoes_verificados:
+        st.info("📭 Nenhum resultado conferido ainda.")
         return
 
-    # ---- RANKING DOS CARTÕES VERIFICADOS ----
-    if cartoes_verificados:
-        st.markdown("### 📊 Ranking dos Cartões Verificados")
+    # Consolidar por estratégia
+    ranking = {}
+    for c in cartoes_verificados:
+        est = c.get('estrategia', 'N/A')
+        if est not in ranking:
+            ranking[est] = {'jogos': 0, 'total_acertos': 0, 'ternos': 0,
+                            'quadras': 0, 'quinas': 0, 'senas': 0,
+                            'melhor': 0, 'concursos': set()}
+        r = ranking[est]
+        ac = c.get('acertos', 0)
+        r['jogos'] += 1
+        r['total_acertos'] += ac
+        r['melhor'] = max(r['melhor'], ac)
+        if ac >= 3: r['ternos'] += 1
+        if ac >= 4: r['quadras'] += 1
+        if ac >= 5: r['quinas'] += 1
+        if ac >= 6: r['senas'] += 1
+        if c.get('concurso_alvo'):
+            r['concursos'].add(c['concurso_alvo'])
 
-        import statistics as st_mod
-
-        ranking = {}
-        acertos_por_est = {}
-        for c in cartoes_verificados:
-            est = c.get('estrategia', 'N/A')
-            if est not in ranking:
-                ranking[est] = {
-                    'jogos': 0, 'total_acertos': 0,
-                    'senas': 0, 'quinas': 0, 'quadras': 0,
-                    'melhor_acerto': 0, 'concursos': set()
-                }
-                acertos_por_est[est] = []
-            r = ranking[est]
-            r['jogos'] += 1
-            acertos = c.get('acertos', 0)
-            r['total_acertos'] += acertos
-            acertos_por_est[est].append(acertos)
-            r['melhor_acerto'] = max(r['melhor_acerto'], acertos)
-            if acertos == 6:
-                r['senas'] += 1
-            elif acertos == 5:
-                r['quinas'] += 1
-            elif acertos == 4:
-                r['quadras'] += 1
-            if c.get('concurso_alvo'):
-                r['concursos'].add(c['concurso_alvo'])
-
-        # Calcular score, média e IC95%
-        ranking_lista = []
-        for est, dados in ranking.items():
-            n = dados['jogos']
-            media = dados['total_acertos'] / n if n > 0 else 0
-            desvio = st_mod.stdev(acertos_por_est[est]) if n > 1 else 0
-            ic95 = 1.96 * desvio / (n ** 0.5) if n > 1 else 0
-            score = dados['senas'] * 1000 + dados['quinas'] * 100 + dados['quadras'] * 10 + media
-            ranking_lista.append({
-                'Estratégia': _nome_estrategia(est),
-                'est_key': est,
-                'Jogos': n,
-                'Média Acertos': round(media, 2),
-                'IC95% Inf': round(media - ic95, 3),
-                'IC95% Sup': round(media + ic95, 3),
-                'Desvio': round(desvio, 3),
-                'Senas': dados['senas'],
-                'Quinas': dados['quinas'],
-                'Quadras': dados['quadras'],
-                'Melhor': dados['melhor_acerto'],
-                'Concursos': len(dados['concursos']),
-                'Score': round(score, 2)
-            })
-
-        ranking_lista.sort(key=lambda x: x['Média Acertos'], reverse=True)
-
-        # Destaque top 3 com IC95%
-        for i, item in enumerate(ranking_lista[:3]):
-            medalha = ["🥇", "🥈", "🥉"][i]
-            cols = st.columns([1, 3, 2, 2, 2])
-            cols[0].markdown(f"### {medalha}")
-            cols[1].markdown(f"**{item['Estratégia']}**\n\n{item['Jogos']} jogos em {item['Concursos']} concurso(s)")
-            cols[2].metric("Média", f"{item['Média Acertos']:.2f}")
-            cols[3].metric("IC 95%", f"[{item['IC95% Inf']:.2f}, {item['IC95% Sup']:.2f}]")
-            cols[4].markdown(f"🏆 {item['Senas']}S | 🥈 {item['Quinas']}Q | 🥉 {item['Quadras']}Q")
-            st.markdown("---")
-
-        # Tabela completa com IC95%
-        df_ranking = pd.DataFrame([
-            {k: v for k, v in r.items() if k != 'est_key'}
-            for r in ranking_lista
-        ])
-        st.dataframe(df_ranking, width="stretch", hide_index=True)
-
-        # Análise de significância
-        if len(ranking_lista) >= 2:
-            st.markdown("### 📐 Análise de Significância Estatística")
-            melhor = ranking_lista[0]
-            significancia = []
-            for r in ranking_lista[1:]:
-                sobrepoe = melhor['IC95% Inf'] < r['IC95% Sup'] and r['IC95% Inf'] < melhor['IC95% Sup']
-                significancia.append({
-                    'Comparação': f"{melhor['Estratégia']} vs {r['Estratégia']}",
-                    'Diferença': round(melhor['Média Acertos'] - r['Média Acertos'], 3),
-                    'Resultado': "Indistinguível" if sobrepoe else "Significativamente melhor",
-                })
-            df_sig = pd.DataFrame(significancia)
-            st.dataframe(df_sig, width="stretch", hide_index=True)
-
-            n_indist = sum(1 for s in significancia if s['Resultado'] == "Indistinguível")
-            if n_indist == len(significancia):
-                st.warning("Todas as estratégias estão dentro da margem de erro. Mais concursos necessários para conclusão.")
-            else:
-                n_melhores = len(significancia) - n_indist
-                st.success(f"A estratégia **{melhor['Estratégia']}** é significativamente melhor que {n_melhores} outra(s).")
-
-        # Gráfico com barras de erro
-        st.markdown("### 📈 Comparativo Visual (com intervalo de confiança)")
-        df_grafico = pd.DataFrame({
-            'Estratégia': [r['Estratégia'] for r in ranking_lista],
-            'Média de Acertos': [r['Média Acertos'] for r in ranking_lista]
+    linhas = []
+    for est, d in ranking.items():
+        media = d['total_acertos'] / d['jogos'] if d['jogos'] else 0
+        linhas.append({
+            'Estratégia': _nome_estrategia(est),
+            'Concursos': len(d['concursos']),
+            'Jogos': d['jogos'],
+            'Melhor': d['melhor'],
+            'Média': round(media, 2),
+            'Ternos': d['ternos'],
+            'Quadras': d['quadras'],
+            'Quinas': d['quinas'],
+            'Senas': d['senas'],
         })
-        st.bar_chart(df_grafico.set_index('Estratégia'))
 
-    # ---- RANKING DO HISTÓRICO ARQUIVADO ----
-    if historico:
-        st.markdown("---")
-        st.markdown("### 📚 Ranking do Histórico Arquivado")
-        st.caption("Dados consolidados de todos os concursos arquivados")
+    # Ordenar: senas > quinas > quadras > média
+    linhas.sort(key=lambda x: (x['Senas'], x['Quinas'], x['Quadras'], x['Média']), reverse=True)
 
-        ranking_hist = {}
-        for item in historico:
-            estatisticas = item.get('estatisticas', {})
-            for est, dados in estatisticas.items():
-                if est not in ranking_hist:
-                    ranking_hist[est] = {
-                        'jogos': 0, 'senas': 0, 'quinas': 0,
-                        'quadras': 0, 'melhor_acerto': 0, 'concursos': 0
-                    }
-                rh = ranking_hist[est]
-                rh['jogos'] += dados.get('total_jogos', 0)
-                rh['senas'] += dados.get('senas', 0)
-                rh['quinas'] += dados.get('quinas', 0)
-                rh['quadras'] += dados.get('quadras', 0)
-                rh['melhor_acerto'] = max(rh['melhor_acerto'], dados.get('melhor_acerto', 0))
-                rh['concursos'] += 1
+    # Destaque top 3
+    medalhas = ["🥇", "🥈", "🥉"]
+    for i, item in enumerate(linhas[:3]):
+        med = medalhas[i]
+        cols = st.columns([1, 4, 2, 2, 2, 2])
+        cols[0].markdown(f"### {med}")
+        cols[1].markdown(f"**{item['Estratégia']}**  \n{item['Jogos']} jogos · {item['Concursos']} concurso(s)")
+        cols[2].metric("Melhor", f"{item['Melhor']} dezenas")
+        cols[3].metric("Média", f"{item['Média']:.2f}")
+        cols[4].metric("Quadras", item['Quadras'])
+        cols[5].metric("Quinas/Senas", f"{item['Quinas']} / {item['Senas']}")
+    st.markdown("---")
 
-        if ranking_hist:
-            ranking_hist_lista = []
-            for est, dados in ranking_hist.items():
-                ranking_hist_lista.append({
-                    'Estratégia': _nome_estrategia(est),
-                    'Jogos': dados['jogos'],
-                    'Senas': dados['senas'],
-                    'Quinas': dados['quinas'],
-                    'Quadras': dados['quadras'],
-                    'Melhor Acerto': dados['melhor_acerto'],
-                    'Concursos Verificados': dados['concursos']
-                })
-
-            ranking_hist_lista.sort(
-                key=lambda x: (x['Senas'], x['Quinas'], x['Quadras'], x['Melhor Acerto']),
-                reverse=True
-            )
-
-            df_hist = pd.DataFrame(ranking_hist_lista)
-            st.dataframe(df_hist, width="stretch", hide_index=True)
-
-    # ---- PERFORMANCE POR CONCURSO ----
-    if cartoes_verificados:
-        st.markdown("---")
-        st.markdown("### 🗓️ Performance por Concurso")
-
-        concursos_verificados = sorted(set(
-            c.get('concurso_alvo') for c in cartoes_verificados if c.get('concurso_alvo')
-        ), reverse=True)
-
-        for concurso in concursos_verificados[:10]:  # Últimos 10
-            jogos_c = [c for c in cartoes_verificados if c.get('concurso_alvo') == concurso]
-            melhor = max(c.get('acertos', 0) for c in jogos_c)
-            media = sum(c.get('acertos', 0) for c in jogos_c) / len(jogos_c)
-
-            with st.expander(f"Concurso {concurso} — {len(jogos_c)} jogos | Melhor: {melhor} | Média: {media:.1f}"):
-                # Agrupar por estratégia
-                por_est = {}
-                for c in jogos_c:
-                    est = c.get('estrategia', 'N/A')
-                    por_est.setdefault(est, []).append(c.get('acertos', 0))
-
-                for est, acertos_list in sorted(por_est.items(), key=lambda x: max(x[1]), reverse=True):
-                    media_est = sum(acertos_list) / len(acertos_list)
-                    max_est = max(acertos_list)
-                    st.markdown(
-                        f"**{_nome_estrategia(est)}**: {len(acertos_list)} jogos | "
-                        f"Média: {media_est:.1f} | Melhor: {max_est}"
-                    )
+    # Tabela completa
+    st.dataframe(pd.DataFrame(linhas), hide_index=True, use_container_width=True)
 
 
 # =============================================================================
@@ -1015,7 +881,7 @@ def _mostrar_preview_por_estrategia(novos_cartoes):
 
 
 def _mostrar_ranking_concurso(resultados):
-    """Mostra ranking de estratégias para um concurso específico"""
+    """Ranking simples de estratégias para este concurso"""
     por_estrategia = {}
     for r in resultados:
         est = r['estrategia']
@@ -1025,30 +891,24 @@ def _mostrar_ranking_concurso(resultados):
     for est, acertos_list in por_estrategia.items():
         media = sum(acertos_list) / len(acertos_list)
         melhor = max(acertos_list)
-        quadras = sum(1 for a in acertos_list if a == 4)
-        quinas = sum(1 for a in acertos_list if a == 5)
-        senas = sum(1 for a in acertos_list if a == 6)
-        score = senas * 1000 + quinas * 100 + quadras * 10 + media
         ranking.append({
             'Estratégia': _nome_estrategia(est),
             'Jogos': len(acertos_list),
-            'Média': round(media, 2),
             'Melhor': melhor,
-            'Quadras': quadras,
-            'Quinas': quinas,
-            'Senas': senas,
-            'Score': round(score, 2)
+            'Média': round(media, 2),
+            'Ternos': sum(1 for a in acertos_list if a >= 3),
+            'Quadras': sum(1 for a in acertos_list if a >= 4),
+            'Quinas': sum(1 for a in acertos_list if a >= 5),
+            'Senas': sum(1 for a in acertos_list if a >= 6),
         })
 
-    ranking.sort(key=lambda x: x['Score'], reverse=True)
+    ranking.sort(key=lambda x: (x['Senas'], x['Quinas'], x['Quadras'], x['Média']), reverse=True)
 
     if ranking:
-        # Destacar vencedor
         top = ranking[0]
-        st.success(f"🥇 **Melhor estratégia: {top['Estratégia']}** — Média: {top['Média']:.2f} acertos | Melhor jogo: {top['Melhor']} acertos")
+        st.success(f"🥇 **{top['Estratégia']}** — melhor acerto: {top['Melhor']} dezenas | média: {top['Média']:.2f}")
 
-    df_ranking = pd.DataFrame(ranking)
-    st.dataframe(df_ranking, width="stretch", hide_index=True)
+    st.dataframe(pd.DataFrame(ranking), hide_index=True, use_container_width=True)
 
 
 def _calcular_stats_por_estrategia(resultados):
