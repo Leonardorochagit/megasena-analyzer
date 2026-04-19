@@ -27,11 +27,72 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 os.chdir(ROOT)
 
-from modules import data_manager as dm
 from modules import statistics as stats
 from modules import game_generator as gen
 from modules import notificacoes as notif
 from helpers import converter_dezenas_para_int, versao_estrategia
+
+# ── Persistência JSON direta (sem SQLite/Streamlit) ──────────────
+
+CARTOES_FILE = os.path.join(ROOT, "meus_cartoes.json")
+HISTORICO_FILE = os.path.join(ROOT, "historico_analises.json")
+
+
+def _load_cartoes():
+    try:
+        with open(CARTOES_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except Exception:
+        return []
+
+
+def _save_cartoes(cartoes):
+    with open(CARTOES_FILE, 'w', encoding='utf-8') as f:
+        json.dump(cartoes, f, indent=2, ensure_ascii=False)
+
+
+def _load_historico():
+    try:
+        with open(HISTORICO_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except Exception:
+        return []
+
+
+def _save_historico_analise(concurso, data_analise, estatisticas, dezenas_sorteadas=None):
+    historico = _load_historico()
+    registro = {
+        'concurso': concurso,
+        'data_analise': data_analise,
+        'estatisticas': estatisticas,
+    }
+    if dezenas_sorteadas:
+        registro['dezenas_sorteadas'] = dezenas_sorteadas
+    historico = [r for r in historico if r.get('concurso') != concurso]
+    historico.append(registro)
+    with open(HISTORICO_FILE, 'w', encoding='utf-8') as f:
+        json.dump(historico, f, indent=2, ensure_ascii=False)
+
+
+def _arquivar_verificados():
+    todos = _load_cartoes()
+    verificados = [c for c in todos if c.get('verificado', False)]
+    pendentes = [c for c in todos if not c.get('verificado', False)]
+    if not verificados:
+        return 0, len(pendentes)
+    ano = datetime.now().strftime('%Y')
+    data_dir = os.path.join(ROOT, "data")
+    os.makedirs(data_dir, exist_ok=True)
+    arquivo = os.path.join(data_dir, f"cartoes_arquivo_{ano}.json")
+    existentes = []
+    if os.path.exists(arquivo):
+        with open(arquivo, 'r', encoding='utf-8') as f:
+            existentes = json.load(f)
+    existentes.extend(verificados)
+    with open(arquivo, 'w', encoding='utf-8') as f:
+        json.dump(existentes, f, indent=2, ensure_ascii=False)
+    _save_cartoes(pendentes)
+    return len(verificados), len(pendentes)
 
 # ── Configuração ──────────────────────────────────────────────
 
@@ -143,7 +204,7 @@ def buscar_resultado_concurso(numero):
 
 def conferir_cartoes():
     """Confere todos os cartões pendentes e retorna dados da conferência."""
-    todos_cartoes = dm.carregar_cartoes_salvos()
+    todos_cartoes = _load_cartoes()
 
     pendentes_por_concurso = {}
     for c in todos_cartoes:
@@ -201,7 +262,7 @@ def conferir_cartoes():
             stats_concurso[est]['media_acertos'] = round(
                 stats_concurso[est]['total_acertos'] / t, 2) if t > 0 else 0
 
-        dm.salvar_historico_analise(
+        _save_historico_analise(
             concurso,
             datetime.now().strftime("%Y-%m-%d"),
             stats_concurso,
@@ -228,7 +289,7 @@ def conferir_cartoes():
         log(f"  ✅ Concurso {concurso} conferido — melhor acerto: {melhor}")
 
     if alterou:
-        dm.salvar_cartoes(todos_cartoes)
+        _save_cartoes(todos_cartoes)
 
     if conferidos:
         return {'status': 'conferido', 'conferidos': conferidos}, todos_cartoes
@@ -291,7 +352,7 @@ def gerar_cartoes_proximo_concurso(todos_cartoes):
             try:
                 os.makedirs("data", exist_ok=True)
                 df.to_csv(local_csv, index=False)
-                log(f"  Dados salvos localmente em {local_csv}")
+                log(f"  Cache do histórico salvo no workspace do runner em {local_csv}")
             except Exception:
                 pass
         except Exception as e:
@@ -338,7 +399,7 @@ def gerar_cartoes_proximo_concurso(todos_cartoes):
 
     if novos:
         todos_cartoes.extend(novos)
-        dm.salvar_cartoes(todos_cartoes)
+        _save_cartoes(todos_cartoes)
         log(f"  ✅ {len(novos)} cartões gerados para o concurso {proximo}")
 
     return len(novos)
@@ -485,7 +546,7 @@ def verificar_alerta_bolao(resultado_conferencia):
 
 def calcular_ranking_global():
     """Consolida historico_analises.json em ranking acumulado por estratégia."""
-    historico = dm.carregar_historico_analises()
+    historico = _load_historico()
     if not historico:
         return {}
 
@@ -548,7 +609,7 @@ def main():
 
         # Arquivar cartões já conferidos para manter meus_cartoes.json enxuto
         log("\n🗄️  Etapa 2b: Arquivando cartões verificados...")
-        arquivados, mantidos = dm.arquivar_cartoes_verificados()
+        arquivados, mantidos = _arquivar_verificados()
         log(f"  {arquivados} arquivados, {mantidos} pendentes mantidos")
     else:
         log("\n📲 Etapa 2: Nada a notificar (sem conferências novas).")

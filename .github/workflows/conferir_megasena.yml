@@ -72,6 +72,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add meus_cartoes.json historico_analises.json
+          git add data/megasena_historico.csv 2>/dev/null || true
+          git add data/cartoes_arquivo_*.json 2>/dev/null || true
           git diff --cached --quiet || git commit -m "🤖 Auto: conferência $(date -u -d '-3 hours' +'%Y-%m-%d %H:%M') BRT"
           git pull --rebase origin main || true
           git push
