@@ -130,6 +130,8 @@ def _carregar_config():
 CONFIG = _carregar_config()
 QTD_NUMEROS = CONFIG['qtd_numeros']
 CARTOES_POR_ESTRATEGIA = CONFIG['cartoes_por_est']
+CARTOES_ENSEMBLE = CONFIG.get('cartoes_ensemble', CARTOES_POR_ESTRATEGIA)
+ENSEMBLE_ONLY = CONFIG.get('ensemble_only', False)
 
 
 def log(msg):
@@ -362,8 +364,12 @@ def gerar_cartoes_proximo_concurso(todos_cartoes):
     contagem_total, contagem_recente, df_atrasos = stats.calcular_estatisticas(df)
     novos = []
 
-    for estrategia in TODAS_ESTRATEGIAS:
-        for i in range(CARTOES_POR_ESTRATEGIA):
+    estrategias_gerar = ['ensemble'] if ENSEMBLE_ONLY else TODAS_ESTRATEGIAS
+    log(f"  Modo: {'ensemble_only' if ENSEMBLE_ONLY else 'todas estratégias'} | ensemble={CARTOES_ENSEMBLE} | outros={CARTOES_POR_ESTRATEGIA}")
+
+    for estrategia in estrategias_gerar:
+        qtd = CARTOES_ENSEMBLE if estrategia == 'ensemble' else CARTOES_POR_ESTRATEGIA
+        for i in range(qtd):
             try:
                 dezenas_base = gen.gerar_jogo(
                     estrategia=estrategia,

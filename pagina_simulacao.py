@@ -460,6 +460,8 @@ def _mostrar_historico_testados(todos_cartoes):
                 por_est.setdefault(est, []).append(c.get('acertos', 0))
             melhor_est = max(por_est, key=lambda e: max(por_est[e]))
 
+            tem_ensemble = 'ensemble' in por_est
+
             # Dezenas sorteadas (do primeiro verificado)
             resultado = verif_conc[0].get('resultado_concurso', [])
             dezenas_str = " ".join(f"{n:02d}" for n in sorted(resultado)) if resultado else "—"
@@ -471,18 +473,23 @@ def _mostrar_historico_testados(todos_cartoes):
             if ternas: premios.append(f"👍{ternas}T")
             premios_str = " ".join(premios) if premios else "—"
 
-            status_icon = "✅"
+            status_icon = "✅" if tem_ensemble else "✅⚠️"
             status_txt = f"{len(verif_conc)} verificados"
             if pend_conc:
                 status_txt += f" + {len(pend_conc)} pendentes"
+            if not tem_ensemble:
+                status_txt += " (sem ensemble)"
         else:
             melhor = "—"
             media = 0.0
             melhor_est = "—"
             dezenas_str = "Aguardando sorteio"
             premios_str = "—"
+            tem_ensemble = any(c.get('estrategia') == 'ensemble' for c in pend_conc)
             status_icon = "⏳"
             status_txt = f"{len(pend_conc)} pendentes"
+            if tem_ensemble:
+                status_txt += " (🧠 ensemble incluído)"
 
         linhas.append({
             "": status_icon,
@@ -659,21 +666,26 @@ def _executar_conferencia(df, todos_cartoes, concurso):
     st.subheader("📋 Detalhamento dos Jogos")
     resultados.sort(key=lambda x: x['acertos'], reverse=True)
 
-    # Agrupar por estratégia
+    # Agrupar por estratégia — ensemble sempre primeiro
     por_estrategia = {}
     for r in resultados:
         est = r['estrategia']
         por_estrategia.setdefault(est, []).append(r)
 
-    for estrategia, jogos_est in por_estrategia.items():
+    def _ordem_estrategia(est):
+        return (0 if est == 'ensemble' else 1, est)
+
+    for estrategia, jogos_est in sorted(por_estrategia.items(), key=lambda x: _ordem_estrategia(x[0])):
         total_est = len(jogos_est)
         melhor_est = max(j['acertos'] for j in jogos_est)
         media_est = sum(j['acertos'] for j in jogos_est) / total_est
         ver = jogos_est[0]['cartao'].get('estrategia_versao', versao_estrategia(estrategia))
 
+        is_ensemble = (estrategia == 'ensemble')
+        label_prefix = "🧠 " if is_ensemble else ""
         with st.expander(
-            f"{_nome_estrategia(estrategia)} v{ver} — {total_est} jogos | Melhor: {melhor_est} | Média: {media_est:.1f}",
-            expanded=(melhor_est >= 4)
+            f"{label_prefix}{_nome_estrategia(estrategia)} v{ver} — {total_est} jogos | Melhor: {melhor_est} | Média: {media_est:.1f}",
+            expanded=(is_ensemble or melhor_est >= 4)
         ):
             for i, r in enumerate(sorted(jogos_est, key=lambda x: x['acertos'], reverse=True), 1):
                 col1, col2, col3 = st.columns([5, 2, 1])
