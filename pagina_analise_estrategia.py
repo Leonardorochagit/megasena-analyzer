@@ -326,4 +326,4 @@ def pagina_analise_estrategia(df, estrategia_nome, estrategia_key):
                                 st.caption("0 acertos")
 
         st.markdown("---")
-        st.info("💡 Para conferir **TODAS** as estratégias juntas, use '🎯 Simulação & Conferência' no menu lateral.")
+        st.info("💡 Para conferir **TODAS** as estratégias juntas, use '📋 Conferência Semanal' no menu lateral.")

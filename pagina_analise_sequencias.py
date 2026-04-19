@@ -320,7 +320,7 @@ def pagina_analise_sequencias(df: pd.DataFrame):
                 st.caption(
                     f"Os {len(st.session_state['cartoes_seq'])} cartões serão salvos "
                     f"para o concurso **{concurso_alvo}** e ficarão disponíveis na "
-                    f"aba **Simulação & Conferência**."
+                    f"página **📋 Conferência Semanal**."
                 )
 
             if salvar:
@@ -348,7 +348,7 @@ def pagina_analise_sequencias(df: pd.DataFrame):
                     st.error("❌ Erro ao salvar cartões.")
 
             if st.session_state.get("cartoes_seq_salvos"):
-                st.info("✅ Cartões já salvos! Confira na aba **🎯 Simulação & Conferência**.")
+                st.info("✅ Cartões já salvos! Confira na aba **📋 Conferência Semanal**.")
 
     # ─────────────────────────────────────────────────────────────────────
     # TAB 2 — CLUSTERS

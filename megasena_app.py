@@ -24,7 +24,7 @@ from pagina_verificar_resultados import pagina_verificar_resultados
 from pagina_analise_estrategia import pagina_analise_estrategia
 from pagina_relatorio_geral import pagina_relatorio_geral
 from pagina_automl import pagina_automl
-from pagina_simulacao import pagina_simulacao
+from pagina_simulacao import pagina_simulacao, pagina_conferencia
 from pagina_analise_sequencias import pagina_analise_sequencias
 from pagina_piloto_automatico import pagina_piloto_automatico
 from pagina_backtesting import pagina_backtesting
@@ -95,14 +95,15 @@ def exibir_interface_principal():
     MENU_ITENS = [
         "🏠 SISTEMA",
         "🤖 Piloto Automático",
+        "📋 Conferência Semanal",
         "🏆 Ensemble Top 10 (14 nums)",
-        "🎯 Simulação & Conferência",
         "✅ Verificar Resultados",
         "📊 ANÁLISE",
-        "🔬 Simulador Combinações",
-        "📊 Backtesting Estatístico",
-        "🧪 Validacao Ensemble",
         "🏆 Resultados Validação",
+        "🧪 Validacao Ensemble",
+        "📊 Backtesting Estatístico",
+        "🔬 Simulador Combinações",
+        "🎲 Simulação de Jogos",
         "🔄 Análise Escada",
         "🧬 Análise de Sequências",
         "📊 Relatório Geral",
@@ -172,9 +173,13 @@ def exibir_interface_principal():
         próximo concurso e salva tudo. Ideal para usar no dia a dia sem
         precisar entrar em cada página.
 
-        **🎯 Simulação & Conferência**
-        Gere jogos com qualquer estratégia, escolha de 6 a 20 números por
-        cartão e confira os resultados assim que saírem.
+        **📋 Conferência Semanal**
+        Histórico de todas as conferências, confira o resultado do concurso
+        recente e acompanhe o ranking acumulado de estratégias.
+
+        **🎲 Simulação de Jogos**
+        Gere jogos com qualquer estratégia para testar metodologias.
+        Use em concursos passados para validar abordagens.
 
         **📊 Backtesting Estatístico**
         Testa as estratégias nos últimos N concursos com dados históricos reais
@@ -300,11 +305,11 @@ def exibir_interface_principal():
     if menu == "🤖 Piloto Automático":
         pagina_piloto_automatico(df)
 
+    elif menu == "📋 Conferência Semanal":
+        pagina_conferencia(df)
+
     elif menu == "🏆 Ensemble Top 10 (14 nums)":
         pagina_ensemble_14(df)
-
-    elif menu == "🎯 Simulação & Conferência":
-        pagina_simulacao(df)
 
     elif menu == "✅ Verificar Resultados":
         pagina_verificar_resultados(df)
@@ -320,6 +325,9 @@ def exibir_interface_principal():
 
     elif menu == "🏆 Resultados Validação":
         pagina_validacao_visual(df)
+
+    elif menu == "🎲 Simulação de Jogos":
+        pagina_simulacao(df)
 
     elif menu == "🔄 Análise Escada":
         pagina_escada_temporal(df)

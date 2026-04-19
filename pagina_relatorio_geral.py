@@ -66,7 +66,7 @@ def _aba_verificar_tudo(df):
 
     if not concursos_pendentes:
         st.success("✅ Todos os cartões já foram verificados!")
-        st.info("💡 Gere novos jogos em 'Simulação & Conferência' para ter mais cartões para conferir.")
+        st.info("💡 Gere novos jogos em '🎲 Simulação de Jogos' para ter mais cartões para conferir.")
         return
 
     st.info(f"📋 **{len(concursos_pendentes)} concurso(s)** com jogos pendentes: {', '.join(str(c) for c in concursos_pendentes)}")

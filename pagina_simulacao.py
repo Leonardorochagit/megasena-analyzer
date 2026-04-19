@@ -70,26 +70,40 @@ def _calcular_combinacoes(qtd):
 # PÁGINA PRINCIPAL
 # =============================================================================
 
-def pagina_simulacao(df):
-    """Página central de Simulação e Conferência"""
-    
-    st.title("🎯 Simulação & Conferência")
-    st.markdown("### Gere jogos, confira resultados e descubra qual estratégia funciona melhor")
+def pagina_conferencia(df):
+    """Página de Conferência Semanal — histórico + conferir novo concurso + ranking"""
 
-    tab_simular, tab_conferir, tab_ranking = st.tabs([
-        "🎲 Simular Jogos",
-        "✅ Conferir Resultados",
-        "🏆 Ranking de Estratégias"
+    st.title("📋 Conferência Semanal")
+    st.markdown("### Histórico de conferências e acertos dos seus jogos")
+
+    # Histórico sempre visível no topo
+    todos_cartoes = dm.carregar_cartoes_salvos()
+    _mostrar_historico_testados(todos_cartoes)
+
+    st.markdown("---")
+
+    tab_conferir, tab_ranking = st.tabs([
+        "✅ Conferir Novo Concurso",
+        "🏆 Ranking de Estratégias",
     ])
-
-    with tab_simular:
-        _aba_simular(df)
 
     with tab_conferir:
         _aba_conferir(df)
 
     with tab_ranking:
         _aba_ranking(df)
+
+
+def pagina_simulacao(df):
+    """Página de Simulação — gerar jogos para testar metodologias"""
+
+    st.title("🎲 Simulação de Jogos")
+    st.info(
+        "Use esta página para **testar metodologias** gerando jogos e conferindo contra concursos passados. "
+        "Para conferir seus jogos semanais, use **📋 Conferência Semanal**."
+    )
+
+    _aba_simular(df)
 
 
 # =============================================================================
@@ -400,10 +414,136 @@ def _simular_manual(df, concurso_alvo, qtd_numeros):
 # ABA 2: CONFERIR RESULTADOS
 # =============================================================================
 
+def _mostrar_historico_testados(todos_cartoes):
+    """Mostra histórico de todos os concursos já verificados"""
+    verificados = [c for c in todos_cartoes if c.get('verificado', False) and c.get('acertos') is not None]
+    pendentes = [c for c in todos_cartoes if not c.get('verificado', False) and c.get('concurso_alvo')]
+
+    concursos_verif = sorted(set(c.get('concurso_alvo') for c in verificados if c.get('concurso_alvo')), reverse=True)
+    concursos_pend = sorted(set(c.get('concurso_alvo') for c in pendentes if c.get('concurso_alvo')), reverse=True)
+
+    total_concursos = len(concursos_verif) + len(concursos_pend)
+
+    col_t1, col_t2, col_t3 = st.columns(3)
+    col_t1.metric("Concursos testados", len(concursos_verif))
+    col_t2.metric("Concursos pendentes", len(concursos_pend))
+    col_t3.metric("Total de jogos salvos", len(todos_cartoes))
+
+    if not concursos_verif and not concursos_pend:
+        st.info("📭 Nenhum jogo salvo ainda. Use a aba **Simular Jogos** para gerar jogos.")
+        return
+
+    # Tabela resumo de todos os concursos (verificados + pendentes)
+    st.markdown("#### 📋 Histórico por Concurso")
+
+    linhas = []
+
+    for conc in sorted(set(concursos_verif + concursos_pend), reverse=True):
+        jogos_conc = [c for c in todos_cartoes if c.get('concurso_alvo') == conc]
+        verif_conc = [c for c in jogos_conc if c.get('verificado', False)]
+        pend_conc = [c for c in jogos_conc if not c.get('verificado', False)]
+
+        if verif_conc:
+            # Calcular stats dos verificados
+            acertos_todos = [c.get('acertos', 0) for c in verif_conc]
+            melhor = max(acertos_todos)
+            media = sum(acertos_todos) / len(acertos_todos)
+            ternas = sum(1 for a in acertos_todos if a == 3)
+            quadras = sum(1 for a in acertos_todos if a == 4)
+            quinas = sum(1 for a in acertos_todos if a == 5)
+            senas = sum(1 for a in acertos_todos if a == 6)
+
+            # Estratégia com melhor média neste concurso
+            por_est = {}
+            for c in verif_conc:
+                est = c.get('estrategia', 'N/A')
+                por_est.setdefault(est, []).append(c.get('acertos', 0))
+            melhor_est = max(por_est, key=lambda e: max(por_est[e]))
+
+            # Dezenas sorteadas (do primeiro verificado)
+            resultado = verif_conc[0].get('resultado_concurso', [])
+            dezenas_str = " ".join(f"{n:02d}" for n in sorted(resultado)) if resultado else "—"
+
+            premios = []
+            if senas: premios.append(f"🏆{senas}S")
+            if quinas: premios.append(f"🥈{quinas}Q5")
+            if quadras: premios.append(f"🥉{quadras}Q4")
+            if ternas: premios.append(f"👍{ternas}T")
+            premios_str = " ".join(premios) if premios else "—"
+
+            status_icon = "✅"
+            status_txt = f"{len(verif_conc)} verificados"
+            if pend_conc:
+                status_txt += f" + {len(pend_conc)} pendentes"
+        else:
+            melhor = "—"
+            media = 0.0
+            melhor_est = "—"
+            dezenas_str = "Aguardando sorteio"
+            premios_str = "—"
+            status_icon = "⏳"
+            status_txt = f"{len(pend_conc)} pendentes"
+
+        linhas.append({
+            "": status_icon,
+            "Concurso": conc,
+            "Sorteio": dezenas_str,
+            "Jogos": len(jogos_conc),
+            "Verificados": len(verif_conc),
+            "Melhor Acerto": melhor,
+            "Média": f"{media:.1f}" if verif_conc else "—",
+            "Prêmios": premios_str,
+            "Melhor Estratégia": _nome_estrategia(melhor_est) if melhor_est != "—" else "—",
+            "Status": status_txt,
+        })
+
+    if linhas:
+        df_hist = pd.DataFrame(linhas)
+        st.dataframe(df_hist, hide_index=True, use_container_width=True)
+
+    # Expandir detalhes por concurso verificado
+    if concursos_verif:
+        with st.expander(f"🔍 Ver detalhes por estratégia ({len(concursos_verif)} concurso(s) verificado(s))", expanded=False):
+            for conc in concursos_verif:
+                verif_conc = [c for c in verificados if c.get('concurso_alvo') == conc]
+                resultado = verif_conc[0].get('resultado_concurso', [])
+                dezenas_str = " - ".join(f"{n:02d}" for n in sorted(resultado)) if resultado else "não registrado"
+
+                st.markdown(f"**Concurso {conc}** — Sorteio: `{dezenas_str}`")
+
+                por_est = {}
+                for c in verif_conc:
+                    est = c.get('estrategia', 'N/A')
+                    por_est.setdefault(est, []).append(c.get('acertos', 0))
+
+                linhas_est = []
+                for est, ac_list in sorted(por_est.items(), key=lambda x: max(x[1]), reverse=True):
+                    melhor_est = max(ac_list)
+                    media_est = sum(ac_list) / len(ac_list)
+                    t = sum(1 for a in ac_list if a == 3)
+                    q4 = sum(1 for a in ac_list if a == 4)
+                    q5 = sum(1 for a in ac_list if a == 5)
+                    s = sum(1 for a in ac_list if a == 6)
+                    emoji = "🟢" if melhor_est >= 3 else "🟡" if melhor_est >= 2 else "🔴"
+                    linhas_est.append({
+                        "": emoji,
+                        "Estratégia": _nome_estrategia(est),
+                        "Jogos": len(ac_list),
+                        "Melhor": melhor_est,
+                        "Média": f"{media_est:.1f}",
+                        "Ternas": t,
+                        "Quadras": q4,
+                        "Quinas": q5,
+                        "Senas": s,
+                    })
+                st.dataframe(pd.DataFrame(linhas_est), hide_index=True, use_container_width=True)
+                st.markdown("---")
+
+
 def _aba_conferir(df):
     """Aba de conferência de resultados"""
-    
-    st.subheader("✅ Conferir Resultados do Concurso")
+
+    st.subheader("🔍 Conferir Novo Concurso")
 
     # Carregar cartões
     todos_cartoes = dm.carregar_cartoes_salvos()
