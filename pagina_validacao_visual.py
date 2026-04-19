@@ -53,6 +53,10 @@ def pagina_validacao_visual(df=None):
     """Página de visualização dos resultados de validação walk-forward."""
 
     st.title("🏆 Resultados da Validação Walk-Forward")
+    st.info(
+        "Esta tela mostra resultados simulados de backtesting walk-forward com concursos históricos. "
+        "As 'senas', 'quinas' e 'quadras' aqui não são jogos reais conferidos, e sim acertos em simulação."
+    )
 
     dados = _carregar_resultado()
     if dados is None:
@@ -80,10 +84,10 @@ def pagina_validacao_visual(df=None):
     st.markdown("---")
 
     # ── TABELA PRINCIPAL: PREMIAÇÕES ABSOLUTAS ────────────────────────────────
-    st.subheader("🎯 Premiações por Estratégia (números absolutos)")
+    st.subheader("🎯 Premiações Simuladas por Estratégia (números absolutos)")
     st.caption(
         f"Total de {params['concursos_validos'] * params['cartoes_por_estrategia']:,} jogos "
-        f"por estratégia com {params['qtd_numeros']} números cada."
+        f"simulados por estratégia com {params['qtd_numeros']} números cada."
     )
 
     linhas = []
@@ -92,10 +96,10 @@ def pagina_validacao_visual(df=None):
         linhas.append({
             'Pos': 0,  # preenchido abaixo
             'Estratégia': nome,
-            'Senas (6)': r['senas'],
-            'Quinas (5)': r['quinas'],
-            'Quadras (4)': r['quadras'],
-            'Ternos (3)': r['ternos'],
+            'Senas Simuladas (6)': r['senas'],
+            'Quinas Simuladas (5)': r['quinas'],
+            'Quadras Simuladas (4)': r['quadras'],
+            'Ternos Simulados (3)': r['ternos'],
             'Média Acertos': round(r['media_por_cartao'], 3),
             'Δ vs Aleatório': f"{r['delta_vs_aleatorio']:+.3f}",
         })
@@ -103,7 +107,7 @@ def pagina_validacao_visual(df=None):
     df_tab = pd.DataFrame(linhas)
     # Ordenar por senas desc, depois quinas, depois quadras
     df_tab = df_tab.sort_values(
-        ['Senas (6)', 'Quinas (5)', 'Quadras (4)', 'Ternos (3)'],
+        ['Senas Simuladas (6)', 'Quinas Simuladas (5)', 'Quadras Simuladas (4)', 'Ternos Simulados (3)'],
         ascending=False
     ).reset_index(drop=True)
     df_tab['Pos'] = range(1, len(df_tab) + 1)
@@ -114,10 +118,10 @@ def pagina_validacao_visual(df=None):
         use_container_width=True,
         column_config={
             'Pos': st.column_config.NumberColumn('🏅', width='small'),
-            'Senas (6)': st.column_config.NumberColumn('🎉 Senas', help='6 acertos'),
-            'Quinas (5)': st.column_config.NumberColumn('⭐ Quinas', help='5 acertos'),
-            'Quadras (4)': st.column_config.NumberColumn('🟢 Quadras', help='4 acertos'),
-            'Ternos (3)': st.column_config.NumberColumn('🔵 Ternos', help='3 acertos'),
+            'Senas Simuladas (6)': st.column_config.NumberColumn('🎉 Senas Sim.', help='6 acertos em simulação'),
+            'Quinas Simuladas (5)': st.column_config.NumberColumn('⭐ Quinas Sim.', help='5 acertos em simulação'),
+            'Quadras Simuladas (4)': st.column_config.NumberColumn('🟢 Quadras Sim.', help='4 acertos em simulação'),
+            'Ternos Simulados (3)': st.column_config.NumberColumn('🔵 Ternos Sim.', help='3 acertos em simulação'),
         }
     )
 
@@ -132,9 +136,9 @@ def pagina_validacao_visual(df=None):
     st.subheader("📊 Destaques")
 
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("🎉 Total Senas", total_senas)
-    c2.metric("⭐ Total Quinas", total_quinas)
-    c3.metric("🟢 Total Quadras", total_quadras)
+    c1.metric("🎉 Total Senas Simuladas", total_senas)
+    c2.metric("⭐ Total Quinas Simuladas", total_quinas)
+    c3.metric("🟢 Total Quadras Simuladas", total_quadras)
     c4.metric(
         "📈 Benchmark Aleatório",
         f"{benchmark['media_esperada']:.3f}",
@@ -143,19 +147,19 @@ def pagina_validacao_visual(df=None):
 
     c5, c6 = st.columns(2)
     c5.metric(
-        "🏆 Mais Quinas",
+        "🏆 Mais Quinas Simuladas",
         f"{NOMES_ESTRATEGIAS.get(melhor_quina['estrategia'], melhor_quina['estrategia'])}",
         f"{melhor_quina['quinas']} quinas"
     )
     c6.metric(
-        "🏆 Mais Senas",
+        "🏆 Mais Senas Simuladas",
         f"{NOMES_ESTRATEGIAS.get(melhor_sena['estrategia'], melhor_sena['estrategia'])}",
         f"{melhor_sena['senas']} senas"
     )
 
     # ── GRÁFICO DE BARRAS: QUINAS E QUADRAS ──────────────────────────────────
     st.markdown("---")
-    st.subheader("📊 Quinas e Quadras por Estratégia")
+    st.subheader("📊 Quinas e Quadras Simuladas por Estratégia")
 
     nomes = [NOMES_ESTRATEGIAS.get(r['estrategia'], r['estrategia']) for r in ranking]
     quinas = [r['quinas'] for r in ranking]
@@ -173,9 +177,9 @@ def pagina_validacao_visual(df=None):
     x = np.arange(len(nomes_ord))
     w = 0.3
 
-    bars_q = ax.bar(x - w, quadras_ord, w, label='Quadras (4)', color='#2196F3', edgecolor='white')
-    bars_5 = ax.bar(x, quinas_ord, w, label='Quinas (5)', color='#FF9800', edgecolor='white')
-    bars_6 = ax.bar(x + w, senas_ord, w, label='Senas (6)', color='#4CAF50', edgecolor='white')
+    bars_q = ax.bar(x - w, quadras_ord, w, label='Quadras Simuladas (4)', color='#2196F3', edgecolor='white')
+    bars_5 = ax.bar(x, quinas_ord, w, label='Quinas Simuladas (5)', color='#FF9800', edgecolor='white')
+    bars_6 = ax.bar(x + w, senas_ord, w, label='Senas Simuladas (6)', color='#4CAF50', edgecolor='white')
 
     # Rótulos nas barras de quinas
     for bar, val in zip(bars_5, quinas_ord):
@@ -194,7 +198,7 @@ def pagina_validacao_visual(df=None):
     ax.set_xticklabels(nomes_ord, rotation=35, ha='right', fontsize=8)
     ax.set_ylabel('Quantidade')
     ax.set_title(
-        f'Premiações — {params["concursos_validos"]} concursos × '
+        f'Premiações simuladas — {params["concursos_validos"]} concursos × '
         f'{params["cartoes_por_estrategia"]} cartões × {params["qtd_numeros"]} números',
         fontsize=11
     )
@@ -248,10 +252,10 @@ def pagina_validacao_visual(df=None):
         det.append({
             'Estratégia': nome,
             'Jogos': jogos,
-            'Ternos': r['ternos'],
-            'Quadras': r['quadras'],
-            'Quinas': r['quinas'],
-            'Senas': r['senas'],
+            'Ternos Simulados': r['ternos'],
+            'Quadras Simuladas': r['quadras'],
+            'Quinas Simuladas': r['quinas'],
+            'Senas Simuladas': r['senas'],
             '% Quadra+': f"{r['taxa_jogo_quadra_ou_mais']*100:.2f}%",
             '% Quina+': f"{r['taxa_jogo_quina_ou_mais']*100:.2f}%",
             'Média': round(r['media_por_cartao'], 3),
