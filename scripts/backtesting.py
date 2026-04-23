@@ -73,28 +73,15 @@ def carregar_historico_completo():
             df['concurso'] = pd.to_numeric(df['concurso'], errors='coerce').fillna(0).astype(int)
             return df.sort_values('concurso', ascending=False).reset_index(drop=True)
 
-    import requests
-
-    print('  Baixando histórico completo da API...')
+    print('  Carregando histórico local...')
     try:
-        url = 'https://loteriascaixa-api.herokuapp.com/api/megasena'
-        response = requests.get(url, timeout=60)
-        data = response.json()
-        if isinstance(data, dict):
-            data = [data]
-
-        registros = []
-        for item in data:
-            dezenas = converter_dezenas_para_int(item.get('dezenas') or item.get('listaDezenas'))
-            if len(dezenas) != 6:
-                continue
-
-            registro = {'concurso': int(item.get('concurso') or item.get('numero') or 0)}
-            for idx, dezena in enumerate(sorted(dezenas), start=1):
-                registro[f'dez{idx}'] = int(dezena)
-            registros.append(registro)
-
-        df = pd.DataFrame(registros)
+        local_file = os.path.join(ROOT, 'data', 'historico_completo.json')
+        with open(local_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        df = pd.DataFrame(data)
+        for i in range(1, 7):
+            df[f'dez{i}'] = pd.to_numeric(df[f'dez{i}'], errors='coerce').fillna(0).astype(int)
+        df['concurso'] = pd.to_numeric(df['concurso'], errors='coerce').fillna(0).astype(int)
         df = df.sort_values('concurso', ascending=False).reset_index(drop=True)
 
         os.makedirs(os.path.join(ROOT, 'data'), exist_ok=True)

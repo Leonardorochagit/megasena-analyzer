@@ -144,7 +144,6 @@ def buscar_ultimo_resultado():
     """Busca o último concurso sorteado direto da API oficial da Caixa."""
     apis = [
         "https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena",
-        "https://loteriascaixa-api.herokuapp.com/api/megasena/latest",
     ]
     for url in apis:
         try:
@@ -177,7 +176,6 @@ def buscar_resultado_concurso(numero):
     """Busca resultado de um concurso específico."""
     apis = [
         f"https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/{numero}",
-        f"https://loteriascaixa-api.herokuapp.com/api/megasena/{numero}",
     ]
     for url in apis:
         try:
@@ -338,27 +336,17 @@ def gerar_cartoes_proximo_concurso(todos_cartoes):
             df = None
 
     if df is None:
+        local_json = os.path.join(ROOT, "data", "historico_completo.json")
         try:
-            url = "https://loteriascaixa-api.herokuapp.com/api/megasena"
-            r = requests.get(url, timeout=30)
-            data = r.json()
-            if isinstance(data, dict):
-                data = [data]
+            with open(local_json, 'r', encoding='utf-8') as f:
+                data = json.load(f)
             df = pd.DataFrame(data)
-            from helpers import converter_dezenas_para_int
-            for idx, row in df.iterrows():
-                dezenas = converter_dezenas_para_int(row.get('dezenas', []))
-                for j, d in enumerate(dezenas[:6], 1):
-                    df.at[idx, f'dez{j}'] = str(d)
-            # Salvar localmente para próxima vez
-            try:
-                os.makedirs("data", exist_ok=True)
-                df.to_csv(local_csv, index=False)
-                log(f"  Cache do histórico salvo no workspace do runner em {local_csv}")
-            except Exception:
-                pass
+            for col in ['concurso'] + [f'dez{i}' for i in range(1, 7)]:
+                df[col] = pd.to_numeric(df[col], errors='coerce')
+            df = df.dropna(subset=['concurso'] + [f'dez{i}' for i in range(1, 7)]).copy()
+            log(f"  Histórico local carregado: {len(df)} concursos de {local_json}")
         except Exception as e:
-            log(f"Erro ao carregar dados para geração: {e}")
+            log(f"Erro ao carregar histórico local: {e}")
             return 0
 
     contagem_total, contagem_recente, df_atrasos = stats.calcular_estatisticas(df)

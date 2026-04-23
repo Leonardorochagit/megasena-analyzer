@@ -13,6 +13,7 @@ Hub central para:
 import streamlit as st
 import pandas as pd
 import random
+import re
 from datetime import datetime
 from modules import data_manager as dm
 from modules import statistics as stats
@@ -584,6 +585,9 @@ def _aba_conferir(df):
     with col2:
         conferir_btn = st.button("🔍 VER / CONFERIR", type="primary", width="stretch")
 
+    if conferir_btn:
+        dm.limpar_cache_resultados()
+
     if conferir_btn or st.session_state.get('ultimo_conferido') == concurso_conferir:
         st.session_state['ultimo_conferido'] = concurso_conferir
         _executar_conferencia(df, todos_cartoes, concurso_conferir)
@@ -607,8 +611,18 @@ def _executar_conferencia(df, todos_cartoes, concurso):
 
     if not resultado_dezenas:
         st.warning(f"⏳ **Concurso {concurso} ainda não foi sorteado** ou resultado indisponível.")
-        st.markdown("Os jogos estão aguardando o sorteio:")
-        
+        _mostrar_status_oficial_concurso(concurso)
+
+        resultado_manual = _entrada_resultado_manual(concurso)
+        if not resultado_manual:
+            st.markdown("Os jogos estão aguardando o sorteio:")
+            _mostrar_jogos_aguardando(jogos_concurso)
+            return
+
+        resultado_dezenas = resultado_manual
+        st.info("Resultado digitado manualmente.")
+
+    if not resultado_dezenas:
         # Mostrar jogos aguardando
         _mostrar_jogos_aguardando(jogos_concurso)
         return
@@ -845,6 +859,61 @@ def _buscar_resultado(df, concurso):
 
     # Tentar API
     return dm.buscar_resultado_concurso(concurso)
+
+
+def _mostrar_status_oficial_concurso(concurso):
+    """Mostra o status publicado pela Caixa para orientar concursos adiados."""
+    resumo = dm.buscar_ultimo_resultado_oficial()
+    if not resumo:
+        st.caption("Não foi possível consultar o status oficial agora.")
+        return
+
+    ultimo = resumo.get('numero')
+    data_ultimo = resumo.get('data') or "data não informada"
+    proximo = resumo.get('numero_proximo')
+    data_proximo = resumo.get('data_proximo') or "data não informada"
+
+    if ultimo and concurso > ultimo:
+        if proximo == concurso:
+            st.info(
+                f"Caixa: último sorteado {ultimo} em {data_ultimo}. "
+                f"Próximo concurso {proximo}: {data_proximo}."
+            )
+        else:
+            st.info(
+                f"Caixa: último sorteado {ultimo} em {data_ultimo}. "
+                f"Próximo informado: {proximo or 'não informado'}."
+            )
+    elif ultimo == concurso:
+        st.info("A Caixa já lista este concurso como último; a busca por número pode estar atrasada.")
+
+
+def _parse_dezenas_manual(texto):
+    nums = [int(n) for n in re.findall(r"\d{1,2}", texto or "")]
+    if len(nums) != 6:
+        return None
+    if len(set(nums)) != 6:
+        return None
+    if any(n < 1 or n > 60 for n in nums):
+        return None
+    return sorted(nums)
+
+
+def _entrada_resultado_manual(concurso):
+    """Permite conferir quando a API ainda não atualizou."""
+    with st.expander("✏️ Conferir manualmente", expanded=True):
+        texto = st.text_input(
+            "Dezenas sorteadas",
+            placeholder="Ex.: 15 18 28 31 52 58",
+            key=f"manual_resultado_conferencia_{concurso}",
+        )
+        if st.button("✅ Conferir com dezenas digitadas", type="primary", key=f"btn_manual_conf_{concurso}"):
+            dezenas = _parse_dezenas_manual(texto)
+            if not dezenas:
+                st.error("Informe 6 dezenas únicas entre 1 e 60.")
+                return None
+            return dezenas
+    return None
 
 
 def _mostrar_jogos_aguardando(jogos):

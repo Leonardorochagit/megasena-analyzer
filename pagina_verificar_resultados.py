@@ -240,11 +240,20 @@ def pagina_verificar_resultados(df):
         with tab_api:
             if st.button("🔍 Buscar resultado da API", type="primary", key="btn_api"):
                 with st.spinner(f"Buscando concurso {concurso_verificar}..."):
+                    dm.limpar_cache_resultados()
                     resultado = dm.buscar_resultado_concurso(concurso_verificar)
                     if resultado:
                         st.session_state['resultado_temp'] = resultado
                         st.session_state['concurso_temp'] = concurso_verificar
                     else:
+                        resumo = dm.buscar_ultimo_resultado_oficial()
+                        if resumo:
+                            st.info(
+                                f"Caixa: último sorteado {resumo.get('numero')} em "
+                                f"{resumo.get('data') or 'data não informada'}. "
+                                f"Próximo: {resumo.get('numero_proximo') or 'não informado'} "
+                                f"em {resumo.get('data_proximo') or 'data não informada'}."
+                            )
                         st.error("❌ Não encontrado. Tente digitar manualmente.")
 
         with tab_manual:

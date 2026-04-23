@@ -70,20 +70,12 @@ NOMES = {
 # =============================================================================
 
 def carregar_dados():
-    """Carrega dados via API."""
-    import requests
-    from helpers import converter_dezenas_para_int
-    log("Carregando dados da API...")
-    url = "https://loteriascaixa-api.herokuapp.com/api/megasena"
-    response = requests.get(url, timeout=30)
-    data = response.json()
-    if isinstance(data, dict):
-        data = [data]
-    df = pd.DataFrame(data)
-    for idx, row in df.iterrows():
-        dezenas = converter_dezenas_para_int(row.get('dezenas', []))
-        for i, d in enumerate(dezenas[:6], 1):
-            df.at[idx, f'dez{i}'] = str(d)
+    """Carrega dados do histórico local."""
+    log("Carregando histórico local...")
+    cache_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "historico_completo.json")
+    df = pd.read_json(cache_file)
+    for i in range(1, 7):
+        df[f'dez{i}'] = pd.to_numeric(df[f'dez{i}'], errors='coerce').fillna(0).astype(int)
     df['concurso'] = df['concurso'].astype(int)
     df = df.sort_values('concurso', ascending=False).reset_index(drop=True)
     log(f"OK: {len(df)} concursos carregados\n")

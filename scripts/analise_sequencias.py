@@ -35,8 +35,7 @@ NUM_DEZENAS = 60
 DEZENAS_POR_SORTEIO = 6
 PASTA_SAIDA = Path("resultados_analise")
 
-# APIs
-API_HISTORICO = "https://loteriascaixa-api.herokuapp.com/api/megasena"
+# API oficial
 API_OFICIAL = "https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena"
 
 
@@ -65,16 +64,21 @@ def carregar_historico(cache_path: str = "data/historico_megasena.json") -> pd.D
                 data = json.load(f)
             return _json_para_dataframe(data)
 
-    # Buscar da API
-    print("🌐 Baixando histórico completo da API…")
+    # Carregar histórico local
+    print("📂 Carregando histórico local…")
     try:
-        resp = requests.get(API_HISTORICO, timeout=60)
-        resp.raise_for_status()
-        data = resp.json()
-        if isinstance(data, dict):
-            data = [data]
+        local_file = Path("data/historico_completo.json")
+        with open(local_file, "r", encoding="utf-8") as f:
+            bruto = json.load(f)
+        data = []
+        for item in bruto:
+            data.append({
+                "concurso": item.get("concurso", 0),
+                "data": item.get("data", ""),
+                "dezenas": [item.get(f"dez{i}") for i in range(1, 7)],
+            })
     except Exception as e:
-        print(f"❌ Falha na API alternativa: {e}")
+        print(f"❌ Falha no histórico local: {e}")
         return pd.DataFrame()
 
     # Tentar complementar com último concurso da API oficial

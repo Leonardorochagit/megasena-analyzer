@@ -112,45 +112,65 @@ def sincronizar_json_para_db():
 @st.cache_data(ttl=600)
 def carregar_dados():
     """
-    Carrega dados da API da Mega Sena.
+    Carrega histórico local e atualiza concursos recentes pela API oficial da Caixa.
     Returns:
         pd.DataFrame: DataFrame com histórico de sorteios
     """
     try:
-        url = "https://loteriascaixa-api.herokuapp.com/api/megasena"
-        response = requests.get(url, timeout=30)
-        data = response.json()
+        historico_json = os.path.join(_ROOT, "data", "historico_completo.json")
+        data = _ler_json(historico_json, [])
+        if not data:
+            historico_csv = os.path.join(_ROOT, "data", "megasena_historico.csv")
+            if os.path.exists(historico_csv):
+                df = pd.read_csv(historico_csv)
+            else:
+                raise RuntimeError("Histórico local não encontrado.")
+        else:
+            df = pd.DataFrame(data)
 
-        if isinstance(data, dict):
-            data = [data]
-        df = pd.DataFrame(data)
+        df['concurso'] = pd.to_numeric(df['concurso'], errors='coerce')
+        df = df.dropna(subset=['concurso']).copy()
+        df['concurso'] = df['concurso'].astype(int)
 
         from helpers import converter_dezenas_para_int
         for idx, row in df.iterrows():
-            dezenas = converter_dezenas_para_int(row.get('dezenas', []))
-            for i, d in enumerate(dezenas[:6], 1):
-                df.at[idx, f'dez{i}'] = str(d)
+            if not all(f'dez{i}' in df.columns and pd.notna(row.get(f'dez{i}')) for i in range(1, 7)):
+                dezenas = converter_dezenas_para_int(row.get('dezenas', []))
+                for i, d in enumerate(dezenas[:6], 1):
+                    df.at[idx, f'dez{i}'] = str(d)
 
-        try:
-            url_oficial = "https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena"
-            resp_oficial = requests.get(url_oficial, timeout=10)
-            concurso_oficial = resp_oficial.json()
-            concurso_num = concurso_oficial.get('numero', 0)
+        for i in range(1, 7):
+            df[f'dez{i}'] = pd.to_numeric(df[f'dez{i}'], errors='coerce')
+        df = df.dropna(subset=[f'dez{i}' for i in range(1, 7)]).copy()
 
-            if concurso_num > df['concurso'].max():
-                novo_row = {
-                    'concurso': concurso_num,
-                    'data': concurso_oficial.get('dataApuracao', ''),
-                    'dezenas': ','.join(concurso_oficial.get('listaDezenas', []))
-                }
-                for i, dez in enumerate(concurso_oficial.get('listaDezenas', []), 1):
-                    novo_row[f'dez{i}'] = str(dez)
-                df = pd.concat([pd.DataFrame([novo_row]), df], ignore_index=True)
-                st.success(f"Concurso {concurso_num} atualizado da API oficial!")
-        except Exception:
-            pass
+        url_oficial = "https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena"
+        resp_oficial = requests.get(url_oficial, timeout=10)
+        if resp_oficial.status_code == 200:
+            ultimo = _extrair_resultado_api(resp_oficial.json())
+            if ultimo and ultimo.get('numero'):
+                max_local = int(df['concurso'].max())
+                novos = []
+                for concurso in range(max_local + 1, int(ultimo['numero']) + 1):
+                    resp_concurso = requests.get(f"{url_oficial}/{concurso}", timeout=10)
+                    if resp_concurso.status_code != 200:
+                        continue
+                    resultado = _extrair_resultado_api(resp_concurso.json(), concurso)
+                    if not resultado:
+                        continue
+                    row = {
+                        'concurso': int(concurso),
+                        'data': resultado.get('data') or '',
+                        'dezenas': ','.join(f"{n:02d}" for n in resultado['dezenas']),
+                    }
+                    for i, dez in enumerate(resultado['dezenas'], 1):
+                        row[f'dez{i}'] = int(dez)
+                    novos.append(row)
 
-        return df
+                if novos:
+                    df = pd.concat([pd.DataFrame(novos), df], ignore_index=True)
+                    st.success(f"{len(novos)} concurso(s) atualizado(s) da API oficial.")
+
+        return df.sort_values('concurso', ascending=False).reset_index(drop=True)
 
     except Exception as e:
         st.error(f"Erro ao carregar dados: {e}")
@@ -217,21 +237,119 @@ def verificar_acertos(dezenas_cartao: list, dezenas_resultado: list) -> int:
     return len(set(dezenas_cartao) & set(dezenas_resultado))
 
 
-@st.cache_data(ttl=3600)
-def buscar_resultado_concurso(numero_concurso: int):
-    """Busca dezenas de um concurso específico na API."""
+def _normalizar_dezenas_resultado(dezenas_raw):
+    """Converte e valida dezenas retornadas pelas APIs."""
+    from helpers import converter_dezenas_para_int
+
+    dezenas = converter_dezenas_para_int(dezenas_raw)
+    if len(dezenas) != 6:
+        return None
+    if len(set(dezenas)) != 6:
+        return None
+    if any(n < 1 or n > 60 for n in dezenas):
+        return None
+    return sorted(dezenas)
+
+
+def _extrair_resultado_api(data, numero_concurso: int = None):
+    """Extrai resultado de payloads da API oficial da Caixa."""
+    if isinstance(data, list):
+        if numero_concurso is not None:
+            for item in data:
+                resultado = _extrair_resultado_api(item, numero_concurso)
+                if resultado:
+                    return resultado
+            return None
+        if not data:
+            return None
+        data = data[0]
+
+    if not isinstance(data, dict):
+        return None
+
+    numero = data.get('numero') or data.get('concurso')
     try:
-        url = f"https://loteriascaixa-api.herokuapp.com/api/megasena/{numero_concurso}"
-        response = requests.get(url, timeout=10)
-        if response.status_code == 200:
-            data = response.json()
-            if 'dezenas' in data:
-                from helpers import converter_dezenas_para_int
-                dezenas = converter_dezenas_para_int(data['dezenas'])
-                return sorted(dezenas)
+        numero_int = int(numero) if numero is not None else None
+    except (TypeError, ValueError):
+        numero_int = None
+
+    if numero_concurso is not None and numero_int is not None and numero_int != int(numero_concurso):
         return None
+
+    dezenas_raw = (
+        data.get('listaDezenas')
+        or data.get('dezenas')
+        or data.get('dezenasSorteadasOrdemSorteio')
+    )
+    dezenas = _normalizar_dezenas_resultado(dezenas_raw)
+
+    if not dezenas:
+        campos_dezenas = [data.get(f'dez{i}') for i in range(1, 7)]
+        if all(x is not None for x in campos_dezenas):
+            dezenas = _normalizar_dezenas_resultado(campos_dezenas)
+
+    if not dezenas:
+        return None
+
+    return {
+        'numero': numero_int,
+        'dezenas': dezenas,
+        'data': data.get('dataApuracao') or data.get('data'),
+        'numero_proximo': data.get('numeroConcursoProximo'),
+        'data_proximo': data.get('dataProximoConcurso'),
+        'acumulou': data.get('acumulou') if 'acumulou' in data else data.get('acumulado'),
+        'valor_proximo': (
+            data.get('valorEstimadoProximoConcurso')
+            or data.get('valorAcumuladoProximoConcurso')
+        ),
+    }
+
+
+@st.cache_data(ttl=300)
+def buscar_resultado_concurso(numero_concurso: int):
+    """Busca dezenas de um concurso específico na API oficial da Caixa."""
+    apis = [
+        f"https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/{numero_concurso}",
+    ]
+    for url in apis:
+        try:
+            response = requests.get(url, timeout=15)
+            if response.status_code != 200:
+                continue
+            resultado = _extrair_resultado_api(response.json(), numero_concurso)
+            if resultado:
+                return resultado['dezenas']
+        except Exception:
+            continue
+    return None
+
+
+@st.cache_data(ttl=300)
+def buscar_ultimo_resultado_oficial() -> dict:
+    """Busca resumo do último concurso publicado pela API oficial da Caixa."""
+    apis = [
+        "https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena",
+    ]
+    for url in apis:
+        try:
+            response = requests.get(url, timeout=15)
+            if response.status_code != 200:
+                continue
+            resultado = _extrair_resultado_api(response.json())
+            if resultado:
+                return resultado
+        except Exception:
+            continue
+    return {}
+
+
+def limpar_cache_resultados():
+    """Limpa caches de busca de resultados quando a API atualizar."""
+    try:
+        buscar_resultado_concurso.clear()
+        buscar_ultimo_resultado_oficial.clear()
     except Exception:
-        return None
+        pass
 
 
 @st.cache_data(ttl=300)
