@@ -113,8 +113,7 @@ def sincronizar_json_para_db():
 def carregar_dados():
     """
     Carrega histórico local e atualiza concursos recentes pela API oficial da Caixa.
-    Returns:
-        pd.DataFrame: DataFrame com histórico de sorteios
+    Se a API falhar, retorna o histórico local disponível.
     """
     try:
         historico_json = os.path.join(_ROOT, "data", "historico_completo.json")
@@ -142,7 +141,11 @@ def carregar_dados():
         for i in range(1, 7):
             df[f'dez{i}'] = pd.to_numeric(df[f'dez{i}'], errors='coerce')
         df = df.dropna(subset=[f'dez{i}' for i in range(1, 7)]).copy()
+    except Exception as e:
+        st.error(f"Erro ao carregar histórico local: {e}")
+        return None
 
+    try:
         url_oficial = "https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena"
         resp_oficial = requests.get(url_oficial, timeout=10)
         if resp_oficial.status_code == 200:
@@ -169,12 +172,10 @@ def carregar_dados():
                 if novos:
                     df = pd.concat([pd.DataFrame(novos), df], ignore_index=True)
                     st.success(f"{len(novos)} concurso(s) atualizado(s) da API oficial.")
-
-        return df.sort_values('concurso', ascending=False).reset_index(drop=True)
-
     except Exception as e:
-        st.error(f"Erro ao carregar dados: {e}")
-        return None
+        st.warning(f"API da Caixa indisponível ({e}). Usando apenas histórico local.")
+
+    return df.sort_values('concurso', ascending=False).reset_index(drop=True)
 
 
 # ─────────────────────────────────────────────────────────────────────────────

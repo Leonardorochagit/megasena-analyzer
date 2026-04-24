@@ -74,6 +74,12 @@ def exibir_interface_principal():
 
     # Carregar dados
     df = dm.carregar_dados()
+    if df is None or df.empty:
+        st.error(
+            "Não foi possível carregar o histórico de sorteios. "
+            "Verifique os arquivos em `data/` e tente novamente."
+        )
+        st.stop()
 
     # Carregar cartões salvos
     cartoes_salvos = dm.carregar_cartoes_salvos()
