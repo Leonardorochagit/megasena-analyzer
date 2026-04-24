@@ -229,10 +229,10 @@ def exibir_interface_principal():
         com vizinhança N±1. Captura padrões de agrupamento histórico.
 
         **🧠 Ensemble**
-        Votação de 7 estratégias base (escada, atrasados, quentes, atraso
-        recente, equilibrado, misto, consenso). Os top-20 mais votados formam
-        o pool. Foi a estratégia com **mais quinas** no backtesting (15 quinas
-        em 4.960 jogos).
+        Votação adaptativa: o sistema escolhe as estratégias com melhor
+        desempenho recente e usa o backtesting como fallback. Os top-20 mais
+        votados formam o pool. No backtesting salvo, foi a estratégia com
+        **mais quinas** (15 quinas em 4.960 jogos).
 
         **🎯 Wheel (Cobertura)**
         Gera múltiplos cartões com cobertura sistemática tipo "wheel" —
@@ -262,9 +262,9 @@ def exibir_interface_principal():
         Calcula o intervalo médio de aparição de cada número e seleciona
         aqueles cujo gap atual está próximo do ciclo médio — "na hora de sair".
 
-        **🧠✨ Ensemble V2**
-        Versão melhorada do ensemble: votação de 7 estratégias fortes
-        (sem escada nem atrasados, que performaram mal no backtesting).
+        **🧠 Ensemble Adaptativo**
+        O ensemble agora prioriza as estratégias com melhor desempenho
+        recente e usa o backtesting como fallback quando faltar histórico.
 
         ---
         ### 📈 Resultados do backtesting (2500→2995)

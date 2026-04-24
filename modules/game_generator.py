@@ -7,6 +7,8 @@ Geração de jogos com diferentes estratégias
 
 import random
 import logging
+import json
+import os
 import numpy as np
 from collections import Counter, defaultdict
 from itertools import combinations
@@ -21,6 +23,25 @@ from modules.statistics import (
 from helpers import FILTROS_JOGO, JANELAS_ANALISE
 
 logger = logging.getLogger(__name__)
+
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+HISTORICO_ANALISES_FILE = os.path.join(ROOT_DIR, 'historico_analises.json')
+BACKTESTING_RESULTADO_FILE = os.path.join(ROOT_DIR, 'data', 'backtesting_resultado.json')
+
+ESTRATEGIAS_ENSEMBLE_CLASSICO = [
+    'escada', 'atrasados', 'quentes',
+    'equilibrado', 'misto', 'consenso', 'aleatorio_smart'
+]
+
+ESTRATEGIAS_ENSEMBLE_ELEGIVEIS = [
+    'ciclos', 'frequencia_desvio', 'pares_frequentes', 'consenso', 'sequencias',
+    'quentes', 'equilibrado', 'misto', 'candidatos_ouro', 'aleatorio_smart',
+    'momentum', 'vizinhanca', 'atrasados', 'atraso_recente', 'escada'
+]
+
+QTD_ESTRATEGIAS_ENSEMBLE = 5
+JANELA_RECENTE_ENSEMBLE = 8
+MAX_STREAK_SEM_TERNO_DEFAULT = 2
 
 # PyCaret será importado sob demanda (lazy) para não travar o carregamento
 PYCARET_DISPONIVEL = None
@@ -49,6 +70,304 @@ def _carregar_pycaret():
 
 # Cache para clusters de sequências (evita recomputar KMeans por cartão)
 _cache_sequencias = {'key': None, 'cluster_dict': None, 'ultimo_sorteio': None}
+
+
+def _carregar_json_local(caminho):
+    """Carrega JSON local. Retorna None em qualquer falha."""
+    try:
+        with open(caminho, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except Exception:
+        return None
+
+
+def _ranking_historico_recente_ensemble(
+    max_estrategias=QTD_ESTRATEGIAS_ENSEMBLE,
+    janela_concursos=JANELA_RECENTE_ENSEMBLE
+):
+    """
+    Monta ranking recente a partir do histórico real já conferido.
+    Prioriza o que vem performando melhor agora, não só no backtesting antigo.
+    """
+    historico = _carregar_json_local(HISTORICO_ANALISES_FILE)
+    if not isinstance(historico, list) or not historico:
+        return []
+
+    historico_ordenado = sorted(historico, key=lambda item: int(item.get('concurso', 0)))
+    recentes = historico_ordenado[-janela_concursos:]
+    min_concursos = min(3, len(recentes))
+    agregados = defaultdict(lambda: {
+        'jogos': 0,
+        'acertos': 0.0,
+        'quadras': 0,
+        'quinas': 0,
+        'senas': 0,
+        'concursos': 0,
+        'concursos_3_mais': 0,
+        'melhor_acerto': 0,
+    })
+
+    for registro in recentes:
+        estatisticas = registro.get('estatisticas', {})
+        for estrategia, dados in estatisticas.items():
+            if estrategia not in ESTRATEGIAS_ENSEMBLE_ELEGIVEIS:
+                continue
+
+            jogos = int(dados.get('total_jogos', 0) or 0)
+            if jogos <= 0:
+                continue
+
+            total_acertos = dados.get('total_acertos')
+            if total_acertos is None:
+                total_acertos = float(dados.get('media_acertos', 0) or 0) * jogos
+
+            melhor_acerto = int(dados.get('melhor_acerto', 0) or 0)
+            quadras = int(dados.get('quadras', 0) or 0)
+            quinas = int(dados.get('quinas', 0) or 0)
+            senas = int(dados.get('senas', 0) or 0)
+
+            agg = agregados[estrategia]
+            agg['jogos'] += jogos
+            agg['acertos'] += float(total_acertos or 0)
+            agg['quadras'] += quadras
+            agg['quinas'] += quinas
+            agg['senas'] += senas
+            agg['concursos'] += 1
+            agg['melhor_acerto'] = max(agg['melhor_acerto'], melhor_acerto)
+            if melhor_acerto >= 3 or quadras > 0 or quinas > 0 or senas > 0:
+                agg['concursos_3_mais'] += 1
+
+    ranking = []
+    for estrategia, dados in agregados.items():
+        if dados['concursos'] < min_concursos or dados['jogos'] <= 0:
+            continue
+
+        ranking.append({
+            'estrategia': estrategia,
+            'media_acertos': dados['acertos'] / dados['jogos'],
+            'concursos_3_mais': dados['concursos_3_mais'],
+            'quadras': dados['quadras'],
+            'quinas': dados['quinas'],
+            'senas': dados['senas'],
+            'melhor_acerto': dados['melhor_acerto'],
+            'concursos': dados['concursos'],
+            'jogos': dados['jogos'],
+        })
+
+    ranking.sort(
+        key=lambda item: (
+            item['media_acertos'],
+            item['concursos_3_mais'],
+            item['quadras'],
+            item['quinas'],
+            item['melhor_acerto'],
+            item['concursos'],
+            item['jogos'],
+        ),
+        reverse=True,
+    )
+    return ranking[:max_estrategias]
+
+
+def _ranking_backtesting_ensemble(max_estrategias=QTD_ESTRATEGIAS_ENSEMBLE):
+    """Usa o backtesting salvo como fallback quando não há histórico recente suficiente."""
+    payload = _carregar_json_local(BACKTESTING_RESULTADO_FILE)
+    ranking_raw = payload.get('ranking', []) if isinstance(payload, dict) else []
+    ranking = []
+
+    for item in ranking_raw:
+        estrategia = item.get('estrategia')
+        if estrategia not in ESTRATEGIAS_ENSEMBLE_ELEGIVEIS:
+            continue
+
+        ranking.append({
+            'estrategia': estrategia,
+            'media_acertos': float(item.get('media_por_cartao', 0) or 0),
+            'concursos_3_mais': float(item.get('taxa_concurso_terno_ou_mais', 0) or 0),
+            'quadras': float(item.get('taxa_concurso_quadra_ou_mais', 0) or 0),
+            'quinas': float(item.get('taxa_concurso_quina_ou_mais', 0) or 0),
+            'senas': int(item.get('senas', 0) or 0),
+            'melhor_acerto': float(item.get('media_melhor_cartao_concurso', 0) or 0),
+            'concursos': int(item.get('concursos', 0) or 0),
+            'jogos': int(item.get('jogos', 0) or 0),
+        })
+
+    ranking.sort(
+        key=lambda item: (
+            item['media_acertos'],
+            item['quadras'],
+            item['concursos_3_mais'],
+            item['melhor_acerto'],
+            item['quinas'],
+            item['concursos'],
+            item['jogos'],
+        ),
+        reverse=True,
+    )
+    return ranking[:max_estrategias]
+
+
+def _resolver_estrategias_ensemble(max_estrategias=QTD_ESTRATEGIAS_ENSEMBLE):
+    """
+    Resolve quais estratégias votam no ensemble.
+    Ordem de prioridade:
+    1. Histórico real recente
+    2. Backtesting salvo
+    3. Ensemble clássico
+    """
+    ranking_recente = _ranking_historico_recente_ensemble(max_estrategias=max_estrategias)
+    if len(ranking_recente) >= 3:
+        return [item['estrategia'] for item in ranking_recente], 'historico_recente'
+
+    ranking_backtesting = _ranking_backtesting_ensemble(max_estrategias=max_estrategias)
+    if len(ranking_backtesting) >= 3:
+        return [item['estrategia'] for item in ranking_backtesting], 'backtesting'
+
+    return list(ESTRATEGIAS_ENSEMBLE_CLASSICO), 'classico'
+
+
+def _teve_terno_ou_mais(dados: dict) -> bool:
+    """Verifica se a estratégia marcou >= 3 acertos em algum cartão do concurso."""
+    ternos = int(dados.get('ternos', 0) or 0)
+    quadras = int(dados.get('quadras', 0) or 0)
+    quinas = int(dados.get('quinas', 0) or 0)
+    senas = int(dados.get('senas', 0) or 0)
+    melhor = int(dados.get('melhor_acerto', 0) or 0)
+    return (ternos + quadras + quinas + senas) > 0 or melhor >= 3
+
+
+def composicao_ensemble_atual(
+    max_streak=MAX_STREAK_SEM_TERNO_DEFAULT,
+    estrategias=None
+):
+    """
+    Retorna a composição atual do ensemble baseada no histórico de conferências.
+    Uma estratégia sai quando acumula `max_streak` concursos consecutivos
+    (mais recentes) sem marcar terno ou mais.
+    """
+    historico = _carregar_json_local(HISTORICO_ANALISES_FILE)
+    if not isinstance(historico, list) or not historico:
+        return []
+
+    estrategias_alvo = list(estrategias) if estrategias else list(ESTRATEGIAS_ENSEMBLE_ELEGIVEIS)
+    historico_desc = sorted(
+        historico,
+        key=lambda item: int(item.get('concurso', 0)),
+        reverse=True
+    )
+
+    composicao = []
+    for est in estrategias_alvo:
+        streak = 0
+        ultimo_terno_concurso = None
+        total_concursos = 0
+        concursos_com_terno = 0
+        ainda_em_streak = True
+
+        for reg in historico_desc:
+            dados = (reg.get('estatisticas') or {}).get(est)
+            if not dados:
+                continue
+            jogos = int(dados.get('total_jogos', 0) or 0)
+            if jogos <= 0:
+                continue
+
+            total_concursos += 1
+            tem_terno = _teve_terno_ou_mais(dados)
+
+            if tem_terno:
+                concursos_com_terno += 1
+                if ultimo_terno_concurso is None:
+                    ultimo_terno_concurso = int(reg.get('concurso') or 0) or None
+                ainda_em_streak = False
+            elif ainda_em_streak:
+                streak += 1
+
+        if total_concursos == 0:
+            status = 'sem_dados'
+        elif streak >= max_streak:
+            status = 'fora'
+        else:
+            status = 'dentro'
+
+        composicao.append({
+            'estrategia': est,
+            'status': status,
+            'streak_sem_terno': streak,
+            'ultimo_terno_concurso': ultimo_terno_concurso,
+            'total_concursos_avaliados': total_concursos,
+            'concursos_com_terno': concursos_com_terno,
+        })
+
+    status_ordem = {'dentro': 0, 'sem_dados': 1, 'fora': 2}
+    composicao.sort(key=lambda x: (
+        status_ordem.get(x['status'], 99),
+        x['streak_sem_terno'],
+        -x['concursos_com_terno'],
+        x['estrategia'],
+    ))
+    return composicao
+
+
+def estrategias_ensemble_ativas(max_streak=MAX_STREAK_SEM_TERNO_DEFAULT):
+    """Lista das estratégias atualmente DENTRO do ensemble (streak < max_streak)."""
+    composicao = composicao_ensemble_atual(max_streak=max_streak)
+    dentro = [c['estrategia'] for c in composicao if c['status'] == 'dentro']
+    if len(dentro) >= 3:
+        return dentro, 'historico_streak'
+
+    estrategias_resolvidas, origem = _resolver_estrategias_ensemble()
+    return estrategias_resolvidas, origem
+
+
+def _gerar_jogo_ensemble_votacao(
+    estrategias,
+    contagem_total,
+    contagem_recente,
+    df_atrasos,
+    df=None,
+    ponderar_por_rank=False
+):
+    """Executa a votação do ensemble usando a lista de estratégias informada."""
+    if not estrategias:
+        return []
+
+    votos = Counter()
+    total_estrategias = len(estrategias)
+
+    for idx, est in enumerate(estrategias):
+        peso = max(1, total_estrategias - idx) if ponderar_por_rank else 1
+        try:
+            jogo = gerar_jogo(est, contagem_total, contagem_recente, df_atrasos, df=df)
+            for n in jogo:
+                votos[n] += peso
+        except Exception as e:
+            logger.warning("Erro ao gerar jogo ensemble para %s: %s", est, e)
+
+    candidatos = sorted(
+        votos.keys(),
+        key=lambda n: (votos[n], contagem_recente.get(n, 0)),
+        reverse=True
+    )
+
+    if len(candidatos) < 6:
+        return []
+
+    pool_size = min(20, len(candidatos))
+    soma_min = FILTROS_JOGO['soma_min']
+    soma_max = FILTROS_JOGO['soma_max']
+    pares_min = FILTROS_JOGO['pares_min']
+    pares_max = FILTROS_JOGO['pares_max']
+
+    for _ in range(100):
+        pool = candidatos[:pool_size]
+        jogo = sorted(random.sample(pool, 6))
+        pares = sum(1 for n in jogo if n % 2 == 0)
+        soma = sum(jogo)
+        if pares_min <= pares <= pares_max and soma_min <= soma <= soma_max:
+            return jogo
+
+    return sorted(candidatos[:6])
 
 
 def gerar_jogo(
@@ -487,47 +806,35 @@ def gerar_wheel(pool, tamanho_cartao=6, cobertura_k=3) -> list[list[int]]:
     return cartoes
 
 
-def gerar_jogo_ensemble(contagem_total, contagem_recente, df_atrasos, df=None) -> list[int]:
+def gerar_jogo_ensemble(
+    contagem_total, contagem_recente, df_atrasos, df=None,
+    max_streak=MAX_STREAK_SEM_TERNO_DEFAULT
+) -> list[int]:
     """
-    Estratégia ensemble: gera um jogo de cada estratégia disponível,
-    conta a frequência de cada número nas saídas e seleciona
-    os 6 mais votados. Validação por soma gaussiana e paridade.
+    Ensemble adaptativo: vota apenas com as estratégias que marcaram
+    terno ou mais em pelo menos 1 dos últimos `max_streak` concursos.
+    Fallback: ranking recente, backtesting, ensemble clássico.
     """
-    estrategias = [
-        'escada', 'atrasados', 'quentes',
-        'equilibrado', 'misto', 'consenso', 'aleatorio_smart'
-    ]
-
-    votos = Counter()
-    for est in estrategias:
-        try:
-            jogo = gerar_jogo(est, contagem_total, contagem_recente, df_atrasos, df=df)
-            for n in jogo:
-                votos[n] += 1
-        except Exception as e:
-            logger.warning("Erro ao gerar jogo ensemble para %s: %s", est, e)
-
-    candidatos = sorted(
-        votos.keys(),
-        key=lambda n: (votos[n], contagem_recente.get(n, 0)),
-        reverse=True
+    estrategias, origem = estrategias_ensemble_ativas(max_streak=max_streak)
+    jogo = _gerar_jogo_ensemble_votacao(
+        estrategias,
+        contagem_total,
+        contagem_recente,
+        df_atrasos,
+        df=df,
+        ponderar_por_rank=(origem != 'classico')
     )
+    if jogo:
+        return jogo
 
-    pool_size = min(20, len(candidatos))
-    soma_min = FILTROS_JOGO['soma_min']
-    soma_max = FILTROS_JOGO['soma_max']
-    pares_min = FILTROS_JOGO['pares_min']
-    pares_max = FILTROS_JOGO['pares_max']
-
-    for _ in range(100):
-        pool = candidatos[:pool_size]
-        jogo = sorted(random.sample(pool, 6))
-        pares = sum(1 for n in jogo if n % 2 == 0)
-        soma = sum(jogo)
-        if pares_min <= pares <= pares_max and soma_min <= soma <= soma_max:
-            return jogo
-
-    return sorted(candidatos[:6])
+    return _gerar_jogo_ensemble_votacao(
+        ESTRATEGIAS_ENSEMBLE_CLASSICO,
+        contagem_total,
+        contagem_recente,
+        df_atrasos,
+        df=df,
+        ponderar_por_rank=False
+    )
 
 
 def gerar_jogo_avancado(

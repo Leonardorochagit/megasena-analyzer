@@ -210,7 +210,7 @@ def _simular_automatico(df, concurso_alvo, qtd_numeros):
         qtd_cartoes_ensemble = st.number_input(
             "🧠 Cartões Ensemble (votação)",
             min_value=1, max_value=50, value=20, step=5,
-            help="Ensemble usa votação de 7 estratégias — gerar mais cartões aumenta cobertura"
+            help="Ensemble usa só as estratégias mais fortes do ranking recente/backtesting — gerar mais cartões aumenta cobertura"
         )
 
     # Calcular total considerando ensemble separado

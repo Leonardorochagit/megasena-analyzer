@@ -1,5 +1,5 @@
 """
-Compara ensemble com 7 estratégias (original) vs 15 estratégias (novo)
+Compara o ensemble clássico de 7 estratégias com o ensemble adaptativo atual,
 usando os mesmos concursos e seed para comparação justa.
 """
 import sys, os
@@ -13,7 +13,7 @@ from modules.statistics import calcular_estatisticas
 from modules.game_generator import gerar_jogo, gerar_jogo_ensemble
 
 
-# Monkey-patch para testar ensemble com 7 vs 15 estratégias
+# Comparação entre ensemble clássico e ensemble adaptativo
 def gerar_ensemble_7(contagem_total, contagem_recente, df_atrasos, df=None):
     """Ensemble original com 7 estratégias"""
     estrategias = [
@@ -39,8 +39,8 @@ def gerar_ensemble_7(contagem_total, contagem_recente, df_atrasos, df=None):
     return sorted(candidatos[:6])
 
 
-def gerar_ensemble_15(contagem_total, contagem_recente, df_atrasos, df=None):
-    """Ensemble novo com 15 estratégias"""
+def gerar_ensemble_top(contagem_total, contagem_recente, df_atrasos, df=None):
+    """Ensemble adaptativo com estratégias melhor ranqueadas"""
     return gerar_jogo_ensemble(contagem_total, contagem_recente, df_atrasos, df=df)
 
 
@@ -55,12 +55,12 @@ def carregar_dados_api():
 
 
 def testar_ensemble(df, n_concursos=10, n_jogos=50):
-    """Compara ensemble 7 vs 15 em múltiplos concursos"""
+    """Compara ensemble clássico vs adaptativo em múltiplos concursos"""
     ultimo = df['concurso'].max()
     concursos = list(range(ultimo - n_concursos + 1, ultimo + 1))
 
     resultados = {'ensemble_7': {'acertos': [], 'melhores': [], 'dist': Counter()},
-                  'ensemble_15': {'acertos': [], 'melhores': [], 'dist': Counter()}}
+                  'ensemble_top': {'acertos': [], 'melhores': [], 'dist': Counter()}}
 
     for conc in concursos:
         mask = df['concurso'] == conc
@@ -76,7 +76,7 @@ def testar_ensemble(df, n_concursos=10, n_jogos=50):
 
         print(f"\n  Concurso {conc} - Resultado: {resultado_real}")
 
-        for nome, func in [('ensemble_7', gerar_ensemble_7), ('ensemble_15', gerar_ensemble_15)]:
+        for nome, func in [('ensemble_7', gerar_ensemble_7), ('ensemble_top', gerar_ensemble_top)]:
             melhor = 0
             random.seed(conc)  # Mesmo seed para comparação justa
             for _ in range(n_jogos):
@@ -94,13 +94,13 @@ def testar_ensemble(df, n_concursos=10, n_jogos=50):
 
     # Consolidado
     print("\n" + "=" * 70)
-    print(f"  COMPARACAO ENSEMBLE: 7 vs 15 ESTRATEGIAS")
+    print(f"  COMPARACAO ENSEMBLE: CLASSICO vs ADAPTATIVO")
     print(f"  {n_concursos} concursos, {n_jogos} jogos cada")
     print("=" * 70)
     print(f"  {'VERSAO':<15} {'MEDIA':>7} {'MELHOR_MED':>11} {'MAX':>5}  DISTRIBUICAO")
     print("-" * 70)
 
-    for nome in ['ensemble_7', 'ensemble_15']:
+    for nome in ['ensemble_7', 'ensemble_top']:
         r = resultados[nome]
         media = sum(r['acertos']) / len(r['acertos']) if r['acertos'] else 0
         melhor_med = sum(r['melhores']) / len(r['melhores']) if r['melhores'] else 0
@@ -111,14 +111,14 @@ def testar_ensemble(df, n_concursos=10, n_jogos=50):
 
     # Detalhamento por concurso
     print("\n  POR CONCURSO (melhor de cada):")
-    print(f"  {'CONCURSO':<12} {'7-EST':>6} {'15-EST':>7}")
+    print(f"  {'CONCURSO':<12} {'7-EST':>6} {'TOP':>7}")
     print("  " + "-" * 28)
     for i, conc in enumerate(concursos):
         if i < len(resultados['ensemble_7']['melhores']):
             m7 = resultados['ensemble_7']['melhores'][i]
-            m15 = resultados['ensemble_15']['melhores'][i]
-            marcador = " <--" if m7 > m15 else (" **" if m15 > m7 else "")
-            print(f"  {conc:<12} {m7:>4}    {m15:>4}  {marcador}")
+            mtop = resultados['ensemble_top']['melhores'][i]
+            marcador = " <--" if m7 > mtop else (" **" if mtop > m7 else "")
+            print(f"  {conc:<12} {m7:>4}    {mtop:>4}  {marcador}")
 
     print()
 

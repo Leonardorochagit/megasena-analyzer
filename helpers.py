@@ -66,8 +66,8 @@ VERSOES_ESTRATEGIAS = {
         'nota': 'Aleatório puro com rejeição: soma 140-210 e paridade 2-4 (max 100 tentativas)',
     },
     'ensemble': {
-        'versao': '1.0',
-        'nota': 'Votação de 7 estratégias base; top-20 votados com filtro soma/paridade',
+        'versao': '3.0',
+        'nota': 'Ensemble adaptativo por streak: só entram estratégias que marcaram terno+ em algum dos últimos N concursos (default N=2); fallback para ranking recente, backtesting e ensemble clássico',
     },
     'sequencias': {
         'versao': '1.1',

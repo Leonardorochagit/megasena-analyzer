@@ -1,13 +1,10 @@
 """
 ================================================================================
-🏆 PÁGINA: ENSEMBLE TOP 10 — CARTÕES DE 14 NÚMEROS
+ENSEMBLE ADAPTATIVO — COMPOSICAO POR DESEMPENHO RECENTE
 ================================================================================
-Página dedicada ao melhor ensemble identificado (10 estratégias) gerando
-cartões de 14 números para jogar de verdade.
-
-- Gera cartões prontos para o próximo sorteio
-- Salva no sistema (meus_cartoes / banco SQLite)
-- Confere resultado quando sair
+Pagina do ensemble como estrategia: mostra quais estrategias estao DENTRO
+(porque acertaram terno+ recentemente) e quais foram cortadas (streak sem
+terno+). Gera cartoes por votacao das estrategias DENTRO.
 ================================================================================
 """
 
@@ -25,53 +22,45 @@ from helpers import CUSTOS_CARTAO, versao_estrategia
 
 
 # =============================================================================
-# CONFIGURAÇÃO DO ENSEMBLE CAMPEÃO
+# CONFIGURAÇÃO
 # =============================================================================
-
-ENSEMBLE_TOP10 = [
-    'atrasados', 'candidatos_ouro', 'ciclos', 'consenso', 'equilibrado',
-    'escada', 'frequencia_desvio', 'momentum', 'pares_frequentes', 'sequencias'
-]
 
 NOMES = {
     'escada': '🔄 Escada', 'atrasados': '⏰ Atrasados', 'quentes': '🔥 Quentes',
     'equilibrado': '⚖️ Equilibrado', 'misto': '🎨 Misto', 'consenso': '🤝 Consenso',
     'aleatorio_smart': '🎲 Aleat.Smart', 'sequencias': '🧬 Sequências', 'wheel': '🎯 Wheel',
     'candidatos_ouro': '🥇 Cand.Ouro', 'momentum': '🚀 Momentum', 'vizinhanca': '📍 Vizinhança',
-    'frequencia_desvio': '📊 Freq.Desvio', 'pares_frequentes': '👫 Pares.Freq', 'ciclos': '🔁 Ciclos'
+    'frequencia_desvio': '📊 Freq.Desvio', 'pares_frequentes': '👫 Pares.Freq', 'ciclos': '🔁 Ciclos',
+    'atraso_recente': '🕰️ Atraso Recente',
 }
 
-NUMS_POR_CARTAO = 14
-CUSTO_14 = CUSTOS_CARTAO.get(14, 15015.00)
-COMBINACOES_14 = comb(14, 6)  # 3.003
+ESTRATEGIAS_ENSEMBLE_CARTAO_SALVO = ('ensemble', 'ensemble_top10')
 
 
 # =============================================================================
-# GERAR CARTÃO DE 14 NÚMEROS VIA ENSEMBLE
+# GERAÇÃO
 # =============================================================================
 
-def _gerar_cartao_14(estrategias, contagem_total, contagem_recente, df_atrasos, df=None):
-    """
-    Gera 1 cartão de 14 números usando votação do ensemble.
-    Cada estratégia gera um jogo base de 6 e é expandido para 14 mantendo
-    coerência. Os 14 mais votados entre os 140 (10 estratégias × 14) são
-    selecionados.
-    """
+def _gerar_cartao_ensemble(estrategias, qtd_numeros, contagem_total, contagem_recente, df_atrasos, df=None):
+    """Gera 1 cartão via votação entre as estratégias informadas."""
     votos = Counter()
     for est in estrategias:
         try:
             base = gen.gerar_jogo(est, contagem_total, contagem_recente, df_atrasos, df=df)
-            jogo = gen.expandir_jogo(
-                base, NUMS_POR_CARTAO, est,
-                contagem_total, contagem_recente, df_atrasos, df=df
-            )
+            if qtd_numeros > 6:
+                jogo = gen.expandir_jogo(
+                    base, qtd_numeros, est,
+                    contagem_total, contagem_recente, df_atrasos, df=df
+                )
+            else:
+                jogo = base
             for n in jogo:
                 votos[n] += 1
         except Exception:
             pass
 
     if not votos:
-        return sorted(random.sample(range(1, 61), NUMS_POR_CARTAO))
+        return sorted(random.sample(range(1, 61), qtd_numeros))
 
     candidatos = sorted(
         votos.keys(),
@@ -79,13 +68,12 @@ def _gerar_cartao_14(estrategias, contagem_total, contagem_recente, df_atrasos, 
         reverse=True
     )
 
-    if len(candidatos) >= NUMS_POR_CARTAO:
-        return sorted(candidatos[:NUMS_POR_CARTAO])
-    else:
-        extras = [n for n in range(1, 61) if n not in candidatos]
-        random.shuffle(extras)
-        todos = candidatos + extras[:NUMS_POR_CARTAO - len(candidatos)]
-        return sorted(todos[:NUMS_POR_CARTAO])
+    if len(candidatos) >= qtd_numeros:
+        return sorted(candidatos[:qtd_numeros])
+    extras = [n for n in range(1, 61) if n not in candidatos]
+    random.shuffle(extras)
+    todos = candidatos + extras[:qtd_numeros - len(candidatos)]
+    return sorted(todos[:qtd_numeros])
 
 
 # =============================================================================
@@ -93,155 +81,208 @@ def _gerar_cartao_14(estrategias, contagem_total, contagem_recente, df_atrasos, 
 # =============================================================================
 
 def pagina_ensemble_14(df):
-    """Página do Ensemble Top 10 com cartões de 14 números."""
+    """Página do Ensemble Adaptativo."""
 
-    st.header("🏆 Ensemble Top 10 — Cartões de 14 Números")
-
-    col_info1, col_info2, col_info3 = st.columns(3)
-    with col_info1:
-        st.metric("Estratégias", f"{len(ENSEMBLE_TOP10)}")
-    with col_info2:
-        st.metric("Números/cartão", f"{NUMS_POR_CARTAO}")
-    with col_info3:
-        st.metric("Combinações/cartão", f"{COMBINACOES_14:,}")
-
+    st.header("🏆 Ensemble Adaptativo")
     st.caption(
-        "Ensemble campeão: **10 estratégias** × **14 números** por cartão. "
-        f"Cada cartão cobre {COMBINACOES_14:,} combinações de 6. "
-        f"Custo: R$ {CUSTO_14:,.2f} por cartão."
+        "Estratégias entram e saem automaticamente pelo desempenho recente. "
+        "Sai do ensemble quem ficar N concursos seguidos sem marcar terno ou mais."
     )
 
-    # Mostrar estratégias do ensemble
-    with st.expander("📋 Estratégias do Ensemble Top 10", expanded=False):
-        cols = st.columns(5)
-        for i, est in enumerate(ENSEMBLE_TOP10):
-            cols[i % 5].markdown(f"**{NOMES.get(est, est)}**")
+    max_streak = st.session_state.get('ens_max_streak', 2)
+    composicao = gen.composicao_ensemble_atual(max_streak=max_streak)
+    dentro = [c['estrategia'] for c in composicao if c['status'] == 'dentro']
+    fora = [c for c in composicao if c['status'] == 'fora']
+
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("✅ Estratégias DENTRO", len(dentro))
+    with col2:
+        st.metric("❌ Estratégias FORA", len(fora))
+    with col3:
+        st.metric("Concursos avaliados", max((c['total_concursos_avaliados'] for c in composicao), default=0))
+
+    _exibir_grid_composicao(composicao, max_streak)
 
     st.markdown("---")
 
-    # =========================================================================
-    # TABS: GERAR | CONFERIR | HISTÓRICO
-    # =========================================================================
-    tab_gerar, tab_conferir, tab_info = st.tabs([
+    tab_gerar, tab_conferir = st.tabs([
         "🎲 Gerar Cartões",
         "✅ Conferir Resultado",
-        "📊 Informações",
     ])
 
-    # =====================================================================
-    # TAB 1: GERAR CARTÕES
-    # =====================================================================
     with tab_gerar:
-        _tab_gerar_cartoes(df)
+        _tab_gerar_cartoes(df, dentro, composicao)
 
-    # =====================================================================
-    # TAB 2: CONFERIR
-    # =====================================================================
     with tab_conferir:
         _tab_conferir_resultado(df)
 
-    # =====================================================================
-    # TAB 3: INFO
-    # =====================================================================
-    with tab_info:
-        _tab_informacoes()
+
+# =============================================================================
+# GRID DE COMPOSIÇÃO
+# =============================================================================
+
+def _exibir_grid_composicao(composicao, max_streak_atual):
+    """Grid com status de cada estratégia + controle do max_streak."""
+
+    st.subheader("📋 Composição atual do ensemble")
+
+    col_cfg, col_info = st.columns([1, 2])
+    with col_cfg:
+        novo = st.slider(
+            "Jogos sem terno+ para SAIR",
+            min_value=1, max_value=5,
+            value=max_streak_atual,
+            key="slider_max_streak",
+            help="Se a estratégia ficar este número de concursos consecutivos sem marcar 3+ acertos em nenhum cartão, ela sai do ensemble."
+        )
+        if novo != max_streak_atual:
+            st.session_state['ens_max_streak'] = novo
+            st.rerun()
+
+    with col_info:
+        dentro = [c['estrategia'] for c in composicao if c['status'] == 'dentro']
+        if dentro:
+            nomes_in = ' · '.join(NOMES.get(e, e) for e in dentro)
+            st.success(f"**{len(dentro)} dentro:** {nomes_in}")
+        else:
+            st.warning("Nenhuma estratégia atende ao critério. Será usado o fallback clássico.")
+
+    if not composicao:
+        st.info("Sem histórico de conferências ainda. Execute o Piloto Automático para gerar dados.")
+        return
+
+    linhas = []
+    for c in composicao:
+        est = c['estrategia']
+        status = c['status']
+        if status == 'dentro':
+            icon = '✅'
+        elif status == 'fora':
+            icon = '❌'
+        else:
+            icon = '⚪'
+        ultimo = c['ultimo_terno_concurso'] or '—'
+        linhas.append({
+            '': icon,
+            'Estratégia': NOMES.get(est, est),
+            'Streak sem terno+': c['streak_sem_terno'],
+            'Último terno+ (concurso)': ultimo,
+            'Concursos com terno+': c['concursos_com_terno'],
+            'Total avaliado': c['total_concursos_avaliados'],
+            'Status': status.upper(),
+        })
+
+    df_grid = pd.DataFrame(linhas)
+    st.dataframe(df_grid, use_container_width=True, hide_index=True)
 
 
 # =============================================================================
 # TAB: GERAR CARTÕES
 # =============================================================================
 
-def _tab_gerar_cartoes(df):
-    """Gera cartões de 14 números com o ensemble top 10."""
+def _tab_gerar_cartoes(df, dentro, composicao):
+    """Gera cartões via votação das estratégias DENTRO."""
+
+    if not dentro:
+        st.warning(
+            "Nenhuma estratégia está dentro do ensemble no critério atual. "
+            "Aumente o slider ou aguarde novos resultados."
+        )
+        return
 
     ultimo_concurso = int(df['concurso'].max())
     proximo_concurso = ultimo_concurso + 1
 
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
     with col1:
-        qtd_cartoes = st.number_input(
-            "Quantos cartões gerar?", 1, 20, 5,
-            key="ens14_qtd",
-            help="Cada cartão tem 14 números"
+        qtd_numeros = st.select_slider(
+            "Números por cartão",
+            options=list(range(6, 21)),
+            value=st.session_state.get('ens_qtd_nums', 14),
+            key="ens_qtd_nums_input",
+            help="6 = cartão simples. 14 = cartão estendido (custa mais, cobre mais)."
         )
+        st.session_state['ens_qtd_nums'] = qtd_numeros
     with col2:
+        qtd_cartoes = st.number_input(
+            "Quantos cartões gerar?", 1, 50, 5,
+            key="ens_qtd_cartoes",
+        )
+    with col3:
         concurso_alvo = st.number_input(
             "Concurso alvo", proximo_concurso - 5, proximo_concurso + 10,
-            proximo_concurso, key="ens14_conc"
+            proximo_concurso, key="ens_conc_alvo"
         )
 
-    custo_total = qtd_cartoes * CUSTO_14
+    custo_unit = CUSTOS_CARTAO.get(qtd_numeros, 0)
+    custo_total = qtd_cartoes * custo_unit
+    combos = comb(qtd_numeros, 6)
     st.info(
-        f"**{qtd_cartoes} cartões** × R$ {CUSTO_14:,.2f} = "
-        f"**R$ {custo_total:,.2f}** | "
-        f"Cobertura total: {qtd_cartoes * COMBINACOES_14:,} combinações de 6 | "
+        f"**{qtd_cartoes} cartões** × {qtd_numeros} números × R$ {custo_unit:,.2f} = "
+        f"**R$ {custo_total:,.2f}** | {qtd_cartoes * combos:,} combinações de 6 | "
         f"Concurso alvo: **{concurso_alvo}**"
     )
 
-    marcar_jogar = st.checkbox("✅ Marcar cartões como 'vai jogar'", value=True, key="ens14_jogar")
+    marcar_jogar = st.checkbox("✅ Marcar cartões como 'vai jogar'", value=True, key="ens_jogar")
 
-    if st.button("🚀 Gerar Cartões", type="primary", use_container_width=True, key="ens14_btn"):
+    if st.button("🚀 Gerar Cartões", type="primary", use_container_width=True, key="ens_gerar_btn"):
         with st.spinner("Calculando estatísticas..."):
             contagem_total, contagem_recente, df_atrasos = stats.calcular_estatisticas(df)
 
         cartoes_novos = []
         barra = st.progress(0, text="Gerando cartões...")
 
+        versao_ens = versao_estrategia('ensemble')
+        obs = f"Ensemble adaptativo ({len(dentro)} estratégias DENTRO, {qtd_numeros} nums)"
+
         for i in range(qtd_cartoes):
-            random.seed(None)  # Seed aleatório para cada cartão
-            dezenas = _gerar_cartao_14(
-                ENSEMBLE_TOP10, contagem_total, contagem_recente, df_atrasos, df=df
+            random.seed(None)
+            dezenas = _gerar_cartao_ensemble(
+                dentro, qtd_numeros, contagem_total, contagem_recente, df_atrasos, df=df
             )
 
             timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
             cartao = {
-                'id': f'ENS14-{timestamp}-{i+1:02d}',
+                'id': f'ENS-{timestamp}-{i+1:02d}',
                 'dezenas': dezenas,
-                'estrategia': 'ensemble_top10',
-                'estrategia_versao': '1.0',
+                'estrategia': 'ensemble',
+                'estrategia_versao': versao_ens,
                 'vai_jogar': marcar_jogar,
                 'verificado': False,
                 'concurso_alvo': int(concurso_alvo),
                 'status': 'aguardando',
                 'data_criacao': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                'qtd_numeros': NUMS_POR_CARTAO,
-                'observacao': f'Ensemble Top 10 ({len(ENSEMBLE_TOP10)} estratégias, {NUMS_POR_CARTAO} nums)'
+                'qtd_numeros': qtd_numeros,
+                'observacao': obs,
+                'ensemble_composicao': list(dentro),
             }
             cartoes_novos.append(cartao)
             barra.progress((i + 1) / qtd_cartoes, text=f"Cartão {i+1}/{qtd_cartoes}...")
 
         barra.progress(1.0, text="Concluído!")
 
-        # Salvar no sistema
         cartoes_existentes = dm.carregar_cartoes_salvos()
         cartoes_existentes.extend(cartoes_novos)
-
         if dm.salvar_cartoes(cartoes_existentes):
             st.success(f"✅ **{len(cartoes_novos)} cartões** gerados e salvos!")
             st.balloons()
         else:
             st.error("❌ Erro ao salvar cartões")
 
-        # Exibir cartões gerados
         st.markdown("### 🎫 Cartões Gerados")
         for i, c in enumerate(cartoes_novos):
             dezenas_fmt = '  '.join([f"**{n:02d}**" for n in c['dezenas']])
             with st.expander(f"🎫 Cartão {i+1} — {len(c['dezenas'])} números", expanded=(i < 3)):
                 st.markdown(dezenas_fmt)
-
-                # Visualização em grid 6x10
                 _exibir_grid_numeros(c['dezenas'])
-
-                # Estatísticas do cartão
                 pares = sum(1 for n in c['dezenas'] if n % 2 == 0)
                 impares = len(c['dezenas']) - pares
                 soma = sum(c['dezenas'])
                 st.caption(
-                    f"Soma: {soma} | Pares: {pares} | Ímpares: {impares} | "
-                    f"ID: {c['id']}"
+                    f"Soma: {soma} | Pares: {pares} | Ímpares: {impares} | ID: {c['id']}"
                 )
 
-    # Mostrar cartões pendentes deste concurso
     _exibir_cartoes_pendentes(concurso_alvo)
 
 
@@ -250,16 +291,17 @@ def _tab_gerar_cartoes(df):
 # =============================================================================
 
 def _tab_conferir_resultado(df):
-    """Confere cartões ensemble_top10 contra resultado do sorteio."""
+    """Confere cartões ensemble contra resultado do sorteio."""
 
     cartoes = dm.carregar_cartoes_salvos()
     cartoes_ens = [
         c for c in cartoes
-        if c.get('estrategia') == 'ensemble_top10' and not c.get('verificado', False)
+        if c.get('estrategia') in ESTRATEGIAS_ENSEMBLE_CARTAO_SALVO
+        and not c.get('verificado', False)
     ]
 
     if not cartoes_ens:
-        st.info("Nenhum cartão Ensemble Top 10 pendente de verificação.")
+        st.info("Nenhum cartão Ensemble pendente de verificação.")
         st.caption("Gere cartões na aba anterior e volte aqui após o sorteio.")
         return
 
@@ -269,19 +311,18 @@ def _tab_conferir_resultado(df):
     concurso_ver = st.selectbox(
         "Concurso para conferir",
         concursos_pendentes,
-        key="ens14_conc_ver"
+        key="ens_conc_ver"
     )
 
     cartoes_conc = [c for c in cartoes_ens if c.get('concurso_alvo') == concurso_ver]
     st.caption(f"{len(cartoes_conc)} cartões para o concurso {concurso_ver}")
 
-    # Buscar resultado
     col_a, col_b = st.columns(2)
     with col_a:
-        if st.button("🔍 Buscar resultado na API", key="ens14_api"):
+        if st.button("🔍 Buscar resultado na API", key="ens_api"):
             resultado = dm.buscar_resultado_concurso(concurso_ver)
             if resultado:
-                st.session_state['ens14_resultado'] = resultado
+                st.session_state['ens_resultado'] = resultado
                 st.success(f"Resultado: {' - '.join(f'{n:02d}' for n in resultado)}")
             else:
                 st.warning("Resultado ainda não disponível na API.")
@@ -292,23 +333,21 @@ def _tab_conferir_resultado(df):
     cols_manual = st.columns(6)
     dezenas_manual = []
     for i in range(6):
-        v = cols_manual[i].number_input(f"Dez {i+1}", 1, 60, 1 + i*10, key=f"ens14_dez{i}")
+        v = cols_manual[i].number_input(f"Dez {i+1}", 1, 60, 1 + i*10, key=f"ens_dez{i}")
         dezenas_manual.append(v)
 
-    if st.button("📝 Usar números manuais", key="ens14_manual"):
+    if st.button("📝 Usar números manuais", key="ens_manual"):
         if len(set(dezenas_manual)) == 6:
-            st.session_state['ens14_resultado'] = sorted(dezenas_manual)
+            st.session_state['ens_resultado'] = sorted(dezenas_manual)
         else:
             st.error("Os 6 números devem ser diferentes!")
 
-    # Conferir
-    resultado = st.session_state.get('ens14_resultado')
+    resultado = st.session_state.get('ens_resultado')
     if resultado and len(resultado) == 6:
         st.markdown(f"### 🎰 Resultado do concurso {concurso_ver}")
         st.markdown("**" + "  —  ".join(f"{n:02d}" for n in resultado) + "**")
         st.markdown("---")
 
-        # Verificar cada cartão
         resultados_ver = []
         for c in cartoes_conc:
             acertos = len(set(c['dezenas']) & set(resultado))
@@ -321,7 +360,6 @@ def _tab_conferir_resultado(df):
 
         resultados_ver.sort(key=lambda x: x['acertos'], reverse=True)
 
-        # Resumo
         dist = Counter(r['acertos'] for r in resultados_ver)
         col_r1, col_r2, col_r3, col_r4 = st.columns(4)
         col_r1.metric("🎯 Senas (6)", dist.get(6, 0))
@@ -329,7 +367,6 @@ def _tab_conferir_resultado(df):
         col_r3.metric("🟢 Quadras (4)", dist.get(4, 0))
         col_r4.metric("🔔 Ternos (3)", dist.get(3, 0))
 
-        # Detalhes
         for i, r in enumerate(resultados_ver):
             emoji = "🎯" if r['acertos'] >= 6 else "⭐" if r['acertos'] >= 5 else "🟢" if r['acertos'] >= 4 else "🔔" if r['acertos'] >= 3 else "⚪"
             label = f"{emoji} Cartão {i+1} — **{r['acertos']} acertos**"
@@ -344,8 +381,7 @@ def _tab_conferir_resultado(df):
                 if r['acertados']:
                     st.caption(f"Acertados: {', '.join(f'{n:02d}' for n in r['acertados'])}")
 
-        # Marcar como verificado
-        if st.button(f"✅ Marcar {len(cartoes_conc)} cartões como verificados", key="ens14_verificar"):
+        if st.button(f"✅ Marcar {len(cartoes_conc)} cartões como verificados", key="ens_verificar"):
             todos = dm.carregar_cartoes_salvos()
             ids_conc = set(c['id'] for c in cartoes_conc)
             for c in todos:
@@ -358,78 +394,10 @@ def _tab_conferir_resultado(df):
 
 
 # =============================================================================
-# TAB: INFORMAÇÕES
-# =============================================================================
-
-def _tab_informacoes():
-    """Exibe informações sobre o ensemble e probabilidades."""
-
-    st.subheader("📊 Por que 10 estratégias e 14 números?")
-
-    st.markdown("""
-    ### Resultado da análise (`analisar_14_numeros.py`)
-
-    Testamos todas as combinações de 7 a 15 estratégias com cartões de 14 números
-    em 100 concursos históricos × 10 cartões cada (226.000 cartões total).
-
-    **Melhor tamanho de ensemble: 10 estratégias** (Média = 1.446 acertos)
-
-    | Tamanho | Média | Melhor combo |
-    |---------|-------|-------------|
-    | 7 | 1.374 | 1.433 |
-    | 8 | 1.373 | 1.445 |
-    | 9 | 1.379 | 1.433 |
-    | **10** | **1.374** | **1.446** |
-    | 11 | 1.366 | 1.442 |
-    | 12 | 1.372 | 1.423 |
-    | 13 | 1.371 | 1.394 |
-    """)
-
-    st.markdown("### 📈 Comparativo: 6 vs 14 números por cartão")
-
-    data = []
-    for k in range(7):
-        p6 = comb(6, k) * comb(54, 6-k) / comb(60, 6)
-        p14 = comb(14, k) * comb(46, 6-k) / comb(60, 6)
-        fator = p14 / p6 if p6 > 0 else 0
-        label = {0: '0 acertos', 1: '1 acerto', 2: '2 acertos', 3: 'Terno', 4: 'Quadra', 5: 'Quina', 6: 'Sena'}[k]
-        data.append({
-            'Acertos': label,
-            '6 números': f"{p6:.8f}",
-            '14 números': f"{p14:.8f}",
-            'Fator': f"{fator:.1f}x",
-        })
-    st.table(pd.DataFrame(data))
-
-    st.markdown(f"""
-    ### 💰 Custo e cobertura
-
-    | Item | Valor |
-    |------|-------|
-    | Custo 1 cartão de 14 | R$ {CUSTO_14:,.2f} |
-    | Combinações por cartão | {COMBINACOES_14:,} |
-    | Prob. Sena (1 cartão) | 1 em {int(comb(60,6)/COMBINACOES_14):,} |
-    | Fator vs cartão de 6 | **{COMBINACOES_14}x** melhor |
-
-    ### 🏆 As 10 estratégias campeãs
-    """)
-
-    for est in ENSEMBLE_TOP10:
-        st.markdown(f"- {NOMES.get(est, est)}")
-
-    st.markdown("""
-    ---
-    **Metodologia:** Votação por maioria. Cada estratégia gera 6 números.
-    Os 14 números mais votados pelo conjunto formam o cartão final.
-    """)
-
-
-# =============================================================================
 # HELPERS
 # =============================================================================
 
 def _exibir_grid_numeros(dezenas):
-    """Exibe grid visual 10x6 com números marcados."""
     dezenas_set = set(dezenas)
     linhas = []
     for faixa_inicio in range(1, 61, 10):
@@ -444,11 +412,10 @@ def _exibir_grid_numeros(dezenas):
 
 
 def _exibir_cartoes_pendentes(concurso_alvo):
-    """Mostra cartões ensemble_top10 já salvos para este concurso."""
     cartoes = dm.carregar_cartoes_salvos()
     cartoes_conc = [
         c for c in cartoes
-        if c.get('estrategia') == 'ensemble_top10'
+        if c.get('estrategia') in ESTRATEGIAS_ENSEMBLE_CARTAO_SALVO
         and c.get('concurso_alvo') == concurso_alvo
         and not c.get('verificado', False)
     ]

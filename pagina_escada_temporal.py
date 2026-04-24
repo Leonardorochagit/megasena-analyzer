@@ -945,7 +945,7 @@ def _descricao_estrategia(estrategia):
         'misto': '🎨 Combina diferentes critérios estatísticos',
         'consenso': '🤝 Usa interseção de múltiplos critérios — só entra quem aparece em 2+ pools',
         'aleatorio_smart': '🎲 Aleatório mas respeitando padrões estatísticos',
-        'ensemble': '🧠 Votação de 7 estratégias core — os mais votados formam o pool',
+        'ensemble': '🧠 Votação adaptativa das estratégias mais fortes — os mais votados formam o pool',
         'sequencias': '🧬 Agrupa números por co-ocorrência com KMeans e expande com vizinhança',
         'wheel': '🎯 Cobertura combinatória sistemática tipo wheel',
         'candidatos_ouro': '🥇 Combina números frios com muito atrasados por score composto',
@@ -1084,16 +1084,15 @@ def _descricao_detalhada_estrategia(estrategia):
         'ensemble': """
 ### 🧠 Ensemble (Votação)
 
-**Conceito:** Gera 1 jogo de **cada uma das 7 estratégias core** e faz uma **votação** — os números mais votados formam o pool.
+**Conceito:** Gera 1 jogo das **estratégias que estão performando melhor** e faz uma **votação** — os números mais votados formam o pool.
 
 **Como funciona:**
-1. Gera 1 jogo com cada estratégia: escada, atrasados, quentes, equilibrado, misto, consenso, aleatório inteligente
-2. Conta quantas vezes cada número apareceu nas 7 saídas (votos)
-3. Ordena por número de votos (desempate por frequência recente)
-4. Os top-20 mais votados formam o pool
-5. Sorteia 6 do pool, validando soma (140-210) e paridade (2-4 pares)
-
-**Por que 7 estratégias?** Testes mostraram que com mais estratégias (15) ocorre **diluição de votos** — estratégias fracas adicionam ruído.
+1. Tenta montar um ranking com base no **histórico real recente** já conferido
+2. Se não houver histórico suficiente, usa o **backtesting salvo**
+3. Seleciona só as estratégias mais fortes desse ranking e dá mais peso para as primeiras
+4. Conta quantas vezes cada número apareceu nas saídas (votos)
+5. Os top-20 mais votados formam o pool
+6. Sorteia 6 do pool, validando soma (140-210) e paridade (2-4 pares)
 
 **Pool:** Top 20 mais votados | **Filtros:** Soma 140-210, 2-4 pares
 """,

@@ -108,8 +108,11 @@ def _salvar_config(config):
 
 TODAS_ESTRATEGIAS = [
     'escada', 'atrasados', 'quentes',
-    'equilibrado', 'misto', 'consenso', 'aleatorio_smart', 'ensemble',
-    'sequencias', 'wheel'
+    'equilibrado', 'misto', 'consenso', 'aleatorio_smart',
+    'sequencias', 'wheel',
+    'candidatos_ouro', 'momentum', 'vizinhanca',
+    'frequencia_desvio', 'pares_frequentes', 'ciclos', 'atraso_recente',
+    'ensemble',
 ]
 
 NOMES_ESTRATEGIAS = {
@@ -123,6 +126,13 @@ NOMES_ESTRATEGIAS = {
     'ensemble': '🧠 Ensemble (Votação)',
     'sequencias': '🧬 Sequências (Clusters+Vizinhança)',
     'wheel': '🎯 Wheel (Cobertura)',
+    'candidatos_ouro': '🥇 Candidatos Ouro',
+    'momentum': '🚀 Momentum',
+    'vizinhanca': '📍 Vizinhança',
+    'frequencia_desvio': '📊 Frequência+Desvio',
+    'pares_frequentes': '👫 Pares Frequentes',
+    'ciclos': '🔁 Ciclos',
+    'atraso_recente': '🕰️ Atraso Recente',
     'automl': '🤖 AutoML',
     'Manual': '✍️ Manual'
 }
@@ -198,12 +208,12 @@ def pagina_piloto_automatico(df):
         "🧠 Modo Ensemble Only",
         value=st.session_state['piloto_ensemble_only'],
         key="toggle_ensemble_only",
-        help="Gera cartões APENAS da estratégia Ensemble (votação de 15 estratégias). Ideal para focar na metodologia mais consistente."
+        help="Gera cartões APENAS da estratégia Ensemble adaptativa, que vota usando só as estratégias com melhor desempenho recente."
     )
     st.session_state['piloto_ensemble_only'] = ensemble_only
 
     if ensemble_only:
-        st.info("🧠 **Modo Ensemble Only ativo** — Apenas cartões ensemble serão gerados (votação de 15 estratégias).")
+        st.info("🧠 **Modo Ensemble Only ativo** — Apenas cartões ensemble serão gerados com base nas estratégias mais fortes do ranking atual.")
         cartoes_ensemble = st.slider(
             "🧠 Cartões Ensemble", 5, 50,
             value=st.session_state['piloto_cartoes_ensemble'],
@@ -228,7 +238,7 @@ def pagina_piloto_automatico(df):
                 "🧠 Cartões Ensemble (extra)", 1, 50,
                 value=st.session_state['piloto_cartoes_ensemble'],
                 key="slider_cartoes_ensemble",
-                help="Ensemble gera mais cartões por usar votação de 15 estratégias. Recomendado: 30-50"
+                help="Ensemble gera mais cartões para ampliar a cobertura da votação entre as estratégias mais fortes. Recomendado: 30-50"
             )
             st.session_state['piloto_cartoes_ensemble'] = cartoes_ensemble
 
@@ -320,6 +330,9 @@ def pagina_piloto_automatico(df):
 
     # ----- STATUS DO SISTEMA -----
     _exibir_status_sistema(df, ativo, intervalo, count, todos_cartoes)
+
+    # ----- COMPOSIÇÃO ATUAL DO ENSEMBLE -----
+    _exibir_composicao_ensemble()
 
     st.markdown("---")
 
@@ -433,6 +446,35 @@ def _exibir_status_sistema(df, ativo, intervalo, count, todos_cartoes):
         agora = datetime.now().strftime("%H:%M:%S")
         proxima = (datetime.now() + timedelta(minutes=intervalo)).strftime("%H:%M:%S")
         st.caption(f"🕐 Última verificação: {agora} | Próxima: ~{proxima} | Ciclo #{count}")
+
+
+# =============================================================================
+# COMPOSIÇÃO DO ENSEMBLE
+# =============================================================================
+
+def _exibir_composicao_ensemble():
+    """Mostra quais estratégias estão dentro/fora do ensemble agora."""
+    composicao = gen.composicao_ensemble_atual()
+    if not composicao:
+        return
+
+    dentro = [c for c in composicao if c['status'] == 'dentro']
+    fora = [c for c in composicao if c['status'] == 'fora']
+
+    with st.expander(f"🧠 Composição do Ensemble — {len(dentro)} dentro / {len(fora)} fora", expanded=False):
+        st.caption(
+            "O ensemble vota apenas com as estratégias que acertaram terno+ "
+            "nos últimos concursos. Quem fica 2 concursos seguidos sem terno+ sai."
+        )
+        if dentro:
+            nomes_in = ' · '.join(NOMES_ESTRATEGIAS.get(c['estrategia'], c['estrategia']) for c in dentro)
+            st.success(f"**Dentro:** {nomes_in}")
+        if fora:
+            linhas_fora = []
+            for c in fora:
+                nome = NOMES_ESTRATEGIAS.get(c['estrategia'], c['estrategia'])
+                linhas_fora.append(f"{nome} (streak {c['streak_sem_terno']})")
+            st.error(f"**Fora:** {' · '.join(linhas_fora)}")
 
 
 # =============================================================================
