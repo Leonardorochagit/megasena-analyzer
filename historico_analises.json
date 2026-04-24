@@ -699,5 +699,119 @@
       49,
       52
     ]
+  },
+  {
+    "concurso": 2999,
+    "data_analise": "2026-04-24",
+    "estatisticas": {
+      "escada": {
+        "total_jogos": 20,
+        "total_acertos": 60,
+        "senas": 0,
+        "quinas": 0,
+        "quadras": 0,
+        "ternos": 20,
+        "melhor_acerto": 3,
+        "media_acertos": 3.0
+      },
+      "atrasados": {
+        "total_jogos": 20,
+        "total_acertos": 44,
+        "senas": 0,
+        "quinas": 0,
+        "quadras": 0,
+        "ternos": 9,
+        "melhor_acerto": 3,
+        "media_acertos": 2.2
+      },
+      "quentes": {
+        "total_jogos": 20,
+        "total_acertos": 22,
+        "senas": 0,
+        "quinas": 0,
+        "quadras": 0,
+        "ternos": 0,
+        "melhor_acerto": 2,
+        "media_acertos": 1.1
+      },
+      "equilibrado": {
+        "total_jogos": 20,
+        "total_acertos": 32,
+        "senas": 0,
+        "quinas": 0,
+        "quadras": 0,
+        "ternos": 2,
+        "melhor_acerto": 3,
+        "media_acertos": 1.6
+      },
+      "misto": {
+        "total_jogos": 20,
+        "total_acertos": 33,
+        "senas": 0,
+        "quinas": 0,
+        "quadras": 1,
+        "ternos": 2,
+        "melhor_acerto": 4,
+        "media_acertos": 1.65
+      },
+      "consenso": {
+        "total_jogos": 20,
+        "total_acertos": 16,
+        "senas": 0,
+        "quinas": 0,
+        "quadras": 0,
+        "ternos": 1,
+        "melhor_acerto": 3,
+        "media_acertos": 0.8
+      },
+      "aleatorio_smart": {
+        "total_jogos": 20,
+        "total_acertos": 24,
+        "senas": 0,
+        "quinas": 0,
+        "quadras": 0,
+        "ternos": 1,
+        "melhor_acerto": 3,
+        "media_acertos": 1.2
+      },
+      "ensemble": {
+        "total_jogos": 20,
+        "total_acertos": 24,
+        "senas": 0,
+        "quinas": 0,
+        "quadras": 0,
+        "ternos": 1,
+        "melhor_acerto": 3,
+        "media_acertos": 1.2
+      },
+      "sequencias": {
+        "total_jogos": 20,
+        "total_acertos": 30,
+        "senas": 0,
+        "quinas": 0,
+        "quadras": 1,
+        "ternos": 1,
+        "melhor_acerto": 4,
+        "media_acertos": 1.5
+      },
+      "wheel": {
+        "total_jogos": 20,
+        "total_acertos": 28,
+        "senas": 0,
+        "quinas": 0,
+        "quadras": 1,
+        "ternos": 2,
+        "melhor_acerto": 4,
+        "media_acertos": 1.4
+      }
+    },
+    "dezenas_sorteadas": [
+      9,
+      24,
+      26,
+      38,
+      45,
+      58
+    ]
   }
 ]
