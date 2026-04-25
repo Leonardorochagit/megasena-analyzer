@@ -61116,5 +61116,32 @@
     "data_criacao": "2026-04-24 01:08:56",
     "qtd_numeros": 14,
     "origem": "github_actions"
+  },
+  {
+    "id": "BOLAO-CAIXA-3000-20260425151531",
+    "dezenas": [
+      4,
+      10,
+      12,
+      17,
+      23,
+      28,
+      35,
+      40,
+      42,
+      46,
+      49,
+      55
+    ],
+    "estrategia": "bolao_caixa",
+    "estrategia_versao": "1.0",
+    "vai_jogar": true,
+    "verificado": false,
+    "concurso_alvo": 3000,
+    "status": "aguardando",
+    "data_criacao": "2026-04-25 15:15:31",
+    "qtd_numeros": 12,
+    "origem": "bolao_caixa_loterica",
+    "observacao": "Bolao Caixa Mega 3000 (R$ 100mi) - Loteria da Estacao, Cataguases-MG. Cota R$ 82,16 + tarifa R$ 28,88."
   }
 ]
