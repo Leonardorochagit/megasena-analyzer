@@ -937,5 +937,119 @@
       52,
       60
     ]
+  },
+  {
+    "concurso": 3001,
+    "data_analise": "2026-04-29",
+    "estatisticas": {
+      "escada": {
+        "total_jogos": 10,
+        "total_acertos": 20,
+        "senas": 0,
+        "quinas": 0,
+        "quadras": 0,
+        "ternos": 0,
+        "melhor_acerto": 2,
+        "media_acertos": 2.0
+      },
+      "atrasados": {
+        "total_jogos": 10,
+        "total_acertos": 6,
+        "senas": 0,
+        "quinas": 0,
+        "quadras": 0,
+        "ternos": 0,
+        "melhor_acerto": 2,
+        "media_acertos": 0.6
+      },
+      "quentes": {
+        "total_jogos": 10,
+        "total_acertos": 17,
+        "senas": 0,
+        "quinas": 0,
+        "quadras": 1,
+        "ternos": 2,
+        "melhor_acerto": 4,
+        "media_acertos": 1.7
+      },
+      "equilibrado": {
+        "total_jogos": 10,
+        "total_acertos": 12,
+        "senas": 0,
+        "quinas": 0,
+        "quadras": 0,
+        "ternos": 0,
+        "melhor_acerto": 2,
+        "media_acertos": 1.2
+      },
+      "misto": {
+        "total_jogos": 10,
+        "total_acertos": 11,
+        "senas": 0,
+        "quinas": 0,
+        "quadras": 0,
+        "ternos": 0,
+        "melhor_acerto": 2,
+        "media_acertos": 1.1
+      },
+      "consenso": {
+        "total_jogos": 10,
+        "total_acertos": 15,
+        "senas": 0,
+        "quinas": 0,
+        "quadras": 0,
+        "ternos": 1,
+        "melhor_acerto": 3,
+        "media_acertos": 1.5
+      },
+      "aleatorio_smart": {
+        "total_jogos": 10,
+        "total_acertos": 11,
+        "senas": 0,
+        "quinas": 0,
+        "quadras": 0,
+        "ternos": 1,
+        "melhor_acerto": 3,
+        "media_acertos": 1.1
+      },
+      "ensemble": {
+        "total_jogos": 40,
+        "total_acertos": 41,
+        "senas": 0,
+        "quinas": 0,
+        "quadras": 0,
+        "ternos": 3,
+        "melhor_acerto": 3,
+        "media_acertos": 1.02
+      },
+      "sequencias": {
+        "total_jogos": 10,
+        "total_acertos": 13,
+        "senas": 0,
+        "quinas": 0,
+        "quadras": 1,
+        "ternos": 0,
+        "melhor_acerto": 4,
+        "media_acertos": 1.3
+      },
+      "wheel": {
+        "total_jogos": 10,
+        "total_acertos": 14,
+        "senas": 0,
+        "quinas": 0,
+        "quadras": 0,
+        "ternos": 2,
+        "melhor_acerto": 3,
+        "media_acertos": 1.4
+      }
+    },
+    "dezenas_sorteadas": [
+      1,
+      13,
+      32,
+      36,
+      43,
+      60
+    ]
   }
 ]
