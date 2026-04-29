@@ -9,6 +9,11 @@ on:
     - cron: '30 2 * * 3,5,0'   # 23:30 BRT
 
   workflow_dispatch:  # Permite rodar manualmente pelo GitHub
+    inputs:
+      concurso:
+        description: 'Concurso específico para reenviar se não houver conferência nova'
+        required: false
+        type: string
 
 jobs:
   conferir:
@@ -66,6 +71,8 @@ jobs:
         env:
           WHATSAPP_TELEFONE: ${{ secrets.WHATSAPP_TELEFONE }}
           WHATSAPP_APIKEY: ${{ secrets.WHATSAPP_APIKEY }}
+          REENVIAR_ULTIMA_CONFERENCIA: ${{ github.event_name == 'workflow_dispatch' && 'true' || 'false' }}
+          REENVIAR_CONCURSO: ${{ github.event.inputs.concurso }}
         run: |
           python scripts/conferir_e_notificar.py
 

@@ -17,6 +17,7 @@ import json
 import os
 import sys
 import random
+import glob
 import requests
 import pandas as pd
 from datetime import datetime
@@ -93,6 +94,65 @@ def _arquivar_verificados():
         json.dump(existentes, f, indent=2, ensure_ascii=False)
     _save_cartoes(pendentes)
     return len(verificados), len(pendentes)
+
+
+def _load_cartoes_arquivados():
+    cartoes = []
+    padrao = os.path.join(ROOT, "data", "cartoes_arquivo_*.json")
+    for arquivo in sorted(glob.glob(padrao)):
+        try:
+            with open(arquivo, 'r', encoding='utf-8') as f:
+                dados = json.load(f)
+            if isinstance(dados, list):
+                cartoes.extend(dados)
+        except Exception as e:
+            log(f"  Não foi possível ler {arquivo}: {e}")
+    return cartoes
+
+
+def reconstruir_conferencia_historica(concurso=None):
+    """Reconstrói uma conferência já salva para reenvio manual."""
+    historico = _load_historico()
+    if not historico:
+        return None
+
+    registros = [r for r in historico if r.get('concurso')]
+    if concurso is not None:
+        registros = [r for r in registros if int(r.get('concurso')) == int(concurso)]
+    if not registros:
+        return None
+
+    registro = max(registros, key=lambda r: int(r.get('concurso') or 0))
+    concurso = int(registro['concurso'])
+    resultado = registro.get('dezenas_sorteadas') or []
+    stats_concurso = registro.get('estatisticas') or {}
+
+    cartoes = [
+        c for c in (_load_cartoes() + _load_cartoes_arquivados())
+        if int(c.get('concurso_alvo') or 0) == concurso and c.get('verificado')
+    ]
+    total_jogos = len(cartoes) or sum(s.get('total_jogos', 0) for s in stats_concurso.values())
+    melhor = max(
+        [c.get('acertos', 0) for c in cartoes] +
+        [s.get('melhor_acerto', 0) for s in stats_concurso.values()] +
+        [0]
+    )
+    quase_acertos = [
+        {'dezenas': c.get('dezenas', []), 'acertos': c.get('acertos', 0), 'estrategia': c.get('estrategia', 'N/A')}
+        for c in cartoes if c.get('acertos', 0) >= 3
+    ]
+
+    return {
+        'status': 'conferido',
+        'conferidos': [{
+            'concurso': concurso,
+            'resultado': resultado,
+            'total_jogos': total_jogos,
+            'melhor_acerto': melhor,
+            'stats': stats_concurso,
+            'cartoes_raw': quase_acertos,
+        }],
+    }
 
 # ── Configuração ──────────────────────────────────────────────
 
@@ -595,16 +655,31 @@ def main():
     # 1. Conferir cartões pendentes
     log("\n📋 Etapa 1: Conferindo cartões pendentes...")
     resultado_conferencia, todos_cartoes = conferir_cartoes()
+    reenvio_historico = False
+    if not resultado_conferencia:
+        reenviar = os.environ.get('REENVIAR_ULTIMA_CONFERENCIA', '').lower() in ('1', 'true', 'sim', 'yes')
+        concurso_reenvio = os.environ.get('REENVIAR_CONCURSO')
+        if reenviar:
+            log("\nEtapa 2: Sem conferencias novas; tentando reenviar historico...")
+            resultado_conferencia = reconstruir_conferencia_historica(concurso_reenvio or None)
+            reenvio_historico = bool(resultado_conferencia)
+            if not resultado_conferencia:
+                log("  Nenhuma conferencia historica encontrada para reenvio.")
 
     # 2. Enviar WhatsApp com resultado (inclui dezenas faltantes)
     if resultado_conferencia and resultado_conferencia.get('status') == 'conferido':
         log("\n📲 Etapa 2: Enviando notificação WhatsApp...")
-        enviar_whatsapp(resultado_conferencia)
+        whatsapp_enviado = enviar_whatsapp(resultado_conferencia)
 
         # Arquivar cartões já conferidos para manter meus_cartoes.json enxuto
-        log("\n🗄️  Etapa 2b: Arquivando cartões verificados...")
-        arquivados, mantidos = _arquivar_verificados()
-        log(f"  {arquivados} arquivados, {mantidos} pendentes mantidos")
+        log("\n🗄️  Etapa 2b: Finalizando cartões verificados...")
+        if whatsapp_enviado and not reenvio_historico:
+            arquivados, mantidos = _arquivar_verificados()
+            log(f"  {arquivados} arquivados, {mantidos} pendentes mantidos")
+        elif whatsapp_enviado and reenvio_historico:
+            log("  Reenvio historico concluido; nenhum arquivamento necessario.")
+        else:
+            log("  Arquivamento adiado porque o WhatsApp falhou.")
     else:
         log("\n📲 Etapa 2: Nada a notificar (sem conferências novas).")
 
