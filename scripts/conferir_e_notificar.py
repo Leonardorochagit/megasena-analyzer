@@ -171,6 +171,19 @@ def reconstruir_conferencia_historica(concurso=None):
         }],
     }
 
+
+def reconstruir_conferencia_nao_arquivada():
+    """Recria a última conferência verificada que ainda ficou em meus_cartoes.json."""
+    concursos = [
+        int(c.get('concurso_alvo') or 0)
+        for c in _load_cartoes()
+        if c.get('verificado') and c.get('concurso_alvo')
+    ]
+    concursos = [c for c in concursos if c > 0]
+    if not concursos:
+        return None
+    return reconstruir_conferencia_historica(max(concursos))
+
 # ── Configuração ──────────────────────────────────────────────
 
 TODAS_ESTRATEGIAS = [
@@ -685,6 +698,14 @@ def main():
                 log(f"  Reenvio historico selecionado: concurso {concurso_escolhido}.")
             else:
                 log("  Nenhuma conferencia historica encontrada para reenvio.")
+        else:
+            log("\nEtapa 2: Sem conferencias novas; verificando notificacao pendente...")
+            resultado_conferencia = reconstruir_conferencia_nao_arquivada()
+            if resultado_conferencia:
+                concurso_escolhido = resultado_conferencia['conferidos'][0]['concurso']
+                log(f"  Notificacao pendente encontrada: concurso {concurso_escolhido}.")
+            else:
+                log("  Nenhuma notificacao pendente encontrada.")
 
     # 2. Enviar WhatsApp com resultado (inclui dezenas faltantes)
     if resultado_conferencia and resultado_conferencia.get('status') == 'conferido':
