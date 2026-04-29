@@ -58,6 +58,11 @@ def _nome_estrategia(key) -> str:
     return NOMES_ESTRATEGIAS.get(key, str(key))
 
 
+def _eh_ensemble(cartao) -> bool:
+    estrategia = str(cartao.get('estrategia', '')).strip().lower()
+    return estrategia == 'ensemble' or estrategia.startswith('ensemble_')
+
+
 def _calcular_custo(qtd):
     return CUSTOS_CARTAO.get(qtd, 0.0)
 
@@ -461,7 +466,7 @@ def _mostrar_historico_testados(todos_cartoes):
                 por_est.setdefault(est, []).append(c.get('acertos', 0))
             melhor_est = max(por_est, key=lambda e: max(por_est[e]))
 
-            tem_ensemble = 'ensemble' in por_est
+            tem_ensemble = any(_eh_ensemble(c) for c in jogos_conc)
 
             # Dezenas sorteadas (do primeiro verificado)
             resultado = verif_conc[0].get('resultado_concurso', [])
@@ -478,7 +483,9 @@ def _mostrar_historico_testados(todos_cartoes):
             status_txt = f"{len(verif_conc)} verificados"
             if pend_conc:
                 status_txt += f" + {len(pend_conc)} pendentes"
-            if not tem_ensemble:
+            if tem_ensemble:
+                status_txt += " (🧠 ensemble incluído)"
+            else:
                 status_txt += " (sem ensemble)"
         else:
             melhor = "—"
@@ -486,7 +493,7 @@ def _mostrar_historico_testados(todos_cartoes):
             melhor_est = "—"
             dezenas_str = "Aguardando sorteio"
             premios_str = "—"
-            tem_ensemble = any(c.get('estrategia') == 'ensemble' for c in pend_conc)
+            tem_ensemble = any(_eh_ensemble(c) for c in pend_conc)
             status_icon = "⏳"
             status_txt = f"{len(pend_conc)} pendentes"
             if tem_ensemble:
