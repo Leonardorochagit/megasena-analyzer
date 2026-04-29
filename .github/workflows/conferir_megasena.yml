@@ -48,7 +48,7 @@ jobs:
           cfg = {
             'ativo': True,
             'intervalo': 60,
-            'qtd_numeros': 14,
+            'qtd_numeros': 15,
             'cartoes_por_est': 10,
             'cartoes_ensemble': 40,
             'ensemble_only': False,

@@ -18,6 +18,7 @@ import os
 import sys
 import random
 import glob
+import math
 import requests
 import pandas as pd
 from datetime import datetime
@@ -188,8 +189,10 @@ def reconstruir_conferencia_nao_arquivada():
 
 TODAS_ESTRATEGIAS = [
     'escada', 'atrasados', 'quentes',
-    'equilibrado', 'misto', 'consenso', 'aleatorio_smart', 'ensemble',
-    'sequencias', 'wheel'
+    'equilibrado', 'misto', 'consenso', 'aleatorio_smart',
+    'sequencias', 'wheel', 'ciclos', 'frequencia_desvio',
+    'pares_frequentes', 'candidatos_ouro', 'momentum',
+    'vizinhanca', 'atraso_recente', 'ensemble'
 ]
 
 CONFIG_FILE = os.path.join(ROOT, "piloto_config.json")
@@ -198,11 +201,12 @@ CONFIG_FILE = os.path.join(ROOT, "piloto_config.json")
 def _carregar_config():
     """Carrega configurações do piloto_config.json."""
     defaults = {
-        'qtd_numeros': 14,
+        'qtd_numeros': 15,
         'cartoes_por_est': 20,
         'bolao_threshold': 100_000_000,
         'bolao_qtd_numeros': 13,
         'bolao_estrategias': ['misto', 'consenso'],
+        'diversidade_ativa': True,
     }
     try:
         if os.path.exists(CONFIG_FILE):
@@ -226,6 +230,41 @@ ENSEMBLE_ONLY = CONFIG.get('ensemble_only', False)
 
 def log(msg):
     print(f"[{datetime.now().strftime('%H:%M:%S')}] {msg}")
+
+
+def _parametros_diversidade(qtd_numeros, total_planejado):
+    """Limites para evitar cartões muito parecidos no mesmo concurso."""
+    if qtd_numeros <= 10:
+        max_intersecao = 5
+        max_pct_numero = 0.34
+    elif qtd_numeros <= 13:
+        max_intersecao = 7
+        max_pct_numero = 0.38
+    else:
+        max_intersecao = 8
+        max_pct_numero = 0.40
+
+    return {
+        'max_intersecao': CONFIG.get('diversidade_max_intersecao', max_intersecao),
+        'max_por_numero': max(2, math.ceil(total_planejado * CONFIG.get('diversidade_max_pct_numero', max_pct_numero))),
+    }
+
+
+def _score_diversidade(dezenas, cartoes_aceitos, contador_numeros, limites):
+    """Quanto menor, mais diverso. Zero significa que passou nos limites rígidos."""
+    dezenas_set = set(dezenas)
+    maior_intersecao = max((len(dezenas_set & set(c)) for c in cartoes_aceitos), default=0)
+    excesso_intersecao = max(0, maior_intersecao - limites['max_intersecao'])
+    excesso_freq = sum(
+        max(0, contador_numeros[n] + 1 - limites['max_por_numero'])
+        for n in dezenas_set
+    )
+    return excesso_intersecao * 10 + excesso_freq, maior_intersecao
+
+
+def _aceitar_cartao_diverso(dezenas, cartoes_aceitos, contador_numeros, limites):
+    score, _ = _score_diversidade(dezenas, cartoes_aceitos, contador_numeros, limites)
+    return score == 0
 
 
 # ── Buscar resultado da API ──────────────────────────────────
@@ -388,6 +427,53 @@ def conferir_cartoes():
 
 # ── Gerar novos cartões ──────────────────────────────────────
 
+def _gerar_cartao_com_diversidade(estrategia, contagem_total, contagem_recente,
+                                  df_atrasos, df, cartoes_aceitos,
+                                  contador_numeros, limites_diversidade):
+    melhor_candidato = None
+    melhor_score = None
+    melhor_intersecao = None
+    tentativas = 80 if CONFIG.get('diversidade_ativa', True) else 1
+
+    for _ in range(tentativas):
+        dezenas_base = gen.gerar_jogo(
+            estrategia=estrategia,
+            contagem_total=contagem_total,
+            contagem_recente=contagem_recente,
+            df_atrasos=df_atrasos,
+            df=df
+        )
+        if QTD_NUMEROS > 6:
+            dezenas = _expandir_jogo(
+                dezenas_base, QTD_NUMEROS, estrategia,
+                contagem_total, contagem_recente, df_atrasos, df
+            )
+        else:
+            dezenas = dezenas_base
+
+        dezenas = sorted(set(dezenas))
+        if len(dezenas) != QTD_NUMEROS:
+            continue
+
+        score, intersecao = _score_diversidade(
+            dezenas, cartoes_aceitos, contador_numeros, limites_diversidade
+        )
+        if melhor_score is None or score < melhor_score or (
+            score == melhor_score and intersecao < (melhor_intersecao or 99)
+        ):
+            melhor_candidato = dezenas
+            melhor_score = score
+            melhor_intersecao = intersecao
+
+        if (
+            not CONFIG.get('diversidade_ativa', True)
+            or _aceitar_cartao_diverso(dezenas, cartoes_aceitos, contador_numeros, limites_diversidade)
+        ):
+            return dezenas, 0, intersecao
+
+    return melhor_candidato, melhor_score, melhor_intersecao
+
+
 def gerar_cartoes_proximo_concurso(todos_cartoes):
     """Gera cartões para o próximo concurso se ainda não existem."""
     ultimo = buscar_ultimo_resultado()
@@ -441,6 +527,13 @@ def gerar_cartoes_proximo_concurso(todos_cartoes):
 
     contagem_total, contagem_recente, df_atrasos = stats.calcular_estatisticas(df)
     novos = []
+    total_planejado = sum(
+        CARTOES_ENSEMBLE if est == 'ensemble' else CARTOES_POR_ESTRATEGIA
+        for est in (['ensemble'] if ENSEMBLE_ONLY else TODAS_ESTRATEGIAS)
+    )
+    limites_diversidade = _parametros_diversidade(QTD_NUMEROS, total_planejado)
+    cartoes_aceitos = []
+    contador_numeros = Counter()
 
     estrategias_gerar = ['ensemble'] if ENSEMBLE_ONLY else TODAS_ESTRATEGIAS
     log(f"  Modo: {'ensemble_only' if ENSEMBLE_ONLY else 'todas estratégias'} | ensemble={CARTOES_ENSEMBLE} | outros={CARTOES_POR_ESTRATEGIA}")
@@ -449,20 +542,23 @@ def gerar_cartoes_proximo_concurso(todos_cartoes):
         qtd = CARTOES_ENSEMBLE if estrategia == 'ensemble' else CARTOES_POR_ESTRATEGIA
         for i in range(qtd):
             try:
-                dezenas_base = gen.gerar_jogo(
-                    estrategia=estrategia,
-                    contagem_total=contagem_total,
-                    contagem_recente=contagem_recente,
-                    df_atrasos=df_atrasos,
-                    df=df
+                dezenas, score_diversidade, intersecao = _gerar_cartao_com_diversidade(
+                    estrategia,
+                    contagem_total,
+                    contagem_recente,
+                    df_atrasos,
+                    df,
+                    cartoes_aceitos,
+                    contador_numeros,
+                    limites_diversidade
                 )
-                if QTD_NUMEROS > 6:
-                    dezenas = _expandir_jogo(
-                        dezenas_base, QTD_NUMEROS, estrategia,
-                        contagem_total, contagem_recente, df_atrasos, df
+                if not dezenas:
+                    continue
+                if CONFIG.get('diversidade_ativa', True) and score_diversidade:
+                    log(
+                        f"  {estrategia} #{i+1:02d}: aceito com penalidade "
+                        f"{score_diversidade} (intersecao={intersecao})"
                     )
-                else:
-                    dezenas = dezenas_base
 
                 ts = datetime.now().strftime("%Y%m%d%H%M%S")
                 novos.append({
@@ -478,6 +574,8 @@ def gerar_cartoes_proximo_concurso(todos_cartoes):
                     'qtd_numeros': QTD_NUMEROS,
                     'origem': 'github_actions'
                 })
+                cartoes_aceitos.append(dezenas)
+                contador_numeros.update(dezenas)
             except Exception:
                 pass
 
@@ -527,7 +625,17 @@ def _expandir_jogo(dezenas_base, qtd_numeros, estrategia,
     else:
         candidatos = list(range(1, 61))
 
-    candidatos = [n for n in candidatos if n not in dezenas_base]
+    candidatos_unicos = []
+    vistos = set(dezenas_base)
+    for n in candidatos:
+        if n not in vistos:
+            candidatos_unicos.append(n)
+            vistos.add(n)
+    for n in range(1, 61):
+        if n not in vistos:
+            candidatos_unicos.append(n)
+            vistos.add(n)
+    candidatos = candidatos_unicos
 
     # Tentar gerar expansão com filtros de qualidade
     melhor_jogo = None
