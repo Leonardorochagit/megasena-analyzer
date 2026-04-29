@@ -71617,5 +71617,40 @@
       "aposta": 4,
       "qtd_total_apostas": 4
     }
+  },
+  {
+    "id": "BOLAO-3002-EFETIVADO-JOGO-01",
+    "dezenas": [
+      1,
+      8,
+      9,
+      13,
+      18,
+      22,
+      23,
+      26,
+      33,
+      35,
+      41,
+      42,
+      50,
+      55,
+      60
+    ],
+    "estrategia": "Bolao Mega-Sena",
+    "tecnica": "jogo_efetivado",
+    "vai_jogar": true,
+    "verificado": false,
+    "concurso_alvo": 3002,
+    "status": "aguardando",
+    "data_criacao": "2026-04-29 18:39:12",
+    "qtd_numeros": 15,
+    "observacao": "Jogo efetivamente realizado no concurso 3002 - Jogo 1",
+    "notas": {
+      "origem": "Jogo efetivamente realizado - print enviado",
+      "jogo": 1,
+      "concurso": 3002,
+      "registrado_por": "usuario"
+    }
   }
 ]
