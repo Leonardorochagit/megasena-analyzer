@@ -79,17 +79,24 @@ def _escrever_json(path, data):
 
 
 def sincronizar_json_para_db():
-    """Importa JSON → SQLite quando o banco estiver vazio. Chame na inicialização."""
+    """Importa do JSON para o SQLite os cartões que ainda não existem no banco."""
     try:
         existentes = carregar_cartoes_db()
     except Exception:
         existentes = []
 
-    if not existentes:
-        cartoes_json = _ler_json(_JSON_CARTOES, [])
-        if cartoes_json:
-            normalizados = [_normalizar_cartao(c) for c in cartoes_json if isinstance(c, dict)]
-            salvar_cartoes_db(normalizados)
+    ids_existentes = {
+        c.get('id') for c in existentes
+        if isinstance(c, dict) and c.get('id')
+    }
+    cartoes_json = _ler_json(_JSON_CARTOES, [])
+    novos = [
+        _normalizar_cartao(c)
+        for c in cartoes_json
+        if isinstance(c, dict) and c.get('id') and c.get('id') not in ids_existentes
+    ]
+    if novos:
+        salvar_cartoes_db(novos)
 
     try:
         historico_db = carregar_historico_db()
@@ -218,12 +225,10 @@ def salvar_cartoes(cartoes: list, concurso_alvo: int = None) -> bool:
 
 
 def carregar_cartoes_salvos() -> list:
-    """Carrega cartões do SQLite; se vazio, importa do JSON automaticamente."""
+    """Carrega cartões do SQLite e incorpora novos registros versionados no JSON."""
     try:
+        sincronizar_json_para_db()
         dados = carregar_cartoes_db()
-        if not dados:
-            sincronizar_json_para_db()
-            dados = carregar_cartoes_db()
         return dados
     except Exception as e:
         st.warning(f"Erro ao carregar cartões: {e}")
