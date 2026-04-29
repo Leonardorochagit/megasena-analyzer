@@ -30,6 +30,7 @@ import statistics as st_mod
 import sys
 from collections import defaultdict
 from datetime import datetime
+from itertools import combinations
 
 import numpy as np
 import pandas as pd
@@ -53,7 +54,8 @@ ESTRATEGIAS_PADRAO = [
     'equilibrado', 'misto', 'consenso',
     'aleatorio_smart', 'ensemble', 'sequencias',
     'candidatos_ouro', 'momentum', 'vizinhanca',
-    'frequencia_desvio', 'pares_frequentes', 'ciclos'
+    'frequencia_desvio', 'pares_frequentes', 'ciclos',
+    'atraso_recente'
 ]
 
 
@@ -186,6 +188,9 @@ def executar_validacao_walk_forward(df, indices_teste, estrategias,
         'concursos_com_terno_ou_mais': 0,
         'concursos_com_quadra_ou_mais': 0,
         'concursos_com_quina_ou_mais': 0,
+        'intersecoes_medias': [],
+        'intersecoes_maximas': [],
+        'max_freq_numero': [],
         'concursos': 0,
     })
     detalhes = []
@@ -218,6 +223,7 @@ def executar_validacao_walk_forward(df, indices_teste, estrategias,
 
         for est_idx, estrategia in enumerate(estrategias):
             acertos_estrategia = []
+            cartoes_estrategia = []
             melhor = 0
 
             for cartao_idx in range(cartoes_por_estrategia):
@@ -240,6 +246,7 @@ def executar_validacao_walk_forward(df, indices_teste, estrategias,
 
                 resultados[estrategia]['acertos'].append(acertos)
                 acertos_estrategia.append(acertos)
+                cartoes_estrategia.append(sorted(set(dezenas)))
                 melhor = max(melhor, acertos)
 
                 if acertos == 3:
@@ -259,6 +266,21 @@ def executar_validacao_walk_forward(df, indices_teste, estrategias,
             resultados[estrategia]['melhor_por_concurso'].append(melhor)
             resultados[estrategia]['media_por_concurso'].append(media_concurso)
 
+            intersecoes = [
+                len(set(a) & set(b))
+                for a, b in combinations(cartoes_estrategia, 2)
+            ]
+            inter_media = sum(intersecoes) / len(intersecoes) if intersecoes else 0.0
+            inter_max = max(intersecoes) if intersecoes else 0
+            freq_numeros = defaultdict(int)
+            for cartao in cartoes_estrategia:
+                for numero in cartao:
+                    freq_numeros[numero] += 1
+            max_freq = max(freq_numeros.values()) if freq_numeros else 0
+            resultados[estrategia]['intersecoes_medias'].append(inter_media)
+            resultados[estrategia]['intersecoes_maximas'].append(inter_max)
+            resultados[estrategia]['max_freq_numero'].append(max_freq)
+
             if melhor >= 3:
                 resultados[estrategia]['concursos_com_terno_ou_mais'] += 1
             if melhor >= 4:
@@ -272,6 +294,9 @@ def executar_validacao_walk_forward(df, indices_teste, estrategias,
                 'ternos_ou_mais': int(sum(1 for x in acertos_estrategia if x >= 3)),
                 'quadras_ou_mais': int(sum(1 for x in acertos_estrategia if x >= 4)),
                 'quinas_ou_mais': int(sum(1 for x in acertos_estrategia if x >= 5)),
+                'intersecao_media': round(inter_media, 4),
+                'intersecao_maxima': int(inter_max),
+                'max_freq_numero': int(max_freq),
             }
 
         detalhes.append(detalhe_concurso)
@@ -306,6 +331,15 @@ def calcular_estatisticas_resultado(resultados, qtd_numeros):
         p_quadra = binomtest(quadra_plus, n, p_quadra_ou_mais).pvalue if n else 1.0
 
         concursos = max(dados['concursos'], 1)
+        intersecao_media = (
+            sum(dados['intersecoes_medias']) / concursos if dados['intersecoes_medias'] else 0.0
+        )
+        intersecao_maxima_media = (
+            sum(dados['intersecoes_maximas']) / concursos if dados['intersecoes_maximas'] else 0.0
+        )
+        max_freq_numero_media = (
+            sum(dados['max_freq_numero']) / concursos if dados['max_freq_numero'] else 0.0
+        )
         ranking.append({
             'estrategia': estrategia,
             'versao': VERSOES_ESTRATEGIAS.get(estrategia, {}).get('versao', '?'),
@@ -331,6 +365,9 @@ def calcular_estatisticas_resultado(resultados, qtd_numeros):
             'taxa_concurso_quadra_ou_mais': dados['concursos_com_quadra_ou_mais'] / concursos,
             'taxa_concurso_quina_ou_mais': dados['concursos_com_quina_ou_mais'] / concursos,
             'p_quadra_ou_mais_vs_aleatorio': p_quadra,
+            'intersecao_media_cartoes': intersecao_media,
+            'intersecao_maxima_media': intersecao_maxima_media,
+            'max_freq_numero_media': max_freq_numero_media,
             'ternos': dados['ternos'],
             'quadras': dados['quadras'],
             'quinas': dados['quinas'],

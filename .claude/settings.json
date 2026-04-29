@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python -c ' *)"
+      "Bash(python -c ' *)",
+      "Bash(set PYTHONIOENCODING=utf-8)",
+      "Bash(python scripts/conferir_e_notificar.py)",
+      "Bash(python -c \" import json with open\\('meus_cartoes.json', encoding='utf-8'\\) as f: c = json.load\\(f\\) verificados = [x for x in c if x.get\\('verificado'\\)] pendentes = [x for x in c if not x.get\\('verificado'\\)] print\\(f'Total: {len\\(c\\)}, Verificados: {len\\(verificados\\)}, Pendentes: {len\\(pendentes\\)}'\\) from collections import Counter if verificados: print\\('Verificados por concurso:', dict\\(Counter\\(x.get\\('concurso_alvo'\\) for x in verificados\\)\\)\\) \")"
     ]
   }
 }

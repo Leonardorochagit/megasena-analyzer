@@ -1,0 +1,60 @@
+{
+  "data_execucao": "2026-04-29 20:29:26",
+  "parametros": {
+    "concursos_validos": 400,
+    "cartoes_por_estrategia": 10,
+    "qtd_numeros": 15,
+    "seed": 42,
+    "estrategias": [
+      "ensemble"
+    ],
+    "observacao": "Backtest isolado do ensemble apos ranking por decisao"
+  },
+  "benchmark_aleatorio": {
+    "media_esperada": 1.5,
+    "desvio_esperado": 1.014722137803819,
+    "p_terno_ou_mais": 0.15875603678981204,
+    "p_quadra_ou_mais": 0.029791749976929467,
+    "p_quina_ou_mais": 0.002799224830047064,
+    "probabilidades": {
+      "0": 0.1626934079793288,
+      "1": 0.36606016795348983,
+      "2": 0.31249038727736933,
+      "3": 0.12896428681288258,
+      "4": 0.026992525146882402,
+      "5": 0.0026992525146882405,
+      "6": 9.997231535882371e-05
+    }
+  },
+  "ranking": [
+    {
+      "estrategia": "ensemble",
+      "versao": "3.0",
+      "nota_versao": "Ensemble adaptativo por streak: só entram estratégias que marcaram terno+ em algum dos últimos N concursos (default N=2); fallback para ranking recente, backtesting e ensemble clássico",
+      "concursos": 400,
+      "jogos": 4000,
+      "media_por_cartao": 1.4875,
+      "desvio_por_cartao": 1.021324887649142,
+      "ic95_inf": 1.4558488138153287,
+      "ic95_sup": 1.5191511861846714,
+      "delta_vs_aleatorio": -0.012499999999999956,
+      "p_media_vs_aleatorio": 0.43889376310265193,
+      "media_melhor_cartao_concurso": 3.125,
+      "media_media_concurso": 1.4875,
+      "taxa_jogo_terno_ou_mais": 0.15425,
+      "taxa_jogo_quadra_ou_mais": 0.0335,
+      "taxa_jogo_quina_ou_mais": 0.00275,
+      "taxa_concurso_terno_ou_mais": 0.8025,
+      "taxa_concurso_quadra_ou_mais": 0.295,
+      "taxa_concurso_quina_ou_mais": 0.0275,
+      "p_quadra_ou_mais_vs_aleatorio": 0.17712339086524084,
+      "intersecao_media_cartoes": 3.807111111111111,
+      "intersecao_maxima_media": 7.13,
+      "max_freq_numero_media": 6.0275,
+      "ternos": 483,
+      "quadras": 123,
+      "quinas": 11,
+      "senas": 0
+    }
+  ]
+}
