@@ -110,15 +110,32 @@ def _load_cartoes_arquivados():
     return cartoes
 
 
+def _normalizar_concurso_opcional(concurso):
+    if concurso is None:
+        return None
+    concurso_txt = str(concurso).strip()
+    if not concurso_txt:
+        return None
+    try:
+        return int(concurso_txt)
+    except ValueError:
+        log(f"  Concurso de reenvio inválido ({concurso_txt!r}); usando o último histórico.")
+        return None
+
+
 def reconstruir_conferencia_historica(concurso=None):
     """Reconstrói uma conferência já salva para reenvio manual."""
+    concurso = _normalizar_concurso_opcional(concurso)
     historico = _load_historico()
     if not historico:
         return None
 
-    registros = [r for r in historico if r.get('concurso')]
+    registros = [
+        r for r in historico
+        if r.get('concurso') and r.get('dezenas_sorteadas') and r.get('estatisticas')
+    ]
     if concurso is not None:
-        registros = [r for r in registros if int(r.get('concurso')) == int(concurso)]
+        registros = [r for r in registros if int(r.get('concurso')) == concurso]
     if not registros:
         return None
 
@@ -661,9 +678,12 @@ def main():
         concurso_reenvio = os.environ.get('REENVIAR_CONCURSO')
         if reenviar:
             log("\nEtapa 2: Sem conferencias novas; tentando reenviar historico...")
-            resultado_conferencia = reconstruir_conferencia_historica(concurso_reenvio or None)
+            resultado_conferencia = reconstruir_conferencia_historica(concurso_reenvio)
             reenvio_historico = bool(resultado_conferencia)
-            if not resultado_conferencia:
+            if resultado_conferencia:
+                concurso_escolhido = resultado_conferencia['conferidos'][0]['concurso']
+                log(f"  Reenvio historico selecionado: concurso {concurso_escolhido}.")
+            else:
                 log("  Nenhuma conferencia historica encontrada para reenvio.")
 
     # 2. Enviar WhatsApp com resultado (inclui dezenas faltantes)

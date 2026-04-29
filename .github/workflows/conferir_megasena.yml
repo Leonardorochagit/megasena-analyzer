@@ -72,7 +72,7 @@ jobs:
           WHATSAPP_TELEFONE: ${{ secrets.WHATSAPP_TELEFONE }}
           WHATSAPP_APIKEY: ${{ secrets.WHATSAPP_APIKEY }}
           REENVIAR_ULTIMA_CONFERENCIA: ${{ github.event_name == 'workflow_dispatch' && 'true' || 'false' }}
-          REENVIAR_CONCURSO: ${{ github.event.inputs.concurso }}
+          REENVIAR_CONCURSO: ${{ inputs.concurso }}
         run: |
           python scripts/conferir_e_notificar.py
 
