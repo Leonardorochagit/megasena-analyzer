@@ -180,25 +180,57 @@ def _ranking_backtesting_ensemble(max_estrategias=QTD_ESTRATEGIAS_ENSEMBLE):
         if estrategia not in ESTRATEGIAS_ENSEMBLE_ELEGIVEIS:
             continue
 
+        jogos = int(item.get('jogos', 0) or 0)
+        senas = int(item.get('senas', 0) or 0)
+        quinas = int(item.get('quinas', 0) or 0)
+        quadras = int(item.get('quadras', 0) or 0)
+        media_acertos = float(item.get('media_por_cartao', 0) or 0)
+        taxa_quadra_jogo = float(item.get('taxa_jogo_quadra_ou_mais', 0) or 0)
+        taxa_quadra_concurso = float(item.get('taxa_concurso_quadra_ou_mais', 0) or 0)
+        taxa_quina_concurso = float(item.get('taxa_concurso_quina_ou_mais', 0) or 0)
+        melhor_acerto = float(item.get('media_melhor_cartao_concurso', 0) or 0)
+        intersecao = float(item.get('intersecao_media_cartoes', 0) or 0)
+        max_freq = float(item.get('max_freq_numero_media', 0) or 0)
+        jogos_base = max(jogos, 1)
+        score_decisao = (
+            media_acertos * 2.0
+            + taxa_quadra_jogo * 10.0
+            + taxa_quadra_concurso * 4.0
+            + taxa_quina_concurso * 8.0
+            + melhor_acerto * 0.7
+            + (senas / jogos_base) * 500.0
+            + (quinas / jogos_base) * 120.0
+            + (quadras / jogos_base) * 20.0
+            - intersecao * 0.12
+            - max_freq * 0.05
+        )
+
         ranking.append({
             'estrategia': estrategia,
-            'media_acertos': float(item.get('media_por_cartao', 0) or 0),
+            'media_acertos': media_acertos,
             'concursos_3_mais': float(item.get('taxa_concurso_terno_ou_mais', 0) or 0),
-            'quadras': float(item.get('taxa_concurso_quadra_ou_mais', 0) or 0),
-            'quinas': float(item.get('taxa_concurso_quina_ou_mais', 0) or 0),
-            'senas': int(item.get('senas', 0) or 0),
-            'melhor_acerto': float(item.get('media_melhor_cartao_concurso', 0) or 0),
+            'quadras': quadras,
+            'quinas': quinas,
+            'senas': senas,
+            'melhor_acerto': melhor_acerto,
+            'taxa_quadra_jogo': taxa_quadra_jogo,
+            'taxa_quadra_concurso': taxa_quadra_concurso,
+            'taxa_quina_concurso': taxa_quina_concurso,
+            'intersecao_media': intersecao,
+            'max_freq_numero': max_freq,
+            'score_decisao': score_decisao,
             'concursos': int(item.get('concursos', 0) or 0),
-            'jogos': int(item.get('jogos', 0) or 0),
+            'jogos': jogos,
         })
 
     ranking.sort(
         key=lambda item: (
-            item['media_acertos'],
-            item['quadras'],
-            item['concursos_3_mais'],
-            item['melhor_acerto'],
+            item['score_decisao'],
+            item['senas'],
             item['quinas'],
+            item['quadras'],
+            item['taxa_quadra_concurso'],
+            -item['intersecao_media'],
             item['concursos'],
             item['jogos'],
         ),
@@ -312,9 +344,25 @@ def composicao_ensemble_atual(
 def estrategias_ensemble_ativas(max_streak=MAX_STREAK_SEM_TERNO_DEFAULT):
     """Lista das estratégias atualmente DENTRO do ensemble (streak < max_streak)."""
     composicao = composicao_ensemble_atual(max_streak=max_streak)
-    dentro = [c['estrategia'] for c in composicao if c['status'] == 'dentro']
-    if len(dentro) >= 3:
-        return dentro, 'historico_streak'
+    if composicao:
+        status_por_estrategia = {c['estrategia']: c['status'] for c in composicao}
+        elegiveis = {
+            est for est, status in status_por_estrategia.items()
+            if status != 'fora'
+        }
+        ranking_decisao = _ranking_backtesting_ensemble(
+            max_estrategias=len(ESTRATEGIAS_ENSEMBLE_ELEGIVEIS)
+        )
+        filtradas = [
+            item['estrategia'] for item in ranking_decisao
+            if item['estrategia'] in elegiveis
+        ]
+        if len(filtradas) >= 3:
+            return filtradas[:QTD_ESTRATEGIAS_ENSEMBLE], 'decisao_backtesting_streak'
+
+        dentro = [c['estrategia'] for c in composicao if c['status'] == 'dentro']
+        if len(dentro) >= 3:
+            return dentro[:QTD_ESTRATEGIAS_ENSEMBLE], 'historico_streak'
 
     estrategias_resolvidas, origem = _resolver_estrategias_ensemble()
     return estrategias_resolvidas, origem
